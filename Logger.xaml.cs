@@ -4,7 +4,7 @@ using System.Windows;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// Logger.xaml 的交互逻辑
+    /// Interaction logic for Logger.xaml
     /// </summary>
     public partial class Logger : Window
     {

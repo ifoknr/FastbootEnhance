@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -6,37 +7,31 @@ using System.Windows;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         public static MainWindow THIS;
-        const string version = "1.4.0";
+        const string version = "2.0.0";
+
+        static Mutex singleInstanceWatcher;
+
         public MainWindow()
         {
             InitializeComponent();
             THIS = this;
 
-            string mutexName = "FastbootEnhance";
             bool createdNew;
-            Mutex singleInstanceWatcher = new Mutex(false, mutexName, out createdNew);
+            singleInstanceWatcher = new Mutex(false, "FastbootEnhance", out createdNew);
             if (!createdNew)
             {
-                MessageBox.Show(Properties.Resources.program_already_running, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
-                Process.GetCurrentProcess().Kill();
+                MessageBox.Show(Properties.Resources.program_already_running, Properties.Resources.error,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+                return;
             }
 
-            try
-            {
-                new DirectoryInfo(PayloadUI.PAYLOAD_TMP).Delete(true);
-            }
-            catch (DirectoryNotFoundException) { }
-
-            try
-            {
-                new DirectoryInfo(FastbootUI.PAYLOAD_TMP).Delete(true);
-            }
-            catch (DirectoryNotFoundException) { }
+            clearStagingDirectories();
 
             PayloadUI.init();
             FastbootUI.init();
@@ -45,35 +40,61 @@ namespace FastbootEnhance
 
             Closed += delegate
             {
-                if (PayloadUI.payload != null)
-                    PayloadUI.payload.Dispose();
-
-                try
-                {
-                    new DirectoryInfo(PayloadUI.PAYLOAD_TMP).Delete(true);
-                }
-                catch (DirectoryNotFoundException) { }
-                catch (IOException) { }
-
-                try
-                {
-                    new DirectoryInfo(FastbootUI.PAYLOAD_TMP).Delete(true);
-                }
-                catch (DirectoryNotFoundException) { }
-                catch (IOException) { }
-
-                Process.GetCurrentProcess().Kill();
+                PayloadUI.cancelRunningWork();
+                PayloadUI.closeCurrent();
+                clearStagingDirectories();
             };
+        }
+
+        /// <summary>
+        /// Removes anything a previous run left behind. These directories only ever hold
+        /// images on their way to the device, so they are safe to drop on start and on exit.
+        /// </summary>
+        static void clearStagingDirectories()
+        {
+            foreach (string path in new[] { PayloadUI.PAYLOAD_TMP, FastbootUI.PAYLOAD_TMP })
+            {
+                try
+                {
+                    if (Directory.Exists(path))
+                        Directory.Delete(path, true);
+                }
+                catch (DirectoryNotFoundException)
+                {
+                }
+                catch (IOException)
+                {
+                }
+                catch (UnauthorizedAccessException)
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// Opens a link in the user's browser. Modern .NET will not launch a URL unless the
+        /// shell is asked to handle it, so UseShellExecute has to be set.
+        /// </summary>
+        static void openInBrowser(string url)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void Thread_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.akr-developers.com/d/506");
+            openInBrowser("https://www.akr-developers.com/d/506");
         }
 
         private void OSS_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/libxzr/FastbootEnhance");
+            openInBrowser("https://github.com/libxzr/FastbootEnhance");
         }
     }
 }

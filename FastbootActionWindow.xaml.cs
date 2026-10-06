@@ -4,7 +4,7 @@ using System.Windows;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// Fastboot_create_resize.xaml 的交互逻辑
+    /// Interaction logic for FastbootActionWindow.xaml
     /// </summary>
     public partial class FastbootActionWindow : Window
     {

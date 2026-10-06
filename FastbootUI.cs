@@ -1,7 +1,9 @@
 ﻿using ChromeosUpdateEngine;
+using FastbootEnhance.Core.Payload;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 
@@ -9,7 +11,15 @@ namespace FastbootEnhance
 {
     class FastbootUI
     {
-        public const string PAYLOAD_TMP = ".\\payload.tmp.fastboot";
+        /// <summary>
+        /// Staging area for images on their way to the device. It lives under the user's temp
+        /// directory rather than next to the executable, which may sit somewhere unwritable.
+        /// </summary>
+        public static readonly string PAYLOAD_TMP =
+            Path.Combine(Path.GetTempPath(), "FastbootEnhance", "flash");
+
+        /// <summary>Generous enough for a multi-gigabyte image over slow USB.</summary>
+        static readonly TimeSpan FlashTimeout = TimeSpan.FromMinutes(15);
         static List<fastboot_devices_row> devices;
         static string cur_serial;
         static FastbootData fastbootData;
@@ -259,7 +269,7 @@ namespace FastbootEnhance
                         MainWindow.THIS.fastboot_ab_switch.Visibility = Visibility.Hidden;
                     }
 
-                    //检测是否应出现"去除更新状态"按钮
+                    // Hide the cancel-update button when there is no staged update to cancel.
                     if (fastbootData.snapshot_update_status == "none")
                     {
                         MainWindow.THIS.fastboot_cancel_update.Visibility = Visibility.Hidden;
@@ -380,16 +390,13 @@ namespace FastbootEnhance
             if (fastbootData.snapshot_update_status != null
                 && fastbootData.snapshot_update_status != "none")
             {
-                System.Windows.Forms.DialogResult result =
-                        System.Windows.Forms.MessageBox.Show(
-                            Properties.Resources.fastboot_vab_staging_str1 + "\n" +
-                            Properties.Resources.fastboot_vab_staging_str2 + "\n" +
-                            Properties.Resources.fastboot_vab_staging_str3
-                            , Properties.Resources.fastboot_vab_staging_str0,
-                            System.Windows.Forms.MessageBoxButtons.YesNo,
-                            System.Windows.Forms.MessageBoxIcon.Question);
+                bool proceed = Helper.confirm(
+                    Properties.Resources.fastboot_vab_staging_str1 + "\n" +
+                    Properties.Resources.fastboot_vab_staging_str2 + "\n" +
+                    Properties.Resources.fastboot_vab_staging_str3,
+                    Properties.Resources.fastboot_vab_staging_str0);
 
-                if (result != System.Windows.Forms.DialogResult.Yes)
+                if (!proceed)
                 {
                     return true;
                 }
@@ -407,22 +414,301 @@ namespace FastbootEnhance
 
             if (cow_exist)
             {
-                System.Windows.Forms.DialogResult result =
-                        System.Windows.Forms.MessageBox.Show(
-                            Properties.Resources.fastboot_cow_exist_str1 + "\n" +
-                            Properties.Resources.fastboot_cow_exist_str2 + "\n" +
-                            Properties.Resources.fastboot_cow_exist_str3
-                            , Properties.Resources.fastboot_cow_exist_str0,
-                            System.Windows.Forms.MessageBoxButtons.YesNo,
-                            System.Windows.Forms.MessageBoxIcon.Question);
+                bool proceed = Helper.confirm(
+                    Properties.Resources.fastboot_cow_exist_str1 + "\n" +
+                    Properties.Resources.fastboot_cow_exist_str2 + "\n" +
+                    Properties.Resources.fastboot_cow_exist_str3,
+                    Properties.Resources.fastboot_cow_exist_str0);
 
-                if (result != System.Windows.Forms.DialogResult.Yes)
+                if (!proceed)
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Opens a payload, makes sure the device can take it, then hands over to the flasher.
+        /// </summary>
+        static void openPayloadThenFlash(string path)
+        {
+            PayloadFile opened = null;
+            Exception failure = null;
+
+            action_lock();
+            MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
+
+            Helper.offloadAndRun(
+                new Action(delegate
+                {
+                    try
+                    {
+                        opened = PayloadFile.Open(path, PAYLOAD_TMP);
+                    }
+                    catch (Exception e)
+                    {
+                        failure = e;
+                    }
+                }),
+                new Action(delegate
+                {
+                    MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
+
+                    if (failure != null)
+                    {
+                        action_unlock();
+                        MessageBox.Show(Properties.Resources.payload_unsupported_format
+                            + "\n" + failure.Message);
+                        return;
+                    }
+
+                    string unknown = findUnknownPartitions(opened);
+                    if (unknown != null)
+                    {
+                        opened.Dispose();
+                        action_unlock();
+                        string hint = fastbootData.fastbootd
+                            ? "\n" + Properties.Resources.fastboot_unknown_partition_str1
+                            : "\n" + Properties.Resources.fastboot_unknown_partition_str2;
+                        MessageBox.Show(Properties.Resources.fastboot_unknown_partition_str0
+                            + "\n" + unknown + hint);
+                        return;
+                    }
+
+                    List<string> blocked = opened.Partitions
+                        .Where(part => !part.CanExtract)
+                        .Select(part => part.Name)
+                        .ToList();
+
+                    if (blocked.Count > 0)
+                    {
+                        opened.Dispose();
+                        action_unlock();
+                        MessageBox.Show(Properties.Resources.payload_incremental_warning
+                            + "\n\n" + string.Join(", ", blocked));
+                        return;
+                    }
+
+                    flashPayload(opened);
+                }));
+        }
+
+        /// <summary>
+        /// Returns a space separated list of payload partitions the device does not have,
+        /// or null when every partition can be written.
+        /// </summary>
+        static string findUnknownPartitions(PayloadFile payload)
+        {
+            if (MainWindow.THIS.ignore_unknown_part.IsChecked == true)
+                return null;
+
+            List<string> missing = new List<string>();
+
+            foreach (PayloadPartitionInfo part in payload.Partitions)
+            {
+                long size;
+                if (fastbootData.partition_size.TryGetValue(part.Name, out size))
+                    continue;
+
+                if (fastbootData.current_slot != null &&
+                    fastbootData.partition_size.TryGetValue(
+                        part.Name + "_" + fastbootData.current_slot, out size))
+                    continue;
+
+                missing.Add(part.Name);
+            }
+
+            return missing.Count == 0 ? null : string.Join(" ", missing);
+        }
+
+        /// <summary>
+        /// Extracts the whole payload first, in parallel, and only then writes it to the device.
+        /// Nothing reaches the device until every image is present and its hash checks out, so a
+        /// payload that turns out to be damaged cannot leave the phone half written. Each image
+        /// is deleted as soon as it is flashed to keep the staging directory small.
+        /// </summary>
+        static void flashPayload(PayloadFile payload)
+        {
+            string staging = Path.Combine(PAYLOAD_TMP, "stage-" + Guid.NewGuid().ToString("N"));
+
+            List<PayloadPartitionInfo> parts = payload.Partitions.ToList();
+            long totalBytes = parts.Sum(part => part.UnpackedSize);
+            if (totalBytes <= 0)
+                totalBytes = 1;
+
+            ExtractionOptions options = new ExtractionOptions
+            {
+                VerifyOperationHashes = true,
+                VerifyImageHash = true,
+                IgnoreUnsupportedOperations = false,
+                MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount)
+            };
+
+            // Extraction counts for the first half of the bar, flashing for the second.
+            long extractedBytes = 0;
+            Dictionary<string, long> perPartition = new Dictionary<string, long>(StringComparer.Ordinal);
+            int lastPercent = -1;
+
+            Action<int> showPercent = new Action<int>(delegate (int percent)
+            {
+                if (percent == lastPercent)
+                    return;
+                lastPercent = percent;
+
+                MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    MainWindow.THIS.fastboot_progress_bar.Value = percent;
+                    Helper.TaskbarItemHelper.update(percent);
+                }));
+            });
+
+            IProgress<ExtractionProgress> progress = new ExtractionProgressSink(delegate (ExtractionProgress value)
+            {
+                long done;
+                lock (perPartition)
+                {
+                    perPartition[value.Partition] = value.BytesWritten;
+                    done = 0;
+                    foreach (long written in perPartition.Values)
+                        done += written;
+                    extractedBytes = done;
+                }
+                showPercent((int)(done * 50 / totalBytes));
+            });
+
+            action_lock();
+
+            Thread worker = new Thread(new ThreadStart(delegate
+            {
+                string error = null;
+                int flashed = 0;
+
+                try
+                {
+                    Directory.CreateDirectory(staging);
+
+                    appendLog("Extracting " + parts.Count + " partitions with "
+                        + options.MaxDegreeOfParallelism + " workers");
+
+                    ExtractionReport report = PayloadExtractor.ExtractAll(
+                        payload, staging, parts.Select(part => part.Name), options, progress,
+                        CancellationToken.None);
+
+                    if (!report.AllSucceeded)
+                    {
+                        error = string.Join("\n", report.Results
+                            .Where(result => !result.Succeeded)
+                            .Select(result => result.Partition + ": " + result.Error));
+                    }
+                    else
+                    {
+                        appendLog("Extracted " + Helper.byte2AUnit(report.TotalBytes)
+                            + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
+
+                        long flashedBytes = 0;
+
+                        foreach (PartitionResult result in report.Results)
+                        {
+                            appendLog("Flashing " + result.Partition);
+
+                            int? exitCode;
+                            using (Fastboot fastboot = new Fastboot(cur_serial,
+                                "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\""))
+                            {
+                                while (true)
+                                {
+                                    string line = fastboot.stderr.ReadLine();
+                                    if (line == null)
+                                        break;
+                                    appendLog(line);
+                                }
+
+                                exitCode = fastboot.WaitForExit(FlashTimeout);
+                            }
+
+                            // Without this the dialog reported success even when every write failed.
+                            if (exitCode != 0)
+                            {
+                                error = result.Partition + ": fastboot " + (exitCode == null
+                                    ? "did not finish within " + FlashTimeout.TotalMinutes + " minutes"
+                                    : "exited with code " + exitCode);
+                                appendLog(error);
+                                break;
+                            }
+
+                            flashed++;
+                            flashedBytes += result.Size;
+                            showPercent(50 + (int)(flashedBytes * 50 / totalBytes));
+
+                            try
+                            {
+                                File.Delete(result.OutputPath);
+                            }
+                            catch (IOException)
+                            {
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    error = e.Message;
+                }
+                finally
+                {
+                    payload.Dispose();
+                    try
+                    {
+                        if (Directory.Exists(staging))
+                            Directory.Delete(staging, true);
+                    }
+                    catch (IOException)
+                    {
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                    }
+                }
+
+                string summary = error;
+                int flashedCount = flashed;
+
+                MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    load_fastboot_vars();
+
+                    if (summary == null)
+                    {
+                        MessageBox.Show(Properties.Resources.operation_completed);
+                        return;
+                    }
+
+                    Helper.TaskbarItemHelper.error();
+                    MessageBox.Show(Properties.Resources.payload_error_occur
+                        + "\n\n" + summary
+                        + "\n\n" + flashedCount + " of " + parts.Count + " partitions were written");
+                }));
+            }));
+
+            worker.IsBackground = true;
+            worker.Start();
+        }
+
+        sealed class ExtractionProgressSink : IProgress<ExtractionProgress>
+        {
+            readonly Action<ExtractionProgress> sink;
+
+            internal ExtractionProgressSink(Action<ExtractionProgress> sink)
+            {
+                this.sink = sink;
+            }
+
+            public void Report(ExtractionProgress value)
+            {
+                sink(value);
+            }
         }
 
         public static void init()
@@ -523,7 +809,7 @@ namespace FastbootEnhance
                 }
             };
 
-            //监听"去除更新状态"按钮
+            // Cancel a staged Virtual A/B update.
             MainWindow.THIS.fastboot_cancel_update.Click += delegate
             {
                 if (!checkCurDevExist())
@@ -553,13 +839,8 @@ namespace FastbootEnhance
                     if (target == "vbmeta" || target == "vbmeta_" + fastbootData.current_slot
                     || target == "vbmeta_a" || target == "vbmeta_b")
                     {
-                        System.Windows.Forms.DialogResult result =
-                        System.Windows.Forms.MessageBox.Show(Properties.Resources.fastboot_vbmeta_disable_verify,
-                        Properties.Resources.fastboot_vbmeta_disable_verify_title,
-                            System.Windows.Forms.MessageBoxButtons.YesNo,
-                            System.Windows.Forms.MessageBoxIcon.Question);
-
-                        if (result == System.Windows.Forms.DialogResult.Yes)
+                        if (Helper.confirm(Properties.Resources.fastboot_vbmeta_disable_verify,
+                                Properties.Resources.fastboot_vbmeta_disable_verify_title))
                         {
                             ext_arg += "--disable-verity --disable-verification";
                         }
@@ -682,131 +963,8 @@ namespace FastbootEnhance
 
                 Helper.fileSelect(new Helper.PathSelectCallback(delegate (string path)
                 {
-                    Payload payload = null;
-                    Exception exception = null;
-
-                    Action beforeLoad = new Action(delegate
-                    {
-                        try
-                        {
-                            payload = new Payload(path, PAYLOAD_TMP);
-                        }
-                        catch (Exception e)
-                        {
-                            exception = e;
-                        }
-                    });
-
-                    Action afterLoad = new Action(delegate
-                    {
-                        action_unlock();
-                        MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
-
-                        if (exception != null)
-                        {
-                            MessageBox.Show(exception.Message);
-                            return;
-                        }
-                        Payload.PayloadInitException exc = payload.init();
-                        if (exc != null)
-                        {
-                            payload.Dispose();
-                            payload = null;
-                            MessageBox.Show(Properties.Resources.payload_unsupported_format + "\n" + exc.Message);
-                            return;
-                        }
-
-                        //Ensure that all partitions are there
-                        string unknown_partition_list = "";
-                        foreach (PartitionUpdate partitionUpdate in payload.manifest.Partitions)
-                        {
-                            long size;
-                            if (MainWindow.THIS.ignore_unknown_part.IsChecked == false
-                            && !fastbootData.partition_size.TryGetValue(partitionUpdate.PartitionName, out size)
-                            && !fastbootData.partition_size.TryGetValue(partitionUpdate.PartitionName + "_" + fastbootData.current_slot, out size))
-                            {
-                                unknown_partition_list += partitionUpdate.PartitionName + " ";
-                            }
-                        }
-
-                        if (unknown_partition_list != "")
-                        {
-                            string message_append = fastbootData.fastbootd ?
-                            "\n" + Properties.Resources.fastboot_unknown_partition_str1 : "\n" + Properties.Resources.fastboot_unknown_partition_str2;
-                            MessageBox.Show(Properties.Resources.fastboot_unknown_partition_str0 + "\n" + unknown_partition_list + message_append);
-                            payload.Dispose();
-                            return;
-                        }
-
-                        Directory.CreateDirectory(PAYLOAD_TMP);
-
-                        action_lock();
-                        new Thread(new ThreadStart(delegate
-                        {
-                            int count_full = payload.manifest.Partitions.Count * 2;
-                            int count = 0;
-                            foreach (PartitionUpdate partitionUpdate in payload.manifest.Partitions)
-                            {
-                                appendLog("Extracting " + partitionUpdate.PartitionName);
-                                Payload.PayloadExtractionException e = payload.extract(partitionUpdate.PartitionName,
-                                    PAYLOAD_TMP, false, false);
-
-                                if (e != null)
-                                {
-                                    MessageBox.Show(e.Message);
-                                    MainWindow.THIS.Dispatcher.Invoke(new Action(delegate
-                                    {
-                                        action_unlock();
-                                    }));
-                                    payload.Dispose();
-                                    return;
-                                }
-
-                                appendLog("Extracted " + partitionUpdate.PartitionName);
-
-                                MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
-                                {
-                                    MainWindow.THIS.fastboot_progress_bar.Value = 100 * ++count / count_full;
-                                    Helper.TaskbarItemHelper.update(100 * count / count_full);
-                                }));
-                            }
-
-                            foreach (PartitionUpdate partitionUpdate in payload.manifest.Partitions)
-                            {
-                                using (Fastboot fastboot = new Fastboot
-                                (cur_serial, "flash \"" + partitionUpdate.PartitionName + "\" \"" + PAYLOAD_TMP + "\\" + partitionUpdate.PartitionName + ".img\""))
-                                {
-                                    while (true)
-                                    {
-                                        string err = fastboot.stderr.ReadLine();
-
-                                        if (err == null)
-                                            break;
-
-                                        appendLog(err);
-                                    }
-
-                                    MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
-                                    {
-                                        MainWindow.THIS.fastboot_progress_bar.Value = 100 * ++count / count_full;
-                                        Helper.TaskbarItemHelper.update(100 * count / count_full);
-                                    }));
-                                }
-                            }
-
-                            MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
-                            {
-                                load_fastboot_vars();
-                                MessageBox.Show(Properties.Resources.operation_completed);
-                            }));
-
-                            payload.Dispose();
-                        })).Start();
-                    });
-                    action_lock();
-                    MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
-                    Helper.offloadAndRun(beforeLoad, afterLoad);
-                }), "Payload|*.bin;*.zip");
+                    openPayloadThenFlash(path);
+                }), "Payload or OTA package|*.bin;*.zip|All Files|*.*");
             };
 
             listHelper = new Helper.ListHelper<fastboot_partition_row>(MainWindow.THIS.fastboot_partition_list,

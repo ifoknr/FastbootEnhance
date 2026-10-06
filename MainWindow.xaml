@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:props="clr-namespace:FastbootEnhance.Properties"
         mc:Ignorable="d"
-        Title="{x:Static props:Resources.app_name}" Height="450" Width="650" WindowStartupLocation="CenterScreen">
+        Title="{x:Static props:Resources.app_name}" Height="560" Width="920" MinHeight="420" MinWidth="720" WindowStartupLocation="CenterScreen">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo x:Name="taskbariteminfo"></TaskbarItemInfo>
     </Window.TaskbarItemInfo>
@@ -130,8 +130,8 @@
                                     <ColumnDefinition></ColumnDefinition>
 
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="fastboot_reboot_d" Margin="5,5,5,5" Content="Reboot to Bootloader" Grid.Column="0"/>
-                                <Button x:Name="fastboot_ab_switch" Margin="5,5,5,5" Content="切换分区" Grid.Column="1"/>
+                                <Button x:Name="fastboot_reboot_d" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_reboot_fastbootd}" Grid.Column="0"/>
+                                <Button x:Name="fastboot_ab_switch" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_setactive_b}" Grid.Column="1"/>
                                 <Button x:Name="fastboot_flash_payload" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_flash_payload}" Grid.Column="2"/>
                                 <Button x:Name="fastboot_cancel_update" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_cancel_update}" Grid.Column="3"/>
                                 
@@ -199,9 +199,11 @@
                                     <ListView x:Name="payload_partition_info" Grid.Row="1" Grid.ColumnSpan="2">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="120" DisplayMemberBinding="{Binding name}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="100" DisplayMemberBinding="{Binding size}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="120" DisplayMemberBinding="{Binding hash}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="130" DisplayMemberBinding="{Binding name}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="95" DisplayMemberBinding="{Binding size}"/>
+                                                <GridViewColumn Header="Codec" Width="110" DisplayMemberBinding="{Binding codecs}"/>
+                                                <GridViewColumn Header="Extractable" Width="100" DisplayMemberBinding="{Binding extractable}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="190" DisplayMemberBinding="{Binding hash}"/>
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
@@ -264,7 +266,7 @@
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
                                 <Button x:Name="payload_remove" Margin="5 5 5 5" Content="{x:Static props:Resources.payload_remove_file}" Grid.Column="1"/>
-                                <Label x:Name="payload_cur_open" Content="当前打开的文件" VerticalAlignment="Center"/>
+                                <Label x:Name="payload_cur_open" Content="{x:Static props:Resources.payload_current_file}" VerticalAlignment="Center"/>
                             </Grid>
                         </Grid>
                     </Grid>

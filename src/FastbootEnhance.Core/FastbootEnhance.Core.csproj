@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <RootNamespace>FastbootEnhance.Core</RootNamespace>
+    <AssemblyName>FastbootEnhance.Core</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- protoc emits code we do not control; silence its noise only. -->
+    <NoWarn>$(NoWarn);CS0612;CS0618;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.28.3" />
+    <PackageReference Include="Grpc.Tools" Version="2.67.0" PrivateAssets="all" />
+    <!-- Pure managed codecs: no native liblzma / DotNetZip needed any more. -->
+    <PackageReference Include="ZstdSharp.Port" Version="0.8.8" />
+    <PackageReference Include="SharpCompress" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\update_metadata.proto" GrpcServices="None" ProtoRoot="Protos" />
+  </ItemGroup>
+
+</Project>
