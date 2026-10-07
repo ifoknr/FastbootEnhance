@@ -17,7 +17,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             THIS = this;
-            SourceInitialized += delegate { DarkTitleBar.Apply(this); };
+            ThemedWindow.Attach(this);
 
             clearStagingDirectories();
 

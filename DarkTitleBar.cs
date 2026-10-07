@@ -6,14 +6,15 @@ using System.Windows.Interop;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// Asks Windows to draw a window's title bar and frame dark, to match the theme. Windows 10
-    /// 1809 and later honour the dark mode flag; Windows 11 also takes the exact colours.
-    /// Older systems ignore the calls and keep their usual frame.
+    /// Tells Windows the window is dark. The app draws its own title bar (ThemedWindow), so this
+    /// only touches what Windows still draws: the system menu, the thin outline and, on
+    /// Windows 11, the rounded corners. Older systems ignore the calls.
     /// </summary>
     static class DarkTitleBar
     {
         const int DWMWA_USE_IMMERSIVE_DARK_MODE_OLD = 19;
         const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+        const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
         const int DWMWA_BORDER_COLOR = 34;
         const int DWMWA_CAPTION_COLOR = 35;
         const int DWMWA_TEXT_COLOR = 36;
@@ -38,6 +39,9 @@ namespace FastbootEnhance
                 int on = 1;
                 if (DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ref on, sizeof(int)) != 0)
                     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref on, sizeof(int));
+
+                int round = 2; // DWMWCP_ROUND
+                DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref round, sizeof(int));
 
                 int caption = CaptionColor, border = BorderColor, text = TextColor;
                 DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, ref caption, sizeof(int));

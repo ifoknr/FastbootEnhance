@@ -523,4 +523,110 @@
         </Setter>
     </Style>
 
+    <!-- Window frame. The app draws its own title bar so every window looks the same on every
+         version of Windows; ThemedWindow.Attach wires the caption buttons. -->
+    <Style x:Key="ChromeButton" TargetType="Button">
+        <Setter Property="Width" Value="46"/>
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource Dim}"/>
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Hover}"/>
+                <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ChromeCloseButton" TargetType="Button" BasedOn="{StaticResource ChromeButton}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#C42B1C"/>
+                <Setter Property="Foreground" Value="#FFFFFF"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ChromeGlyph" TargetType="Path">
+        <Setter Property="Width" Value="10"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Stretch" Value="None"/>
+        <Setter Property="StrokeThickness" Value="1"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Stroke" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+    </Style>
+
+    <Style x:Key="ThemedWindow" TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource Bg}"/>
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="34" ResizeBorderThickness="6" GlassFrameThickness="0"
+                              CornerRadius="0" UseAeroCaptionButtons="False"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Window">
+                    <Border x:Name="frame" Background="{TemplateBinding Background}"
+                            BorderBrush="{StaticResource Line}" BorderThickness="1">
+                        <DockPanel>
+                            <Grid DockPanel.Dock="Top" Height="34" Background="{StaticResource Rail}">
+                                <TextBlock x:Name="caption" Text="{TemplateBinding Title}" Margin="14,0,150,0"
+                                           VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"
+                                           Foreground="{StaticResource Dim}"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button x:Name="minimize" Style="{StaticResource ChromeButton}"
+                                            Command="{x:Static SystemCommands.MinimizeWindowCommand}" ToolTip="Minimize">
+                                        <Path Style="{StaticResource ChromeGlyph}" Data="M0,5.5 H10"/>
+                                    </Button>
+                                    <Button x:Name="maximize" Style="{StaticResource ChromeButton}"
+                                            Command="{x:Static SystemCommands.MaximizeWindowCommand}" ToolTip="Maximize">
+                                        <Path Style="{StaticResource ChromeGlyph}" Data="M0.5,0.5 H9.5 V9.5 H0.5 Z"/>
+                                    </Button>
+                                    <Button x:Name="restore" Style="{StaticResource ChromeButton}" Visibility="Collapsed"
+                                            Command="{x:Static SystemCommands.RestoreWindowCommand}" ToolTip="Restore">
+                                        <Path Style="{StaticResource ChromeGlyph}" Data="M2.5,2.5 V0.5 H9.5 V7.5 H7.5 M0.5,2.5 H7.5 V9.5 H0.5 Z"/>
+                                    </Button>
+                                    <Button x:Name="close" Style="{StaticResource ChromeCloseButton}"
+                                            Command="{x:Static SystemCommands.CloseWindowCommand}" ToolTip="Close">
+                                        <Path Style="{StaticResource ChromeGlyph}" Data="M0.5,0.5 L9.5,9.5 M9.5,0.5 L0.5,9.5"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                            <AdornerDecorator>
+                                <ContentPresenter/>
+                            </AdornerDecorator>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="maximize" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="restore" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="frame" Property="BorderThickness" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="ResizeMode" Value="NoResize">
+                            <Setter TargetName="minimize" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="maximize" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="restore" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsActive" Value="False">
+                            <Setter TargetName="caption" Property="Foreground" Value="{StaticResource Faint}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

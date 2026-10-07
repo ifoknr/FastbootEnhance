@@ -21,7 +21,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             Owner = MainWindow.THIS;
-            SourceInitialized += delegate { DarkTitleBar.Apply(this); };
+            ThemedWindow.Attach(this);
 
             this.name.Text = partition_name;
             this.size.Text = size.ToString();
