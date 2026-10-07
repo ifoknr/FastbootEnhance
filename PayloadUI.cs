@@ -385,26 +385,17 @@ namespace FastbootEnhance
 
             appendOperationBreakdown(manifest);
 
-            if (manifest.NewImageInfo != null)
-            {
-                if (manifest.NewImageInfo.HasBoard)
-                    payloadInfoListAppend("board", manifest.NewImageInfo.Board);
+            // The ChromeOS-era image info fields are reserved in Android's manifest; these are
+            // what Android payloads actually carry.
+            if (manifest.HasSecurityPatchLevel)
+                payloadInfoListAppend("security patch", manifest.SecurityPatchLevel);
 
-                if (manifest.NewImageInfo.HasKey)
-                    payloadInfoListAppend("key", manifest.NewImageInfo.Key);
+            if (manifest.HasPartialUpdate)
+                payloadInfoListAppend("partial update",
+                    manifest.PartialUpdate ? Properties.Resources.yes : Properties.Resources.no);
 
-                if (manifest.NewImageInfo.HasChannel)
-                    payloadInfoListAppend("channel", manifest.NewImageInfo.Channel);
-
-                if (manifest.NewImageInfo.HasVersion)
-                    payloadInfoListAppend("version", manifest.NewImageInfo.Version);
-
-                if (manifest.NewImageInfo.HasBuildVersion)
-                    payloadInfoListAppend("build_version", manifest.NewImageInfo.BuildVersion);
-
-                if (manifest.NewImageInfo.HasBuildChannel)
-                    payloadInfoListAppend("build_channel", manifest.NewImageInfo.BuildChannel);
-            }
+            if (manifest.ApexInfo.Count > 0)
+                payloadInfoListAppend("apex packages", manifest.ApexInfo.Count.ToString());
 
             foreach (PayloadPartitionInfo part in payload.Partitions)
             {
