@@ -300,7 +300,10 @@ if ($ExpectedBackups -gt 0) {
     Select-Item (Wait-For { By-Id $root 'backup_partitions_tab' } 10 "the Partitions tab")
     Press 'backup_read'
     $parts = Wait-For { By-Id $root 'backup_partition_list' } 10 "the partition list"
-    Wait-For { (Rows $parts).Count -ge 10 } 60 "the partition table" | Out-Null
+    # Only rows on screen are created (the list is virtualised), so a few rows is enough to
+    # know the table arrived; SHA256SUMS below checks that every critical partition was saved.
+    Wait-For { (Rows $parts).Count -ge 3 } 60 "the partition table" | Out-Null
+    Write-Host "partition rows on screen: $((Rows $parts).Count)"
     Start-Sleep -Milliseconds 600
     Save-Window ('{0:D2}-backup-partitions' -f $i); $i++
 
