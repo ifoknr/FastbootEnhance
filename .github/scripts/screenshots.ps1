@@ -276,11 +276,14 @@ if ($ExpectedBackups -gt 0) {
     Wait-For { (Rows $files).Count -eq 2 } 30 "the Documents listing" | Out-Null
     $docs = Rows $files
     Write-Host "documents listed: $($docs.Count)"
+    # Select both files the way a user would: click one, then Ctrl+A.
     $docs[0].GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
-    foreach ($row in ($docs | Select-Object -Skip 1)) {
-        $row.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).AddToSelection()
-    }
+    $docs[0].SetFocus()
+    Send '^a'
     Start-Sleep -Milliseconds 600
+    $picked = @($files.GetCurrentPattern([System.Windows.Automation.SelectionPattern]::Pattern).Current.GetSelection()).Count
+    Write-Host "documents selected: $picked"
+    if ($picked -ne $docs.Count) { Fail "Ctrl+A selected $picked of $($docs.Count) files" }
     Save-Window ('{0:D2}-backup-files' -f $i); $i++
     Press 'files_pull'
     $pulled = Wait-For { Find-Dialog } 60 "the copy to finish"

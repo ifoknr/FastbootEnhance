@@ -881,7 +881,7 @@ Back them up anyway?</value>
     <value>Copy to computer</value>
   </data>
   <data name="files_note" xml:space="preserve">
-    <value>Select files or folders (Ctrl or Shift for several) and copy them. Folders are copied with everything inside. Double-click a folder to open it.</value>
+    <value>Select files or folders (Ctrl or Shift for several, Ctrl+A for all) and copy them. Folders are copied with everything inside. Double-click a folder to open it.</value>
   </data>
   <data name="files_nothing_selected" xml:space="preserve">
     <value>Select the files or folders to copy first.</value>
