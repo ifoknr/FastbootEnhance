@@ -104,6 +104,18 @@
                                             <StackPanel>
                                                 <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.quick_actions}"/>
                                                 <UniformGrid Columns="2">
+                                                    <UniformGrid.Resources>
+                                                        <!-- Longer labels (Arabic) wrap instead of being cut off. -->
+                                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                            <Setter Property="ContentTemplate">
+                                                                <Setter.Value>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                                    </DataTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </UniformGrid.Resources>
                                                     <Button x:Name="fastboot_reboot_d" Margin="0,0,6,8" Content="{x:Static props:Resources.fastboot_reboot_fastbootd}"/>
                                                     <Button x:Name="fastboot_ab_switch" Margin="6,0,0,8" Content="{x:Static props:Resources.fastboot_setactive_b}"/>
                                                     <Button x:Name="fastboot_reboot_system" Margin="0,0,6,8" Content="{x:Static props:Resources.fastboot_reboot_system}"/>
@@ -198,7 +210,7 @@
                 <Border Style="{StaticResource PageHeader}">
                     <DockPanel LastChildFill="True">
                         <Border DockPanel.Dock="Right" Style="{StaticResource Chip}">
-                            <TextBlock x:Name="flash_target_device" FontFamily="{StaticResource Mono}" FontSize="12"
+                            <TextBlock x:Name="flash_target_device" FontFamily="{StaticResource UiFont}" FontSize="12"
                                        Text="{x:Static props:Resources.flash_target_none}"/>
                         </Border>
                         <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
@@ -227,7 +239,7 @@
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                                     <StackPanel Margin="0,0,28,0">
                                         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.label_phase}"/>
-                                        <TextBlock x:Name="flash_phase" Style="{StaticResource StatValue}" Foreground="{StaticResource Accent}" Text="{x:Static props:Resources.flash_phase_idle}"/>
+                                        <TextBlock x:Name="flash_phase" Style="{StaticResource StatValue}" FontFamily="{StaticResource UiFont}" FontWeight="SemiBold" Foreground="{StaticResource Accent}" Text="{x:Static props:Resources.flash_phase_idle}"/>
                                     </StackPanel>
                                     <StackPanel Margin="0,0,28,0">
                                         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.label_elapsed}"/>
@@ -501,15 +513,15 @@
 
                                 <Border Style="{StaticResource Card}">
                                     <DockPanel>
-                                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12" LastChildFill="True">
-                                            <Button x:Name="backup_read" DockPanel.Dock="Left" Style="{StaticResource AccentButton}" Margin="0,0,8,0"
+                                        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                            <Button x:Name="backup_read" Style="{StaticResource AccentButton}" Margin="0,0,8,4"
                                                     Content="{x:Static props:Resources.backup_read}"/>
-                                            <Button x:Name="backup_select_critical" DockPanel.Dock="Left" Margin="0,0,8,0"
+                                            <Button x:Name="backup_select_critical" Margin="0,0,8,4"
                                                     Content="{x:Static props:Resources.backup_select_critical}"/>
-                                            <Button x:Name="backup_select_none" DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Margin="0,0,12,0"
+                                            <Button x:Name="backup_select_none" Style="{StaticResource GhostButton}" Margin="0,0,0,4"
                                                     Content="{x:Static props:Resources.backup_select_none}"/>
-                                            <TextBox x:Name="backup_filter" MinWidth="80" Tag="{x:Static props:Resources.backup_filter_hint}"/>
-                                        </DockPanel>
+                                        </WrapPanel>
+                                        <TextBox x:Name="backup_filter" DockPanel.Dock="Top" Margin="0,0,0,10" Tag="{x:Static props:Resources.backup_filter_hint}"/>
                                         <ListView x:Name="backup_partition_list" SelectionMode="Single"
                                                   local:ColumnFill.Column="3" local:ColumnFill.MinWidth="50">
                                             <ListView.View>
@@ -697,14 +709,14 @@
                             <TextBlock Text="IFOKNR" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,22">
                                 <Button x:Name="about_telegram" Style="{StaticResource AccentButton}" Margin="0,0,10,0" Click="Telegram_Click">
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
                                         <Path FlowDirection="LeftToRight" Data="M21.5,3.5 L2.5,11 L9,13.2 L18,7 L11,14.5 L11,20 L14.5,16.2 L18.5,19.5 Z" Fill="{StaticResource AccentInk}"
                                               Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
                                         <TextBlock Text="@IFOKNR1" FontFamily="{StaticResource Mono}"/>
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="about_github" Click="GitHub_Click">
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
                                         <Path FlowDirection="LeftToRight" Data="{StaticResource IconGitHub}" Fill="{StaticResource Text}"
                                               Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
                                         <TextBlock Text="github.com/ifoknr" FontFamily="{StaticResource Mono}"/>

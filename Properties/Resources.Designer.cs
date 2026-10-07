@@ -1769,7 +1769,7 @@ namespace FastbootEnhance.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright (c) 2021 LibXZR..
+        ///   Looks up a localized string similar to Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright © 2021 LibXZR..
         /// </summary>
         public static string about_original_detail {
             get {

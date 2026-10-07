@@ -258,7 +258,7 @@
                         </Grid.ColumnDefinitions>
                         <Border x:Name="box" Width="18" Height="18" CornerRadius="5" VerticalAlignment="Top" Margin="0,1,0,0"
                                 Background="{StaticResource Bg}" BorderBrush="{StaticResource Line}" BorderThickness="1">
-                            <Path x:Name="mark" Data="M3.5,8.5 L7,12 L13,4.5" Stroke="{StaticResource AccentInk}"
+                            <Path x:Name="mark" FlowDirection="LeftToRight" Data="M3.5,8.5 L7,12 L13,4.5" Stroke="{StaticResource AccentInk}"
                                   StrokeThickness="2.2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
                         </Border>
                         <ContentPresenter Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center" RecognizesAccessKey="True"/>

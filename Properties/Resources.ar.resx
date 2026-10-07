@@ -692,7 +692,7 @@
     <value>المطوّر الأصلي</value>
   </data>
   <data name="about_original_detail" xml:space="preserve">
-    <value>مبني على Fastboot Enhance من تطوير LibXZR، والمنشور برخصة MIT. حقوق النشر (c) 2021 LibXZR.</value>
+    <value>مبني على Fastboot Enhance من تطوير LibXZR، والمنشور برخصة MIT. حقوق النشر © 2021 LibXZR.</value>
   </data>
   <data name="about_original_project" xml:space="preserve">
     <value>المشروع الأصلي</value>
@@ -755,10 +755,10 @@
     <value>قراءة جدول الأقسام</value>
   </data>
   <data name="backup_select_critical" xml:space="preserve">
-    <value>تحديد الأقسام المهمة</value>
+    <value>تحديد المهم</value>
   </data>
   <data name="backup_select_none" xml:space="preserve">
-    <value>إلغاء التحديد</value>
+    <value>إلغاء الكل</value>
   </data>
   <data name="backup_filter_hint" xml:space="preserve">
     <value>تصفية بالاسم</value>
@@ -800,7 +800,7 @@
     <value>مهم</value>
   </data>
   <data name="backup_nothing_selected" xml:space="preserve">
-    <value>حدد الأقسام المراد نسخها أولًا، أو اضغط "تحديد الأقسام المهمة".</value>
+    <value>حدد الأقسام المراد نسخها أولًا، أو اضغط "تحديد المهم".</value>
   </data>
   <data name="backup_large_warning" xml:space="preserve">
     <value>هذه الأقسام كبيرة وستأخذ وقتًا ومساحة كبيرة على القرص:

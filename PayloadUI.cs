@@ -480,7 +480,7 @@ namespace FastbootEnhance
             public payload_info_row(string title, string value)
             {
                 this.title = title;
-                this.value = value;
+                this.value = Helper.ltr(value);
             }
         }
 

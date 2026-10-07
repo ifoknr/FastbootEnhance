@@ -129,7 +129,7 @@ namespace FastbootEnhance
 
         public FastbootEnhance.Core.Adb.DevicePartition Partition { get; }
         public string Name => Partition.Name;
-        public string Size => Partition.Size >= 0 ? FastbootEnhance.Core.ByteSize.Format(Partition.Size) : "?";
+        public string Size => Partition.Size >= 0 ? Helper.byte2AUnit(Partition.Size) : "?";
 
         public bool Selected
         {
@@ -221,7 +221,7 @@ namespace FastbootEnhance
 
         public FastbootEnhance.Core.Adb.DeviceEntry Entry { get; }
         public string Name => Entry.Name;
-        public string Size => Entry.IsFolder ? "" : FastbootEnhance.Core.ByteSize.Format(Entry.Size);
+        public string Size => Entry.IsFolder ? "" : Helper.byte2AUnit(Entry.Size);
         public string Kind => Entry.IsFolder ? Properties.Resources.files_kind_folder
             : Entry.IsLink ? Properties.Resources.files_kind_link
             : Properties.Resources.files_kind_file;

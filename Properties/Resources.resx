@@ -692,7 +692,7 @@ Flash them anyway?</value>
     <value>Original author</value>
   </data>
   <data name="about_original_detail" xml:space="preserve">
-    <value>Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright (c) 2021 LibXZR.</value>
+    <value>Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright © 2021 LibXZR.</value>
   </data>
   <data name="about_original_project" xml:space="preserve">
     <value>Original project</value>

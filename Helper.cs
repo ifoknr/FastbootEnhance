@@ -144,12 +144,24 @@ namespace FastbootEnhance
 
         public static string byte2AUnit(ulong size)
         {
-            return ByteSize.Format(size > long.MaxValue ? long.MaxValue : (long)size);
+            return ltr(ByteSize.Format(size > long.MaxValue ? long.MaxValue : (long)size));
         }
 
         public static string byte2AUnit(long size)
         {
-            return ByteSize.Format(size);
+            return ltr(ByteSize.Format(size));
+        }
+
+        /// <summary>
+        /// In a right-to-left interface, "16.00 MB" or "326 (95.0%)" would be laid out back to
+        /// front; left-to-right marks around the value keep it in reading order. A no-op in
+        /// left-to-right languages, so logs and copied text are unaffected there.
+        /// </summary>
+        public static string ltr(string value)
+        {
+            if (!Languages.RightToLeft || string.IsNullOrEmpty(value))
+                return value;
+            return "\u200E" + value + "\u200E";
         }
     }
 }

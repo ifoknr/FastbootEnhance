@@ -180,7 +180,7 @@ namespace FastbootEnhance
             public fastboot_info_row(string name, string value)
             {
                 this.name = name;
-                this.value = value;
+                this.value = Helper.ltr(value);
             }
         }
 
