@@ -119,7 +119,8 @@ function Visible-Tabs($parent) {
 function Find-Dialog {
     $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $script:proc.Id)
     foreach ($w in $UIA::RootElement.FindAll($Scope::Children, $cond)) {
-        if ([IntPtr]$w.Current.NativeWindowHandle -ne $script:hwnd) { return $w }
+        # Tool tips and popups are top-level windows of the process too; only real windows count.
+        if ([IntPtr]$w.Current.NativeWindowHandle -ne $script:hwnd -and $w.Current.ControlType -eq $Type::Window) { return $w }
     }
     foreach ($w in $script:root.FindAll($Scope::Children, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Window)))) {
         return $w
@@ -211,11 +212,17 @@ if ($ExpectedFlashes -gt 0) {
     Start-Sleep -Milliseconds 800
     [System.Windows.Forms.SendKeys]::SendWait($Payload + '{ENTER}')
 
-    # The app shows "operation completed" (or an error) when it is done.
-    $done = Wait-For { Find-Dialog } 240 "flashing to finish"
+    # The file dialog takes a moment to go away; it must not be mistaken for the result.
+    Wait-For { $null -eq (Find-Dialog) } 20 "the file dialog to close" | Out-Null
+
+    # The app shows "operation completed" (or an error) when it is done: a box with a message.
+    $textCond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Text)
+    $done = Wait-For {
+        $d = Find-Dialog
+        if ($null -ne $d -and @($d.FindAll($Scope::Descendants, $textCond) | Where-Object { $_.Current.Name }).Count -gt 0) { $d }
+    } 240 "flashing to finish"
     Start-Sleep -Milliseconds 800
-    $message = ($done.FindAll($Scope::Descendants, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Text))) |
-        ForEach-Object { $_.Current.Name }) -join ' | '
+    $message = ($done.FindAll($Scope::Descendants, $textCond) | ForEach-Object { $_.Current.Name }) -join ' | '
     Write-Host "dialog after flashing: $message"
     Save-Window ('{0:D2}-flash' -f $i); $i++
     Close-Dialog $done
