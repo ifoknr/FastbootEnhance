@@ -44,6 +44,12 @@ namespace FastbootEnhance.Core.Payload
         const ulong Magic = 0x43724155; // "CrAU"
         const long MaxManifestSize = 256L * 1024 * 1024;
 
+        /// <summary>
+        /// Larger than any partition an OTA carries. A manifest claiming more is treated as
+        /// damaged rather than allowed to create an enormous output file.
+        /// </summary>
+        internal const long MaxPartitionBytes = 64L * 1024 * 1024 * 1024;
+
         readonly bool ownsSource;
         readonly List<PayloadPartitionInfo> partitions = new List<PayloadPartitionInfo>();
 
@@ -202,17 +208,32 @@ namespace FastbootEnhance.Core.Payload
                         reason = info.Reason;
                     }
 
-                    long end = ExtentWriter.HighestByteOffset(operation.DstExtents, BlockSize);
-                    if (end > computedEnd)
-                        computedEnd = end;
+                    try
+                    {
+                        long end = ExtentWriter.HighestByteOffset(operation.DstExtents, BlockSize);
+                        if (end > computedEnd)
+                            computedEnd = end;
+                    }
+                    catch (PayloadFormatException e)
+                    {
+                        worst = OperationSupportKind.Unsupported;
+                        reason = e.Message;
+                    }
                 }
 
                 if (worst == OperationSupportKind.RequiresSource || worst == OperationSupportKind.Unsupported)
                     incremental = true;
 
-                long size = update.NewPartitionInfo != null && update.NewPartitionInfo.HasSize
-                    ? (long)update.NewPartitionInfo.Size
-                    : computedEnd;
+                ulong declared = update.NewPartitionInfo != null && update.NewPartitionInfo.HasSize
+                    ? update.NewPartitionInfo.Size
+                    : (ulong)computedEnd;
+
+                long size = declared > (ulong)MaxPartitionBytes ? MaxPartitionBytes : (long)declared;
+                if (declared > (ulong)MaxPartitionBytes)
+                {
+                    worst = OperationSupportKind.Unsupported;
+                    reason = "the manifest gives this partition " + declared + " bytes, more than any real partition";
+                }
 
                 string hash = update.NewPartitionInfo != null && update.NewPartitionInfo.HasHash
                     ? Hex.ToLowerHex(update.NewPartitionInfo.Hash.ToByteArray())
@@ -231,6 +252,26 @@ namespace FastbootEnhance.Core.Payload
             }
 
             IsIncremental = incremental;
+        }
+
+        /// <summary>How many operations of each type the manifest holds, most common first, by AOSP name.</summary>
+        public IReadOnlyList<KeyValuePair<string, int>> OperationCounts()
+        {
+            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (PartitionUpdate update in Manifest.Partitions)
+            {
+                foreach (InstallOperation operation in update.Operations)
+                {
+                    string label = OperationSupport.Name(operation.Type);
+                    int seen;
+                    counts.TryGetValue(label, out seen);
+                    counts[label] = seen + 1;
+                }
+            }
+
+            List<KeyValuePair<string, int>> ordered = new List<KeyValuePair<string, int>>(counts);
+            ordered.Sort((x, y) => y.Value != x.Value ? y.Value.CompareTo(x.Value) : string.CompareOrdinal(x.Key, y.Key));
+            return ordered;
         }
 
         public PayloadPartitionInfo FindPartition(string name)
@@ -261,16 +302,7 @@ namespace FastbootEnhance.Core.Payload
 
         static byte[] ReadExactly(Stream stream, int count)
         {
-            byte[] buffer = new byte[count];
-            int read = 0;
-            while (read < count)
-            {
-                int got = stream.Read(buffer, read, count - read);
-                if (got <= 0)
-                    throw new PayloadFormatException("the payload ends in the middle of a structure");
-                read += got;
-            }
-            return buffer;
+            return StreamUtil.ReadExactly(stream, count, "the payload ends in the middle of a structure");
         }
 
         static uint ReadUInt32BigEndian(Stream stream)

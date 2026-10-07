@@ -26,6 +26,24 @@ namespace FastbootEnhance.Core.Payload
             IProgress<ExtractionProgress> progress = null,
             CancellationToken cancellationToken = default)
         {
+            int skipped;
+            return Extract(payload, partitionName, output, options, progress, cancellationToken, out skipped);
+        }
+
+        /// <summary>
+        /// As <see cref="Extract(PayloadFile, string, Stream, ExtractionOptions, IProgress{ExtractionProgress}, CancellationToken)"/>,
+        /// also reporting how many operations were skipped. A non-zero count means the image is
+        /// incomplete and was not checked against the manifest's hash.
+        /// </summary>
+        public static long Extract(
+            PayloadFile payload,
+            string partitionName,
+            Stream output,
+            ExtractionOptions options,
+            IProgress<ExtractionProgress> progress,
+            CancellationToken cancellationToken,
+            out int skippedOperations)
+        {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
             if (partitionName == null) throw new ArgumentNullException(nameof(partitionName));
             if (output == null) throw new ArgumentNullException(nameof(output));
@@ -34,6 +52,7 @@ namespace FastbootEnhance.Core.Payload
 
             options = options ?? new ExtractionOptions();
             options.Validate();
+            skippedOperations = 0;
 
             PartitionUpdate update = payload.FindUpdate(partitionName);
             if (update == null)
@@ -50,7 +69,6 @@ namespace FastbootEnhance.Core.Payload
             long expectedSize = info.UnpackedSize;
             output.SetLength(expectedSize);
 
-            bool skippedAnything = false;
             long bytesWritten = 0;
             int operationsDone = 0;
             int operationsTotal = update.Operations.Count;
@@ -77,16 +95,28 @@ namespace FastbootEnhance.Core.Payload
                                     partitionName,
                                     support.Reason ?? ("operation " + operation.Type + " cannot be applied"));
                             }
-                            skippedAnything = true;
+                            skippedOperations++;
                             operationsDone++;
                             continue;
+                        }
+
+                        long destination;
+                        try
+                        {
+                            // Extents come from the manifest; never let one reach past the partition.
+                            ExtentWriter.CheckWithin(operation.DstExtents, payload.BlockSize, expectedSize);
+                            destination = ExtentWriter.TotalBytes(operation.DstExtents, payload.BlockSize);
+                        }
+                        catch (PayloadFormatException e)
+                        {
+                            throw new PayloadExtractionException(partitionName, "operation " + operationsDone + ": " + e.Message, e);
                         }
 
                         // ZERO and DISCARD need no write: SetLength already zero-filled the image.
                         if (operation.Type == InstallOperation.Types.Type.Zero ||
                             operation.Type == InstallOperation.Types.Type.Discard)
                         {
-                            bytesWritten += ExtentWriter.TotalBytes(operation.DstExtents, payload.BlockSize);
+                            bytesWritten += destination;
                             operationsDone++;
                             Report(progress, partitionName, bytesWritten, expectedSize, operationsDone, operationsTotal);
                             continue;
@@ -111,10 +141,6 @@ namespace FastbootEnhance.Core.Payload
                                 OperationCodec.DecodeInto(
                                     operation.Type, raw, (int)operation.DataLength, decoded);
                             }
-                            catch (PayloadExtractionException)
-                            {
-                                throw;
-                            }
                             catch (Exception e)
                             {
                                 throw new PayloadExtractionException(
@@ -124,8 +150,25 @@ namespace FastbootEnhance.Core.Payload
                             }
 
                             long produced = decoded.Length;
-                            ExtentWriter.Write(
-                                output, operation.DstExtents, payload.BlockSize, decoded, copyBuffer);
+
+                            // An operation's data must fill its extents exactly. A short stream would
+                            // otherwise leave zeroed blocks that only the final hash could catch.
+                            if (produced != destination && options.VerifyImageHash)
+                            {
+                                throw new PayloadExtractionException(
+                                    partitionName,
+                                    "operation " + operationsDone + " (" + support.Codec + ") produced " + produced
+                                    + " bytes for " + destination + " bytes of destination blocks");
+                            }
+
+                            try
+                            {
+                                ExtentWriter.Write(output, operation.DstExtents, payload.BlockSize, decoded, copyBuffer);
+                            }
+                            catch (PayloadFormatException e)
+                            {
+                                throw new PayloadExtractionException(partitionName, "operation " + operationsDone + ": " + e.Message, e);
+                            }
                             bytesWritten += produced;
                         }
                         finally
@@ -140,9 +183,9 @@ namespace FastbootEnhance.Core.Payload
 
                 output.Flush();
 
-                if (options.VerifyImageHash && !skippedAnything)
+                if (options.VerifyImageHash && skippedOperations == 0)
                 {
-                    VerifyImage(payload, partitionName, output, expectedSize, copyBuffer, cancellationToken);
+                    VerifyImage(update, partitionName, output, expectedSize, copyBuffer, cancellationToken);
                 }
 
                 return expectedSize;
@@ -175,15 +218,13 @@ namespace FastbootEnhance.Core.Payload
             try
             {
                 source.Position = offset;
-                int read = 0;
-                while (read < length)
-                {
-                    int got = source.Read(buffer, read, (int)(length - read));
-                    if (got <= 0)
-                        throw new PayloadExtractionException(partitionName, "the payload ended while reading an operation");
-                    read += got;
-                }
+                StreamUtil.ReadExactly(source, buffer, 0, (int)length, "the payload ended while reading an operation");
                 return buffer;
+            }
+            catch (PayloadFormatException e)
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
+                throw new PayloadExtractionException(partitionName, e.Message, e);
             }
             catch
             {
@@ -193,14 +234,13 @@ namespace FastbootEnhance.Core.Payload
         }
 
         static void VerifyImage(
-            PayloadFile payload,
+            PartitionUpdate update,
             string partitionName,
             Stream output,
             long expectedSize,
             byte[] buffer,
             CancellationToken cancellationToken)
         {
-            PartitionUpdate update = payload.FindUpdate(partitionName);
             PartitionInfo expected = update.NewPartitionInfo;
             if (expected == null)
                 return;

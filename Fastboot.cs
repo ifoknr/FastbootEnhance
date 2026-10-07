@@ -1,11 +1,18 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace FastbootEnhance
 {
     class Fastboot : IDisposable
     {
+        /// <summary>Enough for devices, getvar, reboot and the other short commands.</summary>
+        public static readonly TimeSpan ShortCommand = TimeSpan.FromSeconds(60);
+
+        /// <summary>Generous enough for writing or erasing a multi-gigabyte partition over slow USB.</summary>
+        public static readonly TimeSpan LongCommand = TimeSpan.FromMinutes(15);
+
         /// <summary>
         /// Resolved once against the directory the app was installed into. The old code used
         /// ".\\fastboot.exe", which is relative to the *working* directory and breaks whenever
@@ -15,10 +22,22 @@ namespace FastbootEnhance
             Path.Combine(AppContext.BaseDirectory, "fastboot.exe");
 
         Process process;
+        Timer deadline;
+        volatile bool timedOut;
+
         public StreamReader stdout;
         public StreamReader stderr;
 
-        public Fastboot(string serial, string action)
+        public Fastboot(string serial, string action) : this(serial, action, ShortCommand)
+        {
+        }
+
+        /// <summary>
+        /// Starts fastboot and arms a deadline. When it passes, the process is killed, which
+        /// closes its pipes, so a caller blocked reading stdout or stderr is released instead
+        /// of waiting forever on a hung device.
+        /// </summary>
+        public Fastboot(string serial, string action, TimeSpan timeout)
         {
             if (!File.Exists(ExecutablePath))
                 throw new FileNotFoundException("fastboot.exe is missing", ExecutablePath);
@@ -38,30 +57,40 @@ namespace FastbootEnhance
 
             stdout = process.StandardOutput;
             stderr = process.StandardError;
+
+            Process started = process;
+            deadline = new Timer(delegate
+            {
+                timedOut = true;
+                KillQuietly(started);
+            }, null, timeout, Timeout.InfiniteTimeSpan);
         }
+
+        /// <summary>True when the deadline passed and the process was killed.</summary>
+        public bool TimedOut => timedOut;
 
         /// <summary>
-        /// Waits for fastboot to finish and returns its exit code, or null if it had to be
-        /// stopped after <paramref name="timeout"/>.
+        /// Waits for fastboot to exit after its output has been read, and returns the exit code,
+        /// or null when the deadline killed it. The deadline guarantees this returns.
         /// </summary>
-        public int? WaitForExit(TimeSpan timeout)
+        public int? WaitForExit()
         {
-            if (process == null)
+            Process current = process;
+            if (current == null)
                 return null;
 
-            if (process.WaitForExit((int)timeout.TotalMilliseconds))
-                return process.ExitCode;
-
-            KillQuietly();
-            return null;
+            current.WaitForExit();
+            if (timedOut)
+                return null;
+            return current.ExitCode;
         }
 
-        void KillQuietly()
+        static void KillQuietly(Process target)
         {
             try
             {
-                if (process != null && !process.HasExited)
-                    process.Kill();
+                if (target != null && !target.HasExited)
+                    target.Kill();
             }
             catch (InvalidOperationException)
             {
@@ -73,13 +102,19 @@ namespace FastbootEnhance
 
         public void Dispose()
         {
-            if (process == null)
+            Timer timer = deadline;
+            deadline = null;
+            if (timer != null)
+                timer.Dispose();
+
+            Process current = process;
+            process = null;
+            if (current == null)
                 return;
 
             // Close() on its own leaves a hung fastboot running and holding the USB device.
-            KillQuietly();
-            process.Dispose();
-            process = null;
+            KillQuietly(current);
+            current.Dispose();
             stdout = null;
             stderr = null;
         }

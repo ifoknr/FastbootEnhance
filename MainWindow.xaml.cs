@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Windows;
 
 namespace FastbootEnhance
@@ -14,22 +13,10 @@ namespace FastbootEnhance
         public static MainWindow THIS;
         const string version = "2.0.0";
 
-        static Mutex singleInstanceWatcher;
-
         public MainWindow()
         {
             InitializeComponent();
             THIS = this;
-
-            bool createdNew;
-            singleInstanceWatcher = new Mutex(false, "FastbootEnhance", out createdNew);
-            if (!createdNew)
-            {
-                MessageBox.Show(Properties.Resources.program_already_running, Properties.Resources.error,
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-                return;
-            }
 
             clearStagingDirectories();
 
@@ -52,10 +39,13 @@ namespace FastbootEnhance
             // half written, so it has to be a deliberate choice.
             Closing += delegate (object sender, System.ComponentModel.CancelEventArgs e)
             {
-                if (!FastbootUI.flashing)
+                string question = FastbootUI.flashing ? Properties.Resources.confirm_close_flashing
+                    : PayloadUI.extracting ? Properties.Resources.confirm_close_extracting
+                    : null;
+                if (question == null)
                     return;
 
-                if (MessageBox.Show(Properties.Resources.confirm_close_flashing, Properties.Resources.confirm_title,
+                if (MessageBox.Show(question, Properties.Resources.confirm_title,
                         MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
                     e.Cancel = true;
             };
@@ -101,11 +91,21 @@ namespace FastbootEnhance
             };
         }
 
+        /// <summary>
+        /// Appends a line, keeping the box bounded. Reading TextBox.Text copies the whole
+        /// document, so the length is tracked in Tag instead of being read on every line.
+        /// </summary>
         static void appendTo(System.Windows.Controls.TextBox box, string line)
         {
-            if (box.Text.Length > MaxLogBoxChars)
-                box.Text = box.Text.Substring(box.Text.Length - MaxLogBoxChars / 2);
+            int length = box.Tag is int known ? known : box.Text.Length;
+            if (length > MaxLogBoxChars)
+            {
+                string kept = box.Text.Substring(box.Text.Length - MaxLogBoxChars / 2);
+                box.Text = kept;
+                length = kept.Length;
+            }
             box.AppendText(line + "\n");
+            box.Tag = length + line.Length + 1;
             box.ScrollToEnd();
         }
 

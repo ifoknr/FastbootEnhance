@@ -660,4 +660,13 @@
   <data name="confirm_close_flashing" xml:space="preserve">
     <value>A payload is being flashed. Closing now stops it part way and can leave the device unbootable. Close anyway?</value>
   </data>
+  <data name="extract_incomplete" xml:space="preserve">
+    <value>Some images are incomplete: operations this build cannot apply were left as zeros and those images were not checked against the manifest.</value>
+  </data>
+  <data name="extract_incomplete_detail" xml:space="preserve">
+    <value>{0} operations skipped, not verified</value>
+  </data>
+  <data name="confirm_close_extracting" xml:space="preserve">
+    <value>Images are being extracted. Closing now stops the extraction and removes the unfinished files. Close anyway?</value>
+  </data>
 </root>

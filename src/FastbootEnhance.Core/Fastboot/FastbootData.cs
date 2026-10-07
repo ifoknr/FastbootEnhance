@@ -94,6 +94,24 @@ namespace FastbootEnhance.Core.Fastboot
             }
         }
 
+        /// <summary>True when a Virtual A/B update is staged or merging.</summary>
+        public bool HasPendingUpdate =>
+            snapshot_update_status != null && snapshot_update_status != "none";
+
+        /// <summary>True when copy-on-write partitions from an earlier update are still present.</summary>
+        public bool HasCowPartitions
+        {
+            get
+            {
+                foreach (string name in partition_size.Keys)
+                {
+                    if (name.EndsWith("cow", StringComparison.Ordinal))
+                        return true;
+                }
+                return false;
+            }
+        }
+
         /// <summary>Reads "0x1A2B" or a bare hex/decimal number; -1 when it is neither.</summary>
         static long parseHex(string raw)
         {

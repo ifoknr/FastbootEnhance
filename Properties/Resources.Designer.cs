@@ -1687,5 +1687,31 @@ namespace FastbootEnhance.Properties {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Some images are incomplete: operations this build cannot apply were left as zeros and those images were not checked against the manifest..
+        /// </summary>
+        public static string extract_incomplete {
+            get {
+                return ResourceManager.GetString("extract_incomplete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} operations skipped, not verified.
+        /// </summary>
+        public static string extract_incomplete_detail {
+            get {
+                return ResourceManager.GetString("extract_incomplete_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Images are being extracted. Closing now stops the extraction and removes the unfinished files. Close anyway?.
+        /// </summary>
+        public static string confirm_close_extracting {
+            get {
+                return ResourceManager.GetString("confirm_close_extracting", resourceCulture);
+            }
+        }
     }
 }

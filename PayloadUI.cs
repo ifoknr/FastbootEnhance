@@ -24,6 +24,10 @@ namespace FastbootEnhance
         static page_status cur_status;
         public static PayloadFile payload;
         static CancellationTokenSource cancellation;
+        static Thread extractionWorker;
+
+        /// <summary>True while images are being written to the output folder.</summary>
+        public static bool extracting => extractionWorker != null;
 
         static void switchMainView()
         {
@@ -107,6 +111,10 @@ namespace FastbootEnhance
             payload = null;
         }
 
+        /// <summary>
+        /// Stops a running extraction and gives its workers a moment to delete the images they
+        /// had not finished, so closing the window does not leave truncated files behind.
+        /// </summary>
         public static void cancelRunningWork()
         {
             CancellationTokenSource source = cancellation;
@@ -120,6 +128,10 @@ namespace FastbootEnhance
                 {
                 }
             }
+
+            Thread worker = extractionWorker;
+            if (worker != null)
+                worker.Join(TimeSpan.FromSeconds(10));
         }
 
         static void actionInit()
@@ -217,13 +229,12 @@ namespace FastbootEnhance
                 return;
             }
 
-            // Allowing an incremental package only makes sense together with skipping the
-            // operations that cannot be applied; on its own it would fail every blocked partition.
-            bool skipUnsupported = ignoreUnsupported || allowIncremental;
-
+            // "Allow incremental" only lets the extraction start: partitions that can be rebuilt
+            // from this package come out whole, the rest fail with the reason. Leaving blocks as
+            // zeros is a separate, explicit choice ("ignore unknown operations").
             Helper.pathSelect(new Helper.PathSelectCallback(delegate (string path)
             {
-                startExtraction(selected, path, skipUnsupported, skipChecks);
+                startExtraction(selected, path, ignoreUnsupported, skipChecks);
             }));
         }
 
@@ -250,7 +261,7 @@ namespace FastbootEnhance
                 .Where(info => info != null)
                 .Sum(info => info.UnpackedSize);
 
-            ProgressAggregator aggregator = new ProgressAggregator(totalBytes, percent =>
+            ProgressAggregator aggregator = new ProgressAggregator(totalBytes, delegate (int percent)
             {
                 MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                 {
@@ -291,6 +302,7 @@ namespace FastbootEnhance
                     Helper.TaskbarItemHelper.stop();
 
                     cancellation = null;
+                    extractionWorker = null;
                     source.Dispose();
 
                     if (failure != null)
@@ -305,7 +317,12 @@ namespace FastbootEnhance
                     LogStore.Append("Extracted " + report.SucceededCount + " of " + report.Results.Count
                         + " partitions to " + outputDirectory + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
 
-                    if (report.AllSucceeded)
+                    // Images with skipped operations are partly zero and were never checked; say so.
+                    string incomplete = string.Join("\n", report.Results
+                        .Where(r => r.Succeeded && r.SkippedOperations > 0)
+                        .Select(r => r.Partition + ": " + string.Format(Properties.Resources.extract_incomplete_detail, r.SkippedOperations)));
+
+                    if (report.AllSucceeded && incomplete.Length == 0)
                     {
                         MessageBox.Show(Properties.Resources.operation_completed
                             + "\n\n" + Helper.byte2AUnit(report.TotalBytes)
@@ -317,51 +334,17 @@ namespace FastbootEnhance
                         .Where(r => !r.Succeeded)
                         .Select(r => r.Partition + ": " + r.Error));
 
-                    MessageBox.Show(Properties.Resources.payload_error_occur + "\n\n" + details);
+                    string message = details.Length > 0 ? Properties.Resources.payload_error_occur + "\n\n" + details : "";
+                    if (incomplete.Length > 0)
+                        message += (message.Length > 0 ? "\n\n" : "") + Properties.Resources.extract_incomplete + "\n\n" + incomplete;
+
+                    MessageBox.Show(message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }));
             }));
 
             worker.IsBackground = true;
+            extractionWorker = worker;
             worker.Start();
-        }
-
-        /// <summary>
-        /// Turns the per-partition byte counts coming from several workers into one percentage.
-        /// </summary>
-        sealed class ProgressAggregator : IProgress<ExtractionProgress>
-        {
-            readonly Dictionary<string, long> written = new Dictionary<string, long>(StringComparer.Ordinal);
-            readonly long totalBytes;
-            readonly Action<int> onPercent;
-            int lastPercent = -1;
-
-            internal ProgressAggregator(long totalBytes, Action<int> onPercent)
-            {
-                this.totalBytes = totalBytes;
-                this.onPercent = onPercent;
-            }
-
-            public void Report(ExtractionProgress value)
-            {
-                int percent;
-                lock (written)
-                {
-                    written[value.Partition] = value.BytesWritten;
-                    long done = 0;
-                    foreach (long bytes in written.Values)
-                        done += bytes;
-
-                    percent = totalBytes > 0 ? (int)(done * 100 / totalBytes) : 0;
-                    if (percent > 100)
-                        percent = 100;
-
-                    if (percent == lastPercent)
-                        return;
-                    lastPercent = percent;
-                }
-
-                onPercent(percent);
-            }
         }
 
         static void refreshData()
@@ -401,7 +384,7 @@ namespace FastbootEnhance
                 ? (payload.Source.ReadInPlace ? "OTA zip (read in place)" : "OTA zip (unpacked to temp)")
                 : "payload.bin");
 
-            appendOperationBreakdown(manifest);
+            appendOperationBreakdown();
 
             // The ChromeOS-era image info fields are reserved in Android's manifest; these are
             // what Android payloads actually carry.
@@ -449,29 +432,17 @@ namespace FastbootEnhance
             }
         }
 
-        static void appendOperationBreakdown(DeltaArchiveManifest manifest)
+        static void appendOperationBreakdown()
         {
-            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
-            int total = 0;
-
-            foreach (PartitionUpdate update in manifest.Partitions)
-            {
-                foreach (InstallOperation operation in update.Operations)
-                {
-                    string label = OperationSupport.Name(operation.Type);
-                    counts.TryGetValue(label, out int seen);
-                    counts[label] = seen + 1;
-                    total++;
-                }
-            }
+            IReadOnlyList<KeyValuePair<string, int>> counts = payload.OperationCounts();
+            int total = counts.Sum(pair => pair.Value);
 
             payloadInfoListAppend("operations", total.ToString());
 
-            foreach (KeyValuePair<string, int> pair in counts.OrderByDescending(p => p.Value))
+            foreach (KeyValuePair<string, int> pair in counts)
             {
                 double share = total > 0 ? 100.0 * pair.Value / total : 0;
-                payloadInfoListAppend("  " + pair.Key,
-                    pair.Value + " (" + share.ToString("F1") + "%)");
+                payloadInfoListAppend("  " + pair.Key, pair.Value + " (" + share.ToString("F1") + "%)");
             }
         }
 

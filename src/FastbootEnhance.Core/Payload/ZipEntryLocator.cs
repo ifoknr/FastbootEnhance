@@ -61,7 +61,9 @@ namespace FastbootEnhance.Core.Payload
             zip.Position = eocd + 16;
             long centralOffset = ReadUInt32(zip);
 
-            if (centralOffset == uint.MaxValue || totalEntries == ushort.MaxValue)
+            // All-ones values usually mean "see the ZIP64 record", but they are also legal
+            // literal values, so only switch to ZIP64 when its locator is actually there.
+            if ((centralOffset == uint.MaxValue || totalEntries == ushort.MaxValue) && HasZip64Locator(zip, eocd))
             {
                 ReadZip64Tail(zip, eocd, ref centralOffset, ref totalEntries);
             }
@@ -115,6 +117,15 @@ namespace FastbootEnhance.Core.Payload
             int nameLength = ReadUInt16(zip);
             int extraLength = ReadUInt16(zip);
             return localOffset + LocalHeaderFixedSize + nameLength + extraLength;
+        }
+
+        static bool HasZip64Locator(Stream zip, long eocd)
+        {
+            long locator = eocd - Zip64LocatorSize;
+            if (locator < 0)
+                return false;
+            zip.Position = locator;
+            return ReadUInt32(zip) == Zip64LocatorSignature;
         }
 
         static void ReadZip64Tail(Stream zip, long eocd, ref long centralOffset, ref int totalEntries)
@@ -213,16 +224,7 @@ namespace FastbootEnhance.Core.Payload
 
         static byte[] ReadExactly(Stream stream, int count)
         {
-            byte[] buffer = new byte[count];
-            int read = 0;
-            while (read < count)
-            {
-                int got = stream.Read(buffer, read, count - read);
-                if (got <= 0)
-                    throw new PayloadFormatException("unexpected end of zip file");
-                read += got;
-            }
-            return buffer;
+            return StreamUtil.ReadExactly(stream, count, "unexpected end of zip file");
         }
 
         static int ReadUInt16(Stream stream)

@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -15,8 +16,22 @@ namespace FastbootEnhance
         public static readonly string CrashLogPath =
             Path.Combine(Path.GetTempPath(), "FastbootEnhance", "crash.log");
 
+        static Mutex singleInstance;
+
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Checked before any window exists. Doing it in the window's constructor, as before,
+            // left WPF showing a window that had already been told to shut down.
+            bool createdNew;
+            singleInstance = new Mutex(false, "FastbootEnhance", out createdNew);
+            if (!createdNew)
+            {
+                MessageBox.Show(global::FastbootEnhance.Properties.Resources.program_already_running,
+                    global::FastbootEnhance.Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown();
+                return;
+            }
+
             DispatcherUnhandledException += onDispatcherException;
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
                 writeCrashLog("background thread", args.ExceptionObject as Exception);
@@ -27,6 +42,7 @@ namespace FastbootEnhance
             };
 
             base.OnStartup(e);
+            new MainWindow().Show();
         }
 
         void onDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs e)

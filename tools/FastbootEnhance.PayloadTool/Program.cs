@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using FastbootEnhance.Core;
 using FastbootEnhance.Core.Payload;
 
 namespace FastbootEnhance.PayloadTool
@@ -66,6 +67,21 @@ namespace FastbootEnhance.PayloadTool
                 Console.Error.WriteLine("cancelled");
                 return 130;
             }
+            catch (IOException e)
+            {
+                Console.Error.WriteLine("i/o error: " + e.Message);
+                return 1;
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.Error.WriteLine("access denied: " + e.Message);
+                return 1;
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("unexpected error: " + e);
+                return 1;
+            }
         }
 
         static void Usage()
@@ -104,11 +120,11 @@ namespace FastbootEnhance.PayloadTool
                     Console.WriteLine("container       " + (payload.Source.FromZip
                         ? "OTA zip, payload " + (payload.Source.ReadInPlace ? "read in place" : "unpacked to temp")
                         : "raw payload.bin"));
-                    Console.WriteLine("payload size    " + Bytes(payload.Source.Length));
+                    Console.WriteLine("payload size    " + ByteSize.Format(payload.Source.Length));
                     Console.WriteLine("format version  " + payload.FileFormatVersion);
                     Console.WriteLine("minor version   " + payload.MinorVersion);
                     Console.WriteLine("block size      " + payload.BlockSize);
-                    Console.WriteLine("data region     " + Bytes(payload.DataLength) + " at offset " + payload.DataStart);
+                    Console.WriteLine("data region     " + ByteSize.Format(payload.DataLength) + " at offset " + payload.DataStart);
                     Console.WriteLine("signed          metadata=" + (payload.MetadataSignature != null)
                         + " payload=" + (payload.PayloadSignature != null));
                     Console.WriteLine("package kind    " + (payload.IsIncremental ? "incremental" : "full"));
@@ -152,9 +168,9 @@ namespace FastbootEnhance.PayloadTool
                 if (codecs.Length > 22)
                     codecs = codecs.Substring(0, 21) + "+";
 
-                string hash = part.ExpectedSha256 != null
-                    ? part.ExpectedSha256.Substring(0, 16)
-                    : "(none)";
+                string hash = string.IsNullOrEmpty(part.ExpectedSha256)
+                    ? "(none)"
+                    : part.ExpectedSha256.Length > 16 ? part.ExpectedSha256.Substring(0, 16) : part.ExpectedSha256;
 
                 string state;
                 switch (part.Support)
@@ -172,7 +188,7 @@ namespace FastbootEnhance.PayloadTool
 
                 Console.WriteLine(
                     part.Name.PadRight(nameWidth) + "  " +
-                    Bytes(part.UnpackedSize).PadLeft(10) + "  " +
+                    ByteSize.Format(part.UnpackedSize).PadLeft(10) + "  " +
                     part.OperationCount.ToString().PadLeft(5) + "  " +
                     codecs.PadRight(22) + "  " +
                     hash.PadRight(16) + "  " + state);
@@ -181,22 +197,11 @@ namespace FastbootEnhance.PayloadTool
 
         static void PrintCodecBreakdown(PayloadFile payload)
         {
-            Dictionary<string, int> counts = new Dictionary<string, int>(StringComparer.Ordinal);
-            int total = 0;
-
-            foreach (ChromeosUpdateEngine.PartitionUpdate update in payload.Manifest.Partitions)
-            {
-                foreach (ChromeosUpdateEngine.InstallOperation operation in update.Operations)
-                {
-                    string label = OperationSupport.Name(operation.Type);
-                    counts.TryGetValue(label, out int seen);
-                    counts[label] = seen + 1;
-                    total++;
-                }
-            }
+            IReadOnlyList<KeyValuePair<string, int>> counts = payload.OperationCounts();
+            int total = counts.Sum(p => p.Value);
 
             Console.WriteLine("OPERATION TYPES (" + total + " operations)");
-            foreach (KeyValuePair<string, int> pair in counts.OrderByDescending(p => p.Value))
+            foreach (KeyValuePair<string, int> pair in counts)
             {
                 double share = total > 0 ? 100.0 * pair.Value / total : 0;
                 int bar = (int)Math.Round(share / 4);
@@ -285,7 +290,7 @@ namespace FastbootEnhance.PayloadTool
                         {
                             double seconds = Math.Max(result.Elapsed.TotalSeconds, 0.0001);
                             Console.WriteLine("  ok    " + result.Partition.PadRight(16)
-                                + Bytes(result.Size).PadLeft(10)
+                                + ByteSize.Format(result.Size).PadLeft(10)
                                 + "  " + result.Elapsed.TotalMilliseconds.ToString("F0").PadLeft(6) + " ms"
                                 + "  " + (result.Size / seconds / (1024 * 1024)).ToString("F0").PadLeft(5) + " MB/s");
                         }
@@ -298,7 +303,7 @@ namespace FastbootEnhance.PayloadTool
                     Console.WriteLine();
                     double total = Math.Max(report.Elapsed.TotalSeconds, 0.0001);
                     Console.WriteLine(report.SucceededCount + " ok, " + report.FailedCount + " failed, "
-                        + Bytes(report.TotalBytes) + " in " + report.Elapsed.TotalSeconds.ToString("F2") + " s ("
+                        + ByteSize.Format(report.TotalBytes) + " in " + report.Elapsed.TotalSeconds.ToString("F2") + " s ("
                         + (report.TotalBytes / total / (1024 * 1024)).ToString("F0") + " MB/s aggregate)");
 
                     return report.AllSucceeded ? 0 : 1;
@@ -359,19 +364,6 @@ namespace FastbootEnhance.PayloadTool
 
                 return options;
             }
-        }
-
-        static string Bytes(long value)
-        {
-            string[] units = { "B", "KB", "MB", "GB", "TB" };
-            double size = value;
-            int unit = 0;
-            while (size >= 1024 && unit < units.Length - 1)
-            {
-                size /= 1024;
-                unit++;
-            }
-            return (unit == 0 ? size.ToString("F0") : size.ToString("F2")) + " " + units[unit];
         }
 
         static void TryRemoveDirectory(string path)

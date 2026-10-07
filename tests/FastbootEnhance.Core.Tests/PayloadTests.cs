@@ -798,6 +798,203 @@ namespace FastbootEnhance.Core.Tests
             }
         }
 
+        // ---------- hostile or damaged manifests ----------
+
+        [Fact]
+        public void An_operation_writing_past_the_partition_is_refused()
+        {
+            byte[] image = Data((int)BlockSize * 2, 901);
+
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            PartSpec part = builder.AddPartition("system", image);
+            part.Ops.Add(new OpSpec
+            {
+                Type = InstallOperation.Types.Type.Replace,
+                Content = Data((int)BlockSize, 902),
+                // The declared image is two blocks; this writes block 1,000,000.
+                Dst = At((1000000, 1))
+            });
+            string path = builder.WriteToFile(workDir, "past-end.bin");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            using (MemoryStream output = new MemoryStream())
+            {
+                PayloadExtractionException error = Assert.Throws<PayloadExtractionException>(
+                    () => PartitionExtractor.Extract(payload, "system", output));
+                Assert.Contains("only " + image.Length + " bytes", error.Message);
+                Assert.Equal(image.Length, output.Length);
+            }
+        }
+
+        [Fact]
+        public void An_extent_that_overflows_marks_the_partition_unusable_instead_of_crashing()
+        {
+            byte[] image = Data((int)BlockSize, 911);
+
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            PartSpec part = builder.AddPartition("system", image);
+            part.OmitSize = true;
+            part.Ops.Add(new OpSpec
+            {
+                Type = InstallOperation.Types.Type.Replace,
+                Content = image,
+                Dst = At((ulong.MaxValue - 1, 4))
+            });
+            string path = builder.WriteToFile(workDir, "overflow.bin");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            {
+                PayloadPartitionInfo info = payload.FindPartition("system");
+                Assert.False(info.CanExtract);
+                Assert.Contains("out of range", info.UnsupportedReason);
+            }
+        }
+
+        [Fact]
+        public void An_absurd_declared_size_is_refused()
+        {
+            byte[] image = Data((int)BlockSize, 921);
+
+            TestPayloadBuilder builder = new TestPayloadBuilder
+            {
+                BlockSize = BlockSize,
+                CustomizeManifest = manifest =>
+                    manifest.Partitions[0].NewPartitionInfo.Size = 1UL << 50
+            };
+            PartSpec part = builder.AddPartition("system", image);
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Replace, Content = image, Dst = At((0, 1)) });
+            string path = builder.WriteToFile(workDir, "huge.bin");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            {
+                PayloadPartitionInfo info = payload.FindPartition("system");
+                Assert.False(info.CanExtract);
+                Assert.Contains("more than any real partition", info.UnsupportedReason);
+            }
+        }
+
+        [Fact]
+        public void Data_shorter_than_its_extents_is_an_error()
+        {
+            byte[] half = Data((int)BlockSize, 931);
+            byte[] expected = Concat(half, new byte[BlockSize]);
+
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            PartSpec part = builder.AddPartition("system", expected);
+            part.Ops.Add(new OpSpec
+            {
+                Type = InstallOperation.Types.Type.ReplaceXz,
+                Content = half,
+                Dst = At((0, 2))
+            });
+            string path = builder.WriteToFile(workDir, "short.bin");
+
+            PayloadExtractionException error = Assert.Throws<PayloadExtractionException>(
+                () => ExtractToBytes(path, "system"));
+            Assert.Contains("produced " + BlockSize + " bytes for " + (BlockSize * 2), error.Message);
+
+            // With checks off the old lenient behaviour is still available.
+            byte[] produced = ExtractToBytes(path, "system", new ExtractionOptions { VerifyImageHash = false });
+            Assert.True(expected.SequenceEqual(produced));
+        }
+
+        [Fact]
+        public void Skipped_operations_are_reported_and_the_image_is_marked_incomplete()
+        {
+            byte[] good = Data((int)BlockSize, 941);
+            byte[] expected = Concat(good, new byte[BlockSize]);
+
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            PartSpec part = builder.AddPartition("system", expected);
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Replace, Content = good, Dst = At((0, 1)) });
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Zucchini, Content = good, Dst = At((1, 1)) });
+            string path = builder.WriteToFile(workDir, "skipped.bin");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            {
+                ExtractionReport report = PayloadExtractor.ExtractAll(
+                    payload, Path.Combine(workDir, "skipped-out"),
+                    options: new ExtractionOptions { IgnoreUnsupportedOperations = true });
+
+                PartitionResult result = report.Results.Single();
+                Assert.True(result.Succeeded);
+                Assert.Equal(1, result.SkippedOperations);
+                Assert.False(result.Complete);
+                Assert.Equal(1, report.IncompleteCount);
+            }
+        }
+
+        [Fact]
+        public void A_partition_named_twice_is_extracted_once_and_kept()
+        {
+            byte[] image = Data((int)BlockSize * 8, 951);
+            string path = SingleCodecPayload(InstallOperation.Types.Type.Zstd, image, "boot");
+            string outDir = Path.Combine(workDir, "dup-out");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            {
+                ExtractionReport report = PayloadExtractor.ExtractAll(payload, outDir, new[] { "boot", "boot", "boot" });
+
+                Assert.Single(report.Results);
+                Assert.True(report.AllSucceeded);
+            }
+
+            Assert.True(image.SequenceEqual(File.ReadAllBytes(Path.Combine(outDir, "boot.img"))));
+        }
+
+        [Fact]
+        public void Operation_counts_are_ordered_most_common_first()
+        {
+            byte[] block = Data((int)BlockSize, 961);
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            PartSpec part = builder.AddPartition("system", Concat(block, block, block, new byte[BlockSize]));
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Zstd, Content = block, Dst = At((0, 1)) });
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Zstd, Content = block, Dst = At((1, 1)) });
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.ReplaceXz, Content = block, Dst = At((2, 1)) });
+            part.Ops.Add(new OpSpec { Type = InstallOperation.Types.Type.Zero, Dst = At((3, 1)) });
+            string path = builder.WriteToFile(workDir, "counts.bin");
+
+            using (PayloadFile payload = PayloadFile.Open(path, workDir))
+            {
+                var counts = payload.OperationCounts();
+                Assert.Equal("ZSTD", counts[0].Key);
+                Assert.Equal(2, counts[0].Value);
+                Assert.Equal(new[] { "REPLACE_XZ", "ZERO" }, counts.Skip(1).Select(c => c.Key).ToArray());
+            }
+        }
+
+        [Fact]
+        public void A_failed_unpack_of_a_deflated_payload_leaves_no_temp_file()
+        {
+            // Compressible content, so the payload entry is a real Huffman-coded deflate stream.
+            byte[] image = new byte[BlockSize * 256];
+            for (int i = 0; i < image.Length; i++)
+                image[i] = (byte)("fastboot enhance "[i % 17] + (i / 4096 % 3));
+
+            TestPayloadBuilder builder = new TestPayloadBuilder { BlockSize = BlockSize };
+            builder.AddPartition("system", image).Ops.Add(new OpSpec
+            {
+                Type = InstallOperation.Types.Type.Replace, Content = image, Dst = At((0, 256))
+            });
+            string zip = builder.WriteToZip(workDir, "broken.zip", stored: false);
+
+            ZipEntryLocation entry;
+            using (FileStream file = File.OpenRead(zip))
+                entry = ZipEntryLocator.Find(file, "payload.bin").Value;
+            Assert.False(entry.IsStored);
+
+            // Wreck the second half of the compressed data; the zip directory stays readable.
+            byte[] bytes = File.ReadAllBytes(zip);
+            long from = entry.DataOffset + entry.CompressedSize / 2;
+            for (long i = from; i < entry.DataOffset + entry.CompressedSize; i++)
+                bytes[i] = 0xFF;
+            File.WriteAllBytes(zip, bytes);
+
+            string temp = Path.Combine(workDir, "inflate-temp");
+            Assert.ThrowsAny<Exception>(() => PayloadFile.Open(zip, temp));
+            Assert.Empty(Directory.Exists(temp) ? Directory.GetFiles(temp) : Array.Empty<string>());
+        }
+
         [Fact]
         public void Unknown_partition_name_is_reported_clearly()
         {

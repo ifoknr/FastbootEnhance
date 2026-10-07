@@ -22,6 +22,8 @@ public static class Win32 {
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
     [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h, IntPtr hdc, uint flags);
     [DllImport("user32.dll")] public static extern bool RedrawWindow(IntPtr h, IntPtr rect, IntPtr region, uint flags);
+    [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
+    [DllImport("dwmapi.dll")] public static extern int DwmGetWindowAttribute(IntPtr h, int attr, out RECT r, int size);
 }
 "@
 [Win32]::SetProcessDPIAware() | Out-Null
@@ -56,22 +58,25 @@ function Fail([string] $why) {
     throw $why
 }
 
+# The window is captured from the screen, exactly as a user would see it. PrintWindow was
+# used before, but WPF can hand it a frame where parts of the window are not yet repainted.
 function Save-Window([string] $name) {
-    # Make WPF repaint everything first. After a native dialog closes, a capture can
-    # otherwise pick up regions of the window that have not been redrawn yet.
+    [Win32]::SetForegroundWindow($script:hwnd) | Out-Null
     # RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN | RDW_UPDATENOW | RDW_FRAME
     [Win32]::RedrawWindow($script:hwnd, [IntPtr]::Zero, [IntPtr]::Zero, 0x0585) | Out-Null
-    Start-Sleep -Milliseconds 600
+    Start-Sleep -Milliseconds 800
+    # DWMWA_EXTENDED_FRAME_BOUNDS (9) leaves out the invisible resize border GetWindowRect counts.
     $r = New-Object Win32+RECT
-    [Win32]::GetWindowRect($script:hwnd, [ref] $r) | Out-Null
-    $w = $r.Right - $r.Left; $h = $r.Bottom - $r.Top
+    if ([Win32]::DwmGetWindowAttribute($script:hwnd, 9, [ref] $r, 16) -ne 0) {
+        [Win32]::GetWindowRect($script:hwnd, [ref] $r) | Out-Null
+    }
+    $screen = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+    $left = [Math]::Max($r.Left, $screen.Left); $top = [Math]::Max($r.Top, $screen.Top)
+    $w = [Math]::Min($r.Right, $screen.Right) - $left
+    $h = [Math]::Min($r.Bottom, $screen.Bottom) - $top
     $bmp = New-Object System.Drawing.Bitmap $w, $h
     $g = [System.Drawing.Graphics]::FromImage($bmp)
-    $hdc = $g.GetHdc()
-    # PW_RENDERFULLCONTENT (2) is needed for WPF, which draws through DirectX.
-    $ok = [Win32]::PrintWindow($script:hwnd, $hdc, 2)
-    $g.ReleaseHdc($hdc)
-    if (-not $ok) { $g.CopyFromScreen($r.Left, $r.Top, 0, 0, $bmp.Size) }
+    $g.CopyFromScreen($left, $top, 0, 0, $bmp.Size)
     $path = Join-Path $Out "$name.png"
     $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose(); $bmp.Dispose()
@@ -135,6 +140,12 @@ $byProcess = New-Object System.Windows.Automation.PropertyCondition($UIA::Proces
 $script:root = Wait-For { $UIA::RootElement.FindFirst($Scope::Children, $byProcess) } 60 "the main window"
 $script:hwnd = [IntPtr]$root.Current.NativeWindowHandle
 Write-Host "window: '$($root.Current.Name)' hwnd=$hwnd"
+# Fit the window on the runner's screen (often 1024x768) so a screen capture holds all of it.
+$work = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
+$fitW = [Math]::Min(1220, $work.Width); $fitH = [Math]::Min(780, $work.Height)
+# SWP_NOZORDER | SWP_NOACTIVATE
+[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $work.Left, $work.Top, $fitW, $fitH, 0x0014) | Out-Null
+Write-Host "work area $($work.Width)x$($work.Height), window set to ${fitW}x${fitH}"
 [Win32]::SetForegroundWindow($hwnd) | Out-Null
 
 $mainTabs = Wait-For { By-Id $root 'main_tabs' } 20 "main_tabs"

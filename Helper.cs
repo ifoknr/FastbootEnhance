@@ -1,3 +1,4 @@
+using FastbootEnhance.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -138,20 +139,12 @@ namespace FastbootEnhance
 
         public static string byte2AUnit(ulong size)
         {
-            string[] units = { "B", "KB", "MB", "GB", "TB", "PB" };
-            double value = size;
-            int unit = 0;
-            while (value >= 1024 && unit < units.Length - 1)
-            {
-                value /= 1024;
-                unit++;
-            }
-            return (unit == 0 ? value.ToString("F0") : value.ToString("F2")) + " " + units[unit];
+            return ByteSize.Format(size > long.MaxValue ? long.MaxValue : (long)size);
         }
 
         public static string byte2AUnit(long size)
         {
-            return size < 0 ? "-" : byte2AUnit((ulong)size);
+            return ByteSize.Format(size);
         }
     }
 }

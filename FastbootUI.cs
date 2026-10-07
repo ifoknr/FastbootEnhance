@@ -19,8 +19,6 @@ namespace FastbootEnhance
         public static readonly string PAYLOAD_TMP =
             Path.Combine(Path.GetTempPath(), "FastbootEnhance", "flash");
 
-        /// <summary>Generous enough for a multi-gigabyte image over slow USB.</summary>
-        static readonly TimeSpan FlashTimeout = TimeSpan.FromMinutes(15);
         static List<fastboot_devices_row> devices;
         static string cur_serial;
         static FastbootData fastbootData;
@@ -197,6 +195,8 @@ namespace FastbootEnhance
             Helper.TaskbarItemHelper.start();
             MainWindow.THIS.fastboot_single_part_op.IsEnabled = false;
             MainWindow.THIS.fastboot_flash_payload.IsEnabled = false;
+            // Leaving the device mid-operation would let a flash continue with no target serial.
+            MainWindow.THIS.fastboot_remove.IsEnabled = false;
         }
 
         static void action_unlock()
@@ -206,6 +206,7 @@ namespace FastbootEnhance
             Helper.TaskbarItemHelper.stop();
             MainWindow.THIS.fastboot_single_part_op.IsEnabled = true;
             MainWindow.THIS.fastboot_flash_payload.IsEnabled = true;
+            MainWindow.THIS.fastboot_remove.IsEnabled = true;
         }
 
         static Helper.ListHelper<fastboot_partition_row> listHelper;
@@ -338,8 +339,8 @@ namespace FastbootEnhance
 
             // Only offer to cancel a Virtual A/B update when there is one. The old code hid this
             // button the first time it saw "none" and never showed it again.
-            bool pending = fastbootData.snapshot_update_status != null && fastbootData.snapshot_update_status != "none";
-            MainWindow.THIS.fastboot_cancel_update.Visibility = pending ? Visibility.Visible : Visibility.Collapsed;
+            MainWindow.THIS.fastboot_cancel_update.Visibility =
+                fastbootData.HasPendingUpdate ? Visibility.Visible : Visibility.Collapsed;
 
             MainWindow.THIS.fastboot_mode_text.Text = fastbootData.fastbootd ? "fastbootd" : "bootloader";
             MainWindow.THIS.fastboot_mode_badge.Visibility = Visibility.Visible;
@@ -362,13 +363,13 @@ namespace FastbootEnhance
             else
                 checks.Add(new CheckRow(CheckRow.Level.Warn, Properties.Resources.check_bootloader));
 
-            if (fastbootData.snapshot_update_status == null || fastbootData.snapshot_update_status == "none")
+            if (!fastbootData.HasPendingUpdate)
                 checks.Add(new CheckRow(CheckRow.Level.Ok, Properties.Resources.check_no_update));
             else
                 checks.Add(new CheckRow(CheckRow.Level.Warn,
                     string.Format(Properties.Resources.check_update_pending, fastbootData.snapshot_update_status)));
 
-            if (fastbootData.partition_size.Keys.Any(key => key.EndsWith("cow")))
+            if (fastbootData.HasCowPartitions)
                 checks.Add(new CheckRow(CheckRow.Level.Warn, Properties.Resources.check_cow));
 
             if (fastbootData.current_slot != null)
@@ -443,7 +444,7 @@ namespace FastbootEnhance
 
             try
             {
-                using (Fastboot fastboot = new Fastboot(param.serial, param.cmd))
+                using (Fastboot fastboot = new Fastboot(param.serial, param.cmd, Fastboot.LongCommand))
                 {
                     int count = 0;
                     while (true)
@@ -465,11 +466,11 @@ namespace FastbootEnhance
                             }));
                     }
 
-                    int? exitCode = fastboot.WaitForExit(FlashTimeout);
+                    int? exitCode = fastboot.WaitForExit();
                     if (exitCode != 0)
                     {
                         failure = "fastboot " + param.cmd + ": " + (exitCode == null
-                            ? "did not finish in time"
+                            ? "did not finish within " + Fastboot.LongCommand.TotalMinutes + " minutes and was stopped"
                             : "exited with code " + exitCode);
                         appendLog(failure);
                     }
@@ -535,8 +536,7 @@ namespace FastbootEnhance
 
         static bool vabStagingCheck()
         {
-            if (fastbootData.snapshot_update_status != null
-                && fastbootData.snapshot_update_status != "none")
+            if (fastbootData.HasPendingUpdate)
             {
                 bool proceed = Helper.confirm(
                     Properties.Resources.fastboot_vab_staging_str1 + "\n" +
@@ -550,17 +550,7 @@ namespace FastbootEnhance
                 }
             }
 
-            bool cow_exist = false;
-            foreach (string key in fastbootData.partition_size.Keys)
-            {
-                if (key.EndsWith("cow"))
-                {
-                    cow_exist = true;
-                    break;
-                }
-            }
-
-            if (cow_exist)
+            if (fastbootData.HasCowPartitions)
             {
                 bool proceed = Helper.confirm(
                     Properties.Resources.fastboot_cow_exist_str1 + "\n" +
@@ -580,7 +570,7 @@ namespace FastbootEnhance
         /// <summary>
         /// Opens a payload, makes sure the device can take it, then hands over to the flasher.
         /// </summary>
-        static void openPayloadThenFlash(string path)
+        static void openPayloadThenFlash(string path, string serial)
         {
             PayloadFile opened = null;
             Exception failure = null;
@@ -639,7 +629,16 @@ namespace FastbootEnhance
                         return;
                     }
 
-                    flashPayload(opened);
+                    // The device must still be the one the user picked when they clicked flash.
+                    if (serial == null || serial != cur_serial || fastbootData == null)
+                    {
+                        opened.Dispose();
+                        action_unlock();
+                        MessageBox.Show(Properties.Resources.flash_no_device);
+                        return;
+                    }
+
+                    flashPayload(opened, serial);
                 }));
         }
 
@@ -677,10 +676,12 @@ namespace FastbootEnhance
         /// payload that turns out to be damaged cannot leave the phone half written. Each image
         /// is deleted as soon as it is flashed to keep the staging directory small.
         /// </summary>
-        static void flashPayload(PayloadFile payload)
+        static void flashPayload(PayloadFile payload, string serial)
         {
+            if (serial == null)
+                throw new ArgumentNullException(nameof(serial));
+
             string staging = Path.Combine(PAYLOAD_TMP, "stage-" + Guid.NewGuid().ToString("N"));
-            string serial = cur_serial;
 
             List<PayloadPartitionInfo> parts = payload.Partitions.ToList();
             long totalBytes = Math.Max(1, parts.Sum(part => part.UnpackedSize));
@@ -722,13 +723,13 @@ namespace FastbootEnhance
             ticker.Tick += delegate { MainWindow.THIS.flash_elapsed.Text = clock.Elapsed.ToString(@"mm\:ss"); };
             ticker.Start();
 
-            // Extraction counts for the first half of the bar, flashing for the second.
-            Dictionary<string, long> perPartition = new Dictionary<string, long>(StringComparer.Ordinal);
+            // Extraction counts for the first half of the bar, flashing for the second. The bar
+            // only moves forward: the extraction phase finishes before the flashing phase reports.
             int lastPercent = -1;
 
             Action<int> showPercent = new Action<int>(delegate (int percent)
             {
-                if (percent == lastPercent)
+                if (percent <= lastPercent)
                     return;
                 lastPercent = percent;
 
@@ -740,29 +741,19 @@ namespace FastbootEnhance
                 }));
             });
 
-            IProgress<ExtractionProgress> progress = new ExtractionProgressSink(delegate (ExtractionProgress value)
-            {
-                long done;
-                lock (perPartition)
+            ProgressAggregator progress = new ProgressAggregator(totalBytes,
+                delegate (int percent) { showPercent(percent / 2); },
+                delegate (string partition, int percent)
                 {
-                    perPartition[value.Partition] = value.BytesWritten;
-                    done = 0;
-                    foreach (long written in perPartition.Values)
-                        done += written;
-                }
-                showPercent((int)(done * 50 / totalBytes));
-
-                FlashRow row;
-                if (rowByName.TryGetValue(value.Partition, out row))
-                {
-                    double share = value.TotalBytes > 0 ? 50.0 * value.BytesWritten / value.TotalBytes : 50.0;
+                    FlashRow row;
+                    if (!rowByName.TryGetValue(partition, out row))
+                        return;
                     MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                     {
                         row.Current = FlashRow.Stage.Extracting;
-                        row.Progress = Math.Min(50.0, share);
+                        row.Progress = percent / 2.0;
                     }));
-                }
-            });
+                });
 
             Action<string, FlashRow.Stage, double?> updateRow = new Action<string, FlashRow.Stage, double?>(
                 delegate (string name, FlashRow.Stage stage, double? value)
@@ -834,7 +825,7 @@ namespace FastbootEnhance
 
                             int? exitCode;
                             using (Fastboot fastboot = new Fastboot(serial,
-                                "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\""))
+                                "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\"", Fastboot.LongCommand))
                             {
                                 while (true)
                                 {
@@ -844,14 +835,14 @@ namespace FastbootEnhance
                                     appendLog(line);
                                 }
 
-                                exitCode = fastboot.WaitForExit(FlashTimeout);
+                                exitCode = fastboot.WaitForExit();
                             }
 
                             // Without this the dialog reported success even when every write failed.
                             if (exitCode != 0)
                             {
                                 error = result.Partition + ": fastboot " + (exitCode == null
-                                    ? "did not finish within " + FlashTimeout.TotalMinutes + " minutes"
+                                    ? "did not finish within " + Fastboot.LongCommand.TotalMinutes + " minutes and was stopped"
                                     : "exited with code " + exitCode);
                                 appendLog(error);
                                 updateRow(result.Partition, FlashRow.Stage.Failed, null);
@@ -937,21 +928,6 @@ namespace FastbootEnhance
         {
             MainWindow.THIS.flash_phase.Text = text;
             MainWindow.THIS.flash_phase.Foreground = Palette.Get(brushKey);
-        }
-
-        sealed class ExtractionProgressSink : IProgress<ExtractionProgress>
-        {
-            readonly Action<ExtractionProgress> sink;
-
-            internal ExtractionProgressSink(Action<ExtractionProgress> sink)
-            {
-                this.sink = sink;
-            }
-
-            public void Report(ExtractionProgress value)
-            {
-                sink(value);
-            }
         }
 
         static void openSelectedDevice()
@@ -1224,7 +1200,7 @@ namespace FastbootEnhance
 
                 Helper.fileSelect(new Helper.PathSelectCallback(delegate (string path)
                 {
-                    openPayloadThenFlash(path);
+                    openPayloadThenFlash(path, cur_serial);
                 }), "Payload or OTA package|*.bin;*.zip|All Files|*.*");
             };
 

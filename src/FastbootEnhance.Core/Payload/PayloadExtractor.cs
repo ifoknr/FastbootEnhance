@@ -19,7 +19,15 @@ namespace FastbootEnhance.Core.Payload
         /// <summary>Null when the partition extracted cleanly.</summary>
         public string Error { get; internal set; }
 
+        /// <summary>
+        /// Operations left out because they could not be applied. Non-zero means the image is
+        /// incomplete (those blocks are zero) and was not checked against the manifest hash.
+        /// </summary>
+        public int SkippedOperations { get; internal set; }
+
         public bool Succeeded => Error == null;
+
+        public bool Complete => Succeeded && SkippedOperations == 0;
     }
 
     public sealed class ExtractionReport
@@ -31,6 +39,7 @@ namespace FastbootEnhance.Core.Payload
         public int FailedCount => Results.Count(r => !r.Succeeded);
         public long TotalBytes => Results.Where(r => r.Succeeded).Sum(r => r.Size);
         public bool AllSucceeded => FailedCount == 0;
+        public int IncompleteCount => Results.Count(r => r.Succeeded && r.SkippedOperations > 0);
     }
 
     /// <summary>
@@ -55,9 +64,9 @@ namespace FastbootEnhance.Core.Payload
             options = options ?? new ExtractionOptions();
             options.Validate();
 
-            List<string> names = partitionNames != null
-                ? partitionNames.ToList()
-                : payload.Partitions.Select(p => p.Name).ToList();
+            List<string> names = (partitionNames ?? payload.Partitions.Select(p => p.Name))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
 
             Directory.CreateDirectory(outputDirectory);
 
@@ -159,13 +168,32 @@ namespace FastbootEnhance.Core.Payload
                 };
             }
 
+            FileStream output;
             try
             {
-                using (FileStream output = new FileStream(
-                    path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, WriteBufferSize))
+                output = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, WriteBufferSize);
+            }
+            catch (Exception e)
+            {
+                // Nothing was created, so there is nothing of ours to delete.
+                watch.Stop();
+                return new PartitionResult
                 {
+                    Partition = name,
+                    OutputPath = path,
+                    Size = 0,
+                    Elapsed = watch.Elapsed,
+                    Error = e.Message
+                };
+            }
+
+            try
+            {
+                using (output)
+                {
+                    int skipped;
                     long size = PartitionExtractor.Extract(
-                        payload, name, output, options, progress, cancellationToken);
+                        payload, name, output, options, progress, cancellationToken, out skipped);
 
                     watch.Stop();
                     return new PartitionResult
@@ -173,7 +201,8 @@ namespace FastbootEnhance.Core.Payload
                         Partition = name,
                         OutputPath = path,
                         Size = size,
-                        Elapsed = watch.Elapsed
+                        Elapsed = watch.Elapsed,
+                        SkippedOperations = skipped
                     };
                 }
             }

@@ -15,6 +15,27 @@ namespace FastbootEnhance.Core.Payload
         /// <summary>update_engine marks an absent block run with an all-ones start block.</summary>
         const ulong SparseHole = ulong.MaxValue;
 
+        /// <summary>
+        /// Byte offset just past <paramref name="extent"/>. Extents come from the manifest, which
+        /// is untrusted, so a run that overflows a 64-bit offset is a format error.
+        /// </summary>
+        static long EndOf(Extent extent, uint blockSize)
+        {
+            try
+            {
+                checked
+                {
+                    ulong endBlock = extent.StartBlock + extent.NumBlocks;
+                    return (long)(endBlock * blockSize);
+                }
+            }
+            catch (OverflowException)
+            {
+                throw new PayloadFormatException(
+                    "an extent at block " + extent.StartBlock + " with " + extent.NumBlocks + " blocks is out of range");
+            }
+        }
+
         internal static long TotalBytes(IList<Extent> extents, uint blockSize)
         {
             long total = 0;
@@ -22,7 +43,14 @@ namespace FastbootEnhance.Core.Payload
             {
                 if (extents[i].StartBlock == SparseHole)
                     continue;
-                total += (long)extents[i].NumBlocks * blockSize;
+                try
+                {
+                    total = checked(total + (long)(extents[i].NumBlocks * blockSize));
+                }
+                catch (OverflowException)
+                {
+                    throw new PayloadFormatException("an operation's extents add up to more than 2^63 bytes");
+                }
             }
             return total;
         }
@@ -32,20 +60,31 @@ namespace FastbootEnhance.Core.Payload
             long end = 0;
             for (int i = 0; i < extents.Count; i++)
             {
-                Extent e = extents[i];
-                if (e.StartBlock == SparseHole)
+                if (extents[i].StartBlock == SparseHole)
                     continue;
-                long extentEnd = (long)(e.StartBlock + e.NumBlocks) * blockSize;
-                if (extentEnd > end)
-                    end = extentEnd;
+                end = Math.Max(end, EndOf(extents[i], blockSize));
             }
             return end;
         }
 
         /// <summary>
+        /// Throws unless every extent lies inside the first <paramref name="limit"/> bytes, so
+        /// a damaged or hostile manifest cannot grow the output file without bound.
+        /// </summary>
+        internal static void CheckWithin(IList<Extent> extents, uint blockSize, long limit)
+        {
+            long end = HighestByteOffset(extents, blockSize);
+            if (end > limit)
+            {
+                throw new PayloadFormatException(
+                    "an operation writes up to byte " + end + " of a partition that is only " + limit + " bytes");
+            }
+        }
+
+        /// <summary>
         /// Copies every remaining byte of <paramref name="data"/> into <paramref name="dst"/>
-        /// across <paramref name="extents"/>. Data shorter than the extents leaves the tail
-        /// untouched (the output file is zero-filled); data longer than them is an error.
+        /// across <paramref name="extents"/>. The caller has already checked that the extents fit
+        /// the partition and that the data fills them.
         /// </summary>
         internal static void Write(
             Stream dst, IList<Extent> extents, uint blockSize, MemoryStream data, byte[] copyBuffer)

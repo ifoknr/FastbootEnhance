@@ -110,19 +110,37 @@ namespace FastbootEnhance.Core.Payload
             string target = Path.Combine(
                 temporaryDirectory, PayloadEntryName + "." + Guid.NewGuid().ToString("N") + ".tmp");
 
-            using (FileStream file = File.OpenRead(zipPath))
-            using (ZipArchive archive = new ZipArchive(file, ZipArchiveMode.Read))
+            try
             {
-                ZipArchiveEntry entry = archive.GetEntry(PayloadEntryName);
-                if (entry == null)
-                    throw new PayloadFormatException("this zip has no " + PayloadEntryName + " entry");
-
-                using (Stream source = entry.Open())
-                using (FileStream destination = new FileStream(
-                    target, FileMode.Create, FileAccess.Write, FileShare.None, ReadBufferSize))
+                using (FileStream file = File.OpenRead(zipPath))
+                using (ZipArchive archive = new ZipArchive(file, ZipArchiveMode.Read))
                 {
-                    source.CopyTo(destination, ReadBufferSize);
+                    ZipArchiveEntry entry = archive.GetEntry(PayloadEntryName);
+                    if (entry == null)
+                        throw new PayloadFormatException("this zip has no " + PayloadEntryName + " entry");
+
+                    using (Stream source = entry.Open())
+                    using (FileStream destination = new FileStream(
+                        target, FileMode.Create, FileAccess.Write, FileShare.None, ReadBufferSize))
+                    {
+                        source.CopyTo(destination, ReadBufferSize);
+
+                        // A damaged deflate stream can end early or run long without the
+                        // inflater complaining, so check the result against the zip directory.
+                        if (destination.Length != entry.Length)
+                        {
+                            throw new PayloadFormatException(
+                                PayloadEntryName + " unpacked to " + destination.Length + " bytes but the package says "
+                                + entry.Length + "; the zip is damaged");
+                        }
+                    }
                 }
+            }
+            catch
+            {
+                // A failed unpack (full disk, damaged deflate stream) must not leave gigabytes behind.
+                DeleteQuietly(target);
+                throw;
             }
 
             return target;
@@ -145,12 +163,16 @@ namespace FastbootEnhance.Core.Payload
 
         public void Dispose()
         {
-            if (fileToDeleteOnDispose == null)
-                return;
+            if (fileToDeleteOnDispose != null)
+                DeleteQuietly(fileToDeleteOnDispose);
+        }
 
+        static void DeleteQuietly(string path)
+        {
             try
             {
-                File.Delete(fileToDeleteOnDispose);
+                if (File.Exists(path))
+                    File.Delete(path);
             }
             catch (IOException)
             {

@@ -110,5 +110,29 @@ Finished. Total time: 0.050s
             Assert.Null(data.product);
             Assert.Null(new FastbootData(null).product);
         }
+
+        [Theory]
+        [InlineData("none", false)]
+        [InlineData("snapshotted", true)]
+        [InlineData("merging", true)]
+        public void Pending_update_follows_the_snapshot_status(string status, bool pending)
+        {
+            FastbootData data = new FastbootData("(bootloader) snapshot-update-status:" + status + "\n");
+
+            Assert.Equal(pending, data.HasPendingUpdate);
+        }
+
+        [Fact]
+        public void No_snapshot_status_means_nothing_pending()
+        {
+            Assert.False(new FastbootData("(bootloader) product:x\n").HasPendingUpdate);
+        }
+
+        [Fact]
+        public void Leftover_cow_partitions_are_noticed()
+        {
+            Assert.True(new FastbootData("(bootloader) partition-size:system_a-cow:0x1000\n").HasCowPartitions);
+            Assert.False(new FastbootData(Fastbootd).HasCowPartitions);
+        }
     }
 }
