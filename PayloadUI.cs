@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -67,10 +67,14 @@ namespace FastbootEnhance
 
                 if (exception != null)
                 {
+                    LogStore.Append("Could not open " + filename + ": " + exception.Message);
                     MessageBox.Show(Properties.Resources.payload_unsupported_format
                         + "\n" + exception.Message);
                     return;
                 }
+
+                LogStore.Append("Opened " + filename + ": " + opened.Partitions.Count + " partitions, "
+                    + (opened.IsIncremental ? "incremental" : "full") + " package");
 
                 closeCurrent();
                 payload = opened;
@@ -293,6 +297,9 @@ namespace FastbootEnhance
 
                     if (report == null)
                         return;
+
+                    LogStore.Append("Extracted " + report.SucceededCount + " of " + report.Results.Count
+                        + " partitions to " + outputDirectory + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
 
                     if (report.AllSucceeded)
                     {

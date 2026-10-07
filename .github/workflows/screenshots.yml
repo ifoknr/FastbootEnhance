@@ -10,6 +10,8 @@ on:
       - '*.cs'
       - 'src/**'
       - 'tools/FastbootEnhance.SampleGen/**'
+      - 'tools/FastbootEnhance.FakeFastboot/**'
+      - 'Themes/**'
       - '.github/scripts/screenshots.ps1'
       - '.github/workflows/screenshots.yml'
 
@@ -40,9 +42,18 @@ jobs:
       - name: Generate sample OTA
         run: dotnet run --project tools/FastbootEnhance.SampleGen -c Release -- sample
 
+      # The runner has no phone, so the real fastboot.exe is swapped for a stand-in that
+      # answers like one device in fastbootd. Only this test copy is touched.
+      - name: Swap in the stand-in fastboot
+        shell: pwsh
+        run: |
+          dotnet publish tools/FastbootEnhance.FakeFastboot -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o fakefb
+          Copy-Item fakefb/fastboot.exe publish/fastboot.exe -Force
+
+      # The sample OTA has 12 partitions; every one of them must reach "fastboot flash".
       - name: Capture
         shell: pwsh
-        run: ./.github/scripts/screenshots.ps1 -App publish/FastbootEnhance.exe -Payload sample/sample-ota.zip -Out docs/screenshots
+        run: ./.github/scripts/screenshots.ps1 -App publish/FastbootEnhance.exe -Payload sample/sample-ota.zip -Out docs/screenshots -ExpectedFlashes 12
 
       - uses: actions/upload-artifact@v4
         if: always()

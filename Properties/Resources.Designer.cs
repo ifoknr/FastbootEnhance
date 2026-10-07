@@ -1148,5 +1148,544 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("yes", resourceCulture);
             }
         }
+            /// <summary>
+        ///   Looks up a localized string similar to Device.
+        /// </summary>
+        public static string nav_device {
+            get {
+                return ResourceManager.GetString("nav_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash.
+        /// </summary>
+        public static string nav_flash {
+            get {
+                return ResourceManager.GetString("nav_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string nav_logs {
+            get {
+                return ResourceManager.GetString("nav_logs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live device state, partitions and quick actions.
+        /// </summary>
+        public static string device_subtitle {
+            get {
+                return ResourceManager.GetString("device_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Connected devices.
+        /// </summary>
+        public static string device_list_title {
+            get {
+                return ResourceManager.GetString("device_list_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Double-click a device, or select it and press Enter..
+        /// </summary>
+        public static string device_list_hint {
+            get {
+                return ResourceManager.GetString("device_list_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device in bootloader or fastbootd yet. Connect one and it shows up here within a second..
+        /// </summary>
+        public static string device_list_empty {
+            get {
+                return ResourceManager.GetString("device_list_empty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Device variables.
+        /// </summary>
+        public static string device_variables {
+            get {
+                return ResourceManager.GetString("device_variables", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Quick actions.
+        /// </summary>
+        public static string quick_actions {
+            get {
+                return ResourceManager.GetString("quick_actions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pre-flash checks.
+        /// </summary>
+        public static string preflash_checks {
+            get {
+                return ResourceManager.GetString("preflash_checks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partition actions.
+        /// </summary>
+        public static string partition_actions {
+            get {
+                return ResourceManager.GetString("partition_actions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bootloader unlocked: images can be written.
+        /// </summary>
+        public static string check_unlocked {
+            get {
+                return ResourceManager.GetString("check_unlocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bootloader locked: the device will refuse to flash.
+        /// </summary>
+        public static string check_locked {
+            get {
+                return ResourceManager.GetString("check_locked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No Virtual A/B update is pending.
+        /// </summary>
+        public static string check_no_update {
+            get {
+                return ResourceManager.GetString("check_no_update", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A Virtual A/B update is {0}: cancel it before flashing.
+        /// </summary>
+        public static string check_update_pending {
+            get {
+                return ResourceManager.GetString("check_update_pending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Leftover COW partitions found: remove them before flashing.
+        /// </summary>
+        public static string check_cow {
+            get {
+                return ResourceManager.GetString("check_cow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to In fastbootd: logical partitions can be written.
+        /// </summary>
+        public static string check_fastbootd {
+            get {
+                return ResourceManager.GetString("check_fastbootd", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to In the bootloader: reboot to fastbootd to write logical partitions.
+        /// </summary>
+        public static string check_bootloader {
+            get {
+                return ResourceManager.GetString("check_bootloader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Active slot: {0}.
+        /// </summary>
+        public static string check_slot {
+            get {
+                return ResourceManager.GetString("check_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} device(s) in fastboot mode.
+        /// </summary>
+        public static string rail_devices {
+            get {
+                return ResourceManager.GetString("rail_devices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to fastboot.exe is missing.
+        /// </summary>
+        public static string rail_no_fastboot {
+            get {
+                return ResourceManager.GetString("rail_no_fastboot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every image is extracted in parallel and checked against the manifest before anything is written.
+        /// </summary>
+        public static string flash_subtitle {
+            get {
+                return ResourceManager.GetString("flash_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No payload chosen.
+        /// </summary>
+        public static string flash_no_payload {
+            get {
+                return ResourceManager.GetString("flash_no_payload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a device on the Device page first..
+        /// </summary>
+        public static string flash_no_device {
+            get {
+                return ResourceManager.GetString("flash_no_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device selected.
+        /// </summary>
+        public static string flash_target_none {
+            get {
+                return ResourceManager.GetString("flash_target_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Target: {0}.
+        /// </summary>
+        public static string flash_target {
+            get {
+                return ResourceManager.GetString("flash_target", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Each image is checked against its SHA-256 before it is written..
+        /// </summary>
+        public static string flash_note_verify {
+            get {
+                return ResourceManager.GetString("flash_note_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing reaches the device until every image has extracted cleanly..
+        /// </summary>
+        public static string flash_note_order {
+            get {
+                return ResourceManager.GetString("flash_note_order", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Idle.
+        /// </summary>
+        public static string flash_phase_idle {
+            get {
+                return ResourceManager.GetString("flash_phase_idle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extracting.
+        /// </summary>
+        public static string flash_phase_extract {
+            get {
+                return ResourceManager.GetString("flash_phase_extract", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing.
+        /// </summary>
+        public static string flash_phase_flash {
+            get {
+                return ResourceManager.GetString("flash_phase_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string flash_phase_done {
+            get {
+                return ResourceManager.GetString("flash_phase_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string flash_phase_failed {
+            get {
+                return ResourceManager.GetString("flash_phase_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Queued.
+        /// </summary>
+        public static string flash_state_queued {
+            get {
+                return ResourceManager.GetString("flash_state_queued", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extracting.
+        /// </summary>
+        public static string flash_state_extracting {
+            get {
+                return ResourceManager.GetString("flash_state_extracting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Verified.
+        /// </summary>
+        public static string flash_state_verified {
+            get {
+                return ResourceManager.GetString("flash_state_verified", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing.
+        /// </summary>
+        public static string flash_state_flashing {
+            get {
+                return ResourceManager.GetString("flash_state_flashing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashed.
+        /// </summary>
+        public static string flash_state_flashed {
+            get {
+                return ResourceManager.GetString("flash_state_flashed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string flash_state_failed {
+            get {
+                return ResourceManager.GetString("flash_state_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not written.
+        /// </summary>
+        public static string flash_state_not_written {
+            get {
+                return ResourceManager.GetString("flash_state_not_written", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phase.
+        /// </summary>
+        public static string label_phase {
+            get {
+                return ResourceManager.GetString("label_phase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Elapsed.
+        /// </summary>
+        public static string label_elapsed {
+            get {
+                return ResourceManager.GetString("label_elapsed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Written.
+        /// </summary>
+        public static string label_written {
+            get {
+                return ResourceManager.GetString("label_written", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live log.
+        /// </summary>
+        public static string live_log {
+            get {
+                return ResourceManager.GetString("live_log", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every fastboot command and its output in this session.
+        /// </summary>
+        public static string logs_subtitle {
+            get {
+                return ResourceManager.GetString("logs_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string logs_copy {
+            get {
+                return ResourceManager.GetString("logs_copy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string logs_clear {
+            get {
+                return ResourceManager.GetString("logs_clear", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open a payload.bin or an OTA zip to inspect it and extract images.
+        /// </summary>
+        public static string payload_subtitle {
+            get {
+                return ResourceManager.GetString("payload_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Drop a payload.bin or OTA zip here.
+        /// </summary>
+        public static string payload_drop_hint {
+            get {
+                return ResourceManager.GetString("payload_drop_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Codec.
+        /// </summary>
+        public static string column_codec {
+            get {
+                return ResourceManager.GetString("column_codec", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extractable.
+        /// </summary>
+        public static string column_extractable {
+            get {
+                return ResourceManager.GetString("column_extractable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        public static string column_progress {
+            get {
+                return ResourceManager.GetString("column_progress", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to State.
+        /// </summary>
+        public static string column_state {
+            get {
+                return ResourceManager.GetString("column_state", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partition.
+        /// </summary>
+        public static string column_partition {
+            get {
+                return ResourceManager.GetString("column_partition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string column_size {
+            get {
+                return ResourceManager.GetString("column_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Payload engine: zstd, xz and bzip2, multi-extent operations, parallel extraction with SHA-256 checks.
+        /// </summary>
+        public static string about_engine {
+            get {
+                return ResourceManager.GetString("about_engine", resourceCulture);
+            }
+        }
+            /// <summary>
+        ///   Looks up a localized string similar to Are you sure?.
+        /// </summary>
+        public static string confirm_title {
+            get {
+                return ResourceManager.GetString("confirm_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Erase the partition "{0}"? Everything on it will be lost..
+        /// </summary>
+        public static string confirm_erase {
+            get {
+                return ResourceManager.GetString("confirm_erase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the logical partition "{0}" from super? It cannot be undone..
+        /// </summary>
+        public static string confirm_delete {
+            get {
+                return ResourceManager.GetString("confirm_delete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A payload is being flashed. Closing now stops it part way and can leave the device unbootable. Close anyway?.
+        /// </summary>
+        public static string confirm_close_flashing {
+            get {
+                return ResourceManager.GetString("confirm_close_flashing", resourceCulture);
+            }
+        }
+
     }
 }

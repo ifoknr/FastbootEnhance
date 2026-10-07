@@ -1,4 +1,5 @@
 ﻿using ChromeosUpdateEngine;
+using FastbootEnhance.Core.Fastboot;
 using FastbootEnhance.Core.Payload;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,12 @@ namespace FastbootEnhance
         static string cur_serial;
         static FastbootData fastbootData;
 
-        static Logger logger;
+        /// <summary>True while a payload is being extracted or written; the window asks before closing.</summary>
+        public static volatile bool flashing;
+
         static void appendLog(string logs)
         {
-            if (logger == null)
-                return;
-
-            logger.appendLog(logs);
+            LogStore.Append(logs);
         }
 
         enum FastbootStatus
@@ -49,6 +49,9 @@ namespace FastbootEnhance
                 {
                     MainWindow.THIS.fastboot_devices_list.Items.Add(row);
                 }
+                MainWindow.THIS.fastboot_devices_empty.Visibility =
+                    devices.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                MainWindow.THIS.main_tabs.Tag = string.Format(Properties.Resources.rail_devices, devices.Count);
             }));
         }
 
@@ -93,6 +96,7 @@ namespace FastbootEnhance
                     // rather than letting the exception take the whole app down.
                     MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                     {
+                        MainWindow.THIS.main_tabs.Tag = Properties.Resources.rail_no_fastboot;
                         MessageBox.Show(e.Message + "\n" + e.FileName, Properties.Resources.error,
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }));
@@ -187,7 +191,7 @@ namespace FastbootEnhance
         static void action_lock()
         {
             MainWindow.THIS.fastboot_progress_bar.Value = 0;
-            MainWindow.THIS.fastboot_action_bar.Visibility = Visibility.Hidden;
+            MainWindow.THIS.fastboot_action_bar.IsEnabled = false;
             MainWindow.THIS.fastboot_progress_bar.Visibility = Visibility.Visible;
             MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
             Helper.TaskbarItemHelper.start();
@@ -198,7 +202,7 @@ namespace FastbootEnhance
         static void action_unlock()
         {
             MainWindow.THIS.fastboot_progress_bar.Visibility = Visibility.Hidden;
-            MainWindow.THIS.fastboot_action_bar.Visibility = Visibility.Visible;
+            MainWindow.THIS.fastboot_action_bar.IsEnabled = true;
             Helper.TaskbarItemHelper.stop();
             MainWindow.THIS.fastboot_single_part_op.IsEnabled = true;
             MainWindow.THIS.fastboot_flash_payload.IsEnabled = true;
@@ -213,118 +217,183 @@ namespace FastbootEnhance
             listHelper.clear();
             MainWindow.THIS.fastboot_partition_name_textbox.Text = "";
             MainWindow.THIS.fastboot_info_list.Items.Clear();
+            MainWindow.THIS.fastboot_checks.ItemsSource = null;
             action_lock();
             MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
 
-            new Thread(new ThreadStart(delegate
+            string serial = cur_serial;
+            Thread loader = new Thread(new ThreadStart(delegate
             {
-                using (Fastboot fastboot = new Fastboot(cur_serial, "getvar all"))
+                FastbootData loaded;
+                try
                 {
-                    // fastboot bug: Must read stderr first or stdout would be blocked
-                    fastbootData = new FastbootData(fastboot.stderr.ReadToEnd());
+                    using (Fastboot fastboot = new Fastboot(serial, "getvar all"))
+                    {
+                        // fastboot bug: Must read stderr first or stdout would be blocked
+                        loaded = new FastbootData(fastboot.stderr.ReadToEnd());
+                    }
+                }
+                catch (Exception e)
+                {
+                    appendLog("getvar all failed: " + e.Message);
+                    MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
+                        action_unlock();
+                        MessageBox.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                        cur_serial = null;
+                        cur_status = FastbootStatus.show_devices;
+                        change_page();
+                    }));
+                    return;
                 }
 
                 MainWindow.THIS.Dispatcher.Invoke(delegate
                 {
-                    //Partition list init
-
-                    foreach (string key in fastbootData.partition_size.Keys)
-                    {
-                        long raw_size = fastbootData.partition_size[key];
-                        string size_str = raw_size >= 0 ? Helper.byte2AUnit((ulong)raw_size) : Properties.Resources.fastboot_0_size;
-                        bool? raw_logical = null;
-                        fastbootData.partition_is_logical.TryGetValue(key, out raw_logical);
-                        string logical_str = raw_logical != null && raw_logical == true ? Properties.Resources.yes : Properties.Resources.no;
-                        listHelper.addItem(new fastboot_partition_row(key, size_str, logical_str));
-                    }
-                    listHelper.render();
-
-                    //info list init
-
-                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_device, fastbootData.product));
-
-                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_secure_boot,
-                        fastbootData.secure ? Properties.Resources.enabled : Properties.Resources.disabled));
-
-                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_seamless_update,
-                        fastbootData.current_slot != null ? Properties.Resources.yes : Properties.Resources.no));
-
-                    if (fastbootData.current_slot != null)
-                        MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_current_slot,
-                            fastbootData.current_slot));
-
-                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_is_userspace,
-                        fastbootData.fastbootd ? Properties.Resources.yes : Properties.Resources.no));
-
-                    string vab_status_str = null;
-                    switch (fastbootData.snapshot_update_status)
-                    {
-                        case "none":
-                            vab_status_str = Properties.Resources.fastboot_update_status_none;
-                            break;
-                        case "snapshotted":
-                            vab_status_str = Properties.Resources.fastboot_update_status_snapshotted;
-                            break;
-                        case "merging":
-                            vab_status_str = Properties.Resources.fastboot_update_status_merging;
-                            break;
-                        default:
-                            vab_status_str = fastbootData.snapshot_update_status;
-                            break;
-                    }
-
-                    if (vab_status_str != null)
-                        MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_update_status,
-                            vab_status_str));
-
-                    //buttons init
-
-                    MainWindow.THIS.fastboot_logical_create.IsEnabled = fastbootData.fastbootd;
-                    MainWindow.THIS.fastboot_reboot_d.Content = fastbootData.fastbootd ?
-                    Properties.Resources.fastboot_reboot_bootloader : Properties.Resources.fastboot_reboot_fastbootd;
-                    if (fastbootData.current_slot != null)
-                    {
-                        MainWindow.THIS.fastboot_ab_switch.Visibility = Visibility.Visible;
-                        if (fastbootData.current_slot == "a")
-                        {
-                            MainWindow.THIS.fastboot_ab_switch.Content = Properties.Resources.fastboot_setactive_b;
-                        }
-                        else if (fastbootData.current_slot == "b")
-                        {
-                            MainWindow.THIS.fastboot_ab_switch.Content = Properties.Resources.fastboot_setactive_a;
-                        }
-                    }
-                    else
-                    {
-                        MainWindow.THIS.fastboot_ab_switch.Visibility = Visibility.Hidden;
-                    }
-
-                    // Hide the cancel-update button when there is no staged update to cancel.
-                    if (fastbootData.snapshot_update_status == "none")
-                    {
-                        MainWindow.THIS.fastboot_cancel_update.Visibility = Visibility.Hidden;
-                    }
-
+                    fastbootData = loaded;
+                    showFastbootVars();
                     MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
                     action_unlock();
                 });
-            })).Start();
+            }));
+            loader.IsBackground = true;
+            loader.Start();
+        }
+
+        static void showFastbootVars()
+        {
+            //Partition list init
+
+            foreach (string key in fastbootData.partition_size.Keys)
+            {
+                long raw_size = fastbootData.partition_size[key];
+                string size_str = raw_size >= 0 ? Helper.byte2AUnit((ulong)raw_size) : Properties.Resources.fastboot_0_size;
+                bool? raw_logical = null;
+                fastbootData.partition_is_logical.TryGetValue(key, out raw_logical);
+                string logical_str = raw_logical != null && raw_logical == true ? Properties.Resources.yes : Properties.Resources.no;
+                listHelper.addItem(new fastboot_partition_row(key, size_str, logical_str));
+            }
+            listHelper.render();
+
+            //info list init
+
+            MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_device,
+                fastbootData.product ?? Properties.Resources.unknown));
+
+            MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_secure_boot,
+                fastbootData.secure ? Properties.Resources.enabled : Properties.Resources.disabled));
+
+            MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_seamless_update,
+                fastbootData.current_slot != null ? Properties.Resources.yes : Properties.Resources.no));
+
+            if (fastbootData.current_slot != null)
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_current_slot,
+                    fastbootData.current_slot));
+
+            MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_is_userspace,
+                fastbootData.fastbootd ? Properties.Resources.yes : Properties.Resources.no));
+
+            if (fastbootData.max_download_size > 0)
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row("max-download-size",
+                    Helper.byte2AUnit(fastbootData.max_download_size)));
+
+            string vab_status_str = null;
+            switch (fastbootData.snapshot_update_status)
+            {
+                case "none":
+                    vab_status_str = Properties.Resources.fastboot_update_status_none;
+                    break;
+                case "snapshotted":
+                    vab_status_str = Properties.Resources.fastboot_update_status_snapshotted;
+                    break;
+                case "merging":
+                    vab_status_str = Properties.Resources.fastboot_update_status_merging;
+                    break;
+                default:
+                    vab_status_str = fastbootData.snapshot_update_status;
+                    break;
+            }
+
+            if (vab_status_str != null)
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_update_status,
+                    vab_status_str));
+
+            //buttons init
+
+            MainWindow.THIS.fastboot_logical_create.IsEnabled = fastbootData.fastbootd;
+            MainWindow.THIS.fastboot_reboot_d.Content = fastbootData.fastbootd ?
+                Properties.Resources.fastboot_reboot_bootloader : Properties.Resources.fastboot_reboot_fastbootd;
+
+            if (fastbootData.current_slot == "a" || fastbootData.current_slot == "b")
+            {
+                MainWindow.THIS.fastboot_ab_switch.Visibility = Visibility.Visible;
+                MainWindow.THIS.fastboot_ab_switch.Content = fastbootData.current_slot == "a"
+                    ? Properties.Resources.fastboot_setactive_b
+                    : Properties.Resources.fastboot_setactive_a;
+            }
+            else
+            {
+                MainWindow.THIS.fastboot_ab_switch.Visibility = Visibility.Collapsed;
+            }
+
+            // Only offer to cancel a Virtual A/B update when there is one. The old code hid this
+            // button the first time it saw "none" and never showed it again.
+            bool pending = fastbootData.snapshot_update_status != null && fastbootData.snapshot_update_status != "none";
+            MainWindow.THIS.fastboot_cancel_update.Visibility = pending ? Visibility.Visible : Visibility.Collapsed;
+
+            MainWindow.THIS.fastboot_mode_text.Text = fastbootData.fastbootd ? "fastbootd" : "bootloader";
+            MainWindow.THIS.fastboot_mode_badge.Visibility = Visibility.Visible;
+
+            MainWindow.THIS.fastboot_checks.ItemsSource = buildChecks();
+        }
+
+        /// <summary>What to look at before writing anything to this device.</summary>
+        static List<CheckRow> buildChecks()
+        {
+            List<CheckRow> checks = new List<CheckRow>();
+
+            if (fastbootData.unlocked == true)
+                checks.Add(new CheckRow(CheckRow.Level.Ok, Properties.Resources.check_unlocked));
+            else if (fastbootData.unlocked == false)
+                checks.Add(new CheckRow(CheckRow.Level.Danger, Properties.Resources.check_locked));
+
+            if (fastbootData.fastbootd)
+                checks.Add(new CheckRow(CheckRow.Level.Ok, Properties.Resources.check_fastbootd));
+            else
+                checks.Add(new CheckRow(CheckRow.Level.Warn, Properties.Resources.check_bootloader));
+
+            if (fastbootData.snapshot_update_status == null || fastbootData.snapshot_update_status == "none")
+                checks.Add(new CheckRow(CheckRow.Level.Ok, Properties.Resources.check_no_update));
+            else
+                checks.Add(new CheckRow(CheckRow.Level.Warn,
+                    string.Format(Properties.Resources.check_update_pending, fastbootData.snapshot_update_status)));
+
+            if (fastbootData.partition_size.Keys.Any(key => key.EndsWith("cow")))
+                checks.Add(new CheckRow(CheckRow.Level.Warn, Properties.Resources.check_cow));
+
+            if (fastbootData.current_slot != null)
+                checks.Add(new CheckRow(CheckRow.Level.Ok,
+                    string.Format(Properties.Resources.check_slot, fastbootData.current_slot)));
+
+            return checks;
         }
 
         static void change_page()
         {
-            switch (cur_status)
-            {
-                case FastbootStatus.show_devices:
-                    MainWindow.THIS.fastboot_actions_page.Visibility = Visibility.Hidden;
-                    MainWindow.THIS.fastboot_devices_page.Visibility = Visibility.Visible;
-                    break;
-                case FastbootStatus.show_actions:
-                    load_fastboot_vars();
-                    MainWindow.THIS.fastboot_devices_page.Visibility = Visibility.Hidden;
-                    MainWindow.THIS.fastboot_actions_page.Visibility = Visibility.Visible;
-                    break;
-            }
+            bool showActions = cur_status == FastbootStatus.show_actions;
+
+            if (showActions)
+                load_fastboot_vars();
+            else
+                MainWindow.THIS.fastboot_mode_badge.Visibility = Visibility.Collapsed;
+
+            MainWindow.THIS.fastboot_devices_page.Visibility = showActions ? Visibility.Collapsed : Visibility.Visible;
+            MainWindow.THIS.fastboot_actions_page.Visibility = showActions ? Visibility.Visible : Visibility.Collapsed;
+            MainWindow.THIS.fastboot_device_chip.Visibility = showActions ? Visibility.Visible : Visibility.Collapsed;
+            MainWindow.THIS.fastboot_remove.Visibility = showActions ? Visibility.Visible : Visibility.Collapsed;
+            MainWindow.THIS.flash_target_device.Text = showActions && cur_serial != null
+                ? string.Format(Properties.Resources.flash_target, cur_serial)
+                : Properties.Resources.flash_target_none;
         }
 
         class StepCmdRunnerParam
@@ -333,13 +402,29 @@ namespace FastbootEnhance
             public int step_count;
             public bool show_dialog_on_done;
             public bool skip_var_refresh;
+
+            /// <summary>
+            /// Captured on the UI thread when the command is created. Reboot clears cur_serial
+            /// straight after starting the worker, so reading it there could send the command
+            /// without -s, and fastboot would then act on whichever device it found first.
+            /// </summary>
+            public string serial;
+
             public StepCmdRunnerParam(string cmd, int step_count, bool hint_on_done, bool skip_var_refresh = false)
             {
                 this.cmd = cmd;
                 this.step_count = step_count;
                 this.show_dialog_on_done = hint_on_done;
                 this.skip_var_refresh = skip_var_refresh;
+                this.serial = cur_serial;
             }
+        }
+
+        static void runStep(StepCmdRunnerParam param)
+        {
+            Thread worker = new Thread(new ParameterizedThreadStart(step_cmd_runner_err));
+            worker.IsBackground = true;
+            worker.Start(param);
         }
 
         static void step_cmd_runner_err(object raw_param)
@@ -353,29 +438,62 @@ namespace FastbootEnhance
                     MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
             }));
 
-            using (Fastboot fastboot = new Fastboot(cur_serial, param.cmd))
+            appendLog("> fastboot " + param.cmd);
+            string failure = null;
+
+            try
             {
-                int count = 0;
-                while (true)
+                using (Fastboot fastboot = new Fastboot(param.serial, param.cmd))
                 {
-                    string err = fastboot.stderr.ReadLine();
+                    int count = 0;
+                    while (true)
+                    {
+                        string err = fastboot.stderr.ReadLine();
 
-                    if (err == null)
-                        break;
+                        if (err == null)
+                            break;
 
-                    appendLog(err);
+                        appendLog(err);
 
-                    if (param.step_count > 0)
-                        MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
-                        {
-                            MainWindow.THIS.fastboot_progress_bar.Value = ++count * 100 / param.step_count;
-                            Helper.TaskbarItemHelper.update(count * 100 / param.step_count);
-                        }));
+                        if (param.step_count > 0)
+                            MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                            {
+                                count++;
+                                int percent = Math.Min(100, count * 100 / param.step_count);
+                                MainWindow.THIS.fastboot_progress_bar.Value = percent;
+                                Helper.TaskbarItemHelper.update(percent);
+                            }));
+                    }
+
+                    int? exitCode = fastboot.WaitForExit(FlashTimeout);
+                    if (exitCode != 0)
+                    {
+                        failure = "fastboot " + param.cmd + ": " + (exitCode == null
+                            ? "did not finish in time"
+                            : "exited with code " + exitCode);
+                        appendLog(failure);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                failure = e.Message;
+                appendLog("fastboot " + param.cmd + " failed: " + e.Message);
             }
 
             MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
             {
+                MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
+
+                if (param.skip_var_refresh || failure != null)
+                    action_unlock();
+
+                if (failure != null)
+                {
+                    MessageBox.Show(failure, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
                 if (!param.skip_var_refresh)
                     load_fastboot_vars();
                 if (param.show_dialog_on_done)
@@ -562,11 +680,10 @@ namespace FastbootEnhance
         static void flashPayload(PayloadFile payload)
         {
             string staging = Path.Combine(PAYLOAD_TMP, "stage-" + Guid.NewGuid().ToString("N"));
+            string serial = cur_serial;
 
             List<PayloadPartitionInfo> parts = payload.Partitions.ToList();
-            long totalBytes = parts.Sum(part => part.UnpackedSize);
-            if (totalBytes <= 0)
-                totalBytes = 1;
+            long totalBytes = Math.Max(1, parts.Sum(part => part.UnpackedSize));
 
             ExtractionOptions options = new ExtractionOptions
             {
@@ -576,8 +693,36 @@ namespace FastbootEnhance
                 MaxDegreeOfParallelism = Math.Max(1, Environment.ProcessorCount)
             };
 
+            // The Flash page's queue: one row per partition, updated as work moves along.
+            System.Collections.ObjectModel.ObservableCollection<FlashRow> rows =
+                new System.Collections.ObjectModel.ObservableCollection<FlashRow>();
+            Dictionary<string, FlashRow> rowByName = new Dictionary<string, FlashRow>(StringComparer.Ordinal);
+            foreach (PayloadPartitionInfo part in parts)
+            {
+                FlashRow row = new FlashRow(part.Name, Helper.byte2AUnit(part.UnpackedSize), string.Join(", ", part.Codecs));
+                rows.Add(row);
+                rowByName[part.Name] = row;
+            }
+
+            MainWindow.THIS.flash_queue.ItemsSource = rows;
+            MainWindow.THIS.flash_file_name.Text = Path.GetFileName(payload.Source.ContainerPath);
+            MainWindow.THIS.flash_file_detail.Text = parts.Count + " partitions  ·  " + Helper.byte2AUnit(totalBytes)
+                + "  ·  " + (payload.Source.FromZip ? "OTA zip" : "payload.bin");
+            MainWindow.THIS.flash_count.Text = "0 / " + parts.Count;
+            MainWindow.THIS.flash_overall_progress.Value = 0;
+            MainWindow.THIS.flash_log.Clear();
+            setPhase(Properties.Resources.flash_phase_extract, "Accent");
+            MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.flash_tab;
+
+            System.Diagnostics.Stopwatch clock = System.Diagnostics.Stopwatch.StartNew();
+            System.Windows.Threading.DispatcherTimer ticker = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            ticker.Tick += delegate { MainWindow.THIS.flash_elapsed.Text = clock.Elapsed.ToString(@"mm\:ss"); };
+            ticker.Start();
+
             // Extraction counts for the first half of the bar, flashing for the second.
-            long extractedBytes = 0;
             Dictionary<string, long> perPartition = new Dictionary<string, long>(StringComparer.Ordinal);
             int lastPercent = -1;
 
@@ -590,6 +735,7 @@ namespace FastbootEnhance
                 MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                 {
                     MainWindow.THIS.fastboot_progress_bar.Value = percent;
+                    MainWindow.THIS.flash_overall_progress.Value = percent;
                     Helper.TaskbarItemHelper.update(percent);
                 }));
             });
@@ -603,11 +749,36 @@ namespace FastbootEnhance
                     done = 0;
                     foreach (long written in perPartition.Values)
                         done += written;
-                    extractedBytes = done;
                 }
                 showPercent((int)(done * 50 / totalBytes));
+
+                FlashRow row;
+                if (rowByName.TryGetValue(value.Partition, out row))
+                {
+                    double share = value.TotalBytes > 0 ? 50.0 * value.BytesWritten / value.TotalBytes : 50.0;
+                    MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        row.Current = FlashRow.Stage.Extracting;
+                        row.Progress = Math.Min(50.0, share);
+                    }));
+                }
             });
 
+            Action<string, FlashRow.Stage, double?> updateRow = new Action<string, FlashRow.Stage, double?>(
+                delegate (string name, FlashRow.Stage stage, double? value)
+                {
+                    FlashRow row;
+                    if (!rowByName.TryGetValue(name, out row))
+                        return;
+                    MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        row.Current = stage;
+                        if (value != null)
+                            row.Progress = value.Value;
+                    }));
+                });
+
+            flashing = true;
             action_lock();
 
             Thread worker = new Thread(new ThreadStart(delegate
@@ -626,25 +797,43 @@ namespace FastbootEnhance
                         payload, staging, parts.Select(part => part.Name), options, progress,
                         CancellationToken.None);
 
+                    foreach (PartitionResult result in report.Results)
+                    {
+                        if (result.Succeeded)
+                            updateRow(result.Partition, FlashRow.Stage.Verified, 50.0);
+                        else
+                            updateRow(result.Partition, FlashRow.Stage.Failed, null);
+                    }
+
                     if (!report.AllSucceeded)
                     {
                         error = string.Join("\n", report.Results
                             .Where(result => !result.Succeeded)
                             .Select(result => result.Partition + ": " + result.Error));
+                        foreach (PartitionResult result in report.Results.Where(r => r.Succeeded))
+                            updateRow(result.Partition, FlashRow.Stage.NotWritten, null);
                     }
                     else
                     {
                         appendLog("Extracted " + Helper.byte2AUnit(report.TotalBytes)
                             + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
 
-                        long flashedBytes = 0;
-
-                        foreach (PartitionResult result in report.Results)
+                        MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                         {
+                            setPhase(Properties.Resources.flash_phase_flash, "Accent");
+                        }));
+
+                        long flashedBytes = 0;
+                        List<PartitionResult> results = report.Results.ToList();
+
+                        for (int i = 0; i < results.Count; i++)
+                        {
+                            PartitionResult result = results[i];
                             appendLog("Flashing " + result.Partition);
+                            updateRow(result.Partition, FlashRow.Stage.Flashing, 75.0);
 
                             int? exitCode;
-                            using (Fastboot fastboot = new Fastboot(cur_serial,
+                            using (Fastboot fastboot = new Fastboot(serial,
                                 "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\""))
                             {
                                 while (true)
@@ -665,12 +854,22 @@ namespace FastbootEnhance
                                     ? "did not finish within " + FlashTimeout.TotalMinutes + " minutes"
                                     : "exited with code " + exitCode);
                                 appendLog(error);
+                                updateRow(result.Partition, FlashRow.Stage.Failed, null);
+                                for (int rest = i + 1; rest < results.Count; rest++)
+                                    updateRow(results[rest].Partition, FlashRow.Stage.NotWritten, null);
                                 break;
                             }
 
                             flashed++;
                             flashedBytes += result.Size;
+                            updateRow(result.Partition, FlashRow.Stage.Flashed, 100.0);
                             showPercent(50 + (int)(flashedBytes * 50 / totalBytes));
+
+                            int written = flashed;
+                            MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+                            {
+                                MainWindow.THIS.flash_count.Text = written + " / " + parts.Count;
+                            }));
 
                             try
                             {
@@ -685,6 +884,7 @@ namespace FastbootEnhance
                 catch (Exception e)
                 {
                     error = e.Message;
+                    appendLog("flash failed: " + e.Message);
                 }
                 finally
                 {
@@ -707,14 +907,21 @@ namespace FastbootEnhance
 
                 MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                 {
+                    flashing = false;
+                    ticker.Stop();
+                    clock.Stop();
+                    MainWindow.THIS.flash_elapsed.Text = clock.Elapsed.ToString(@"mm\:ss");
                     load_fastboot_vars();
 
                     if (summary == null)
                     {
+                        setPhase(Properties.Resources.flash_phase_done, "Ok");
+                        MainWindow.THIS.flash_overall_progress.Value = 100;
                         MessageBox.Show(Properties.Resources.operation_completed);
                         return;
                     }
 
+                    setPhase(Properties.Resources.flash_phase_failed, "Danger");
                     Helper.TaskbarItemHelper.error();
                     MessageBox.Show(Properties.Resources.payload_error_occur
                         + "\n\n" + summary
@@ -724,6 +931,12 @@ namespace FastbootEnhance
 
             worker.IsBackground = true;
             worker.Start();
+        }
+
+        static void setPhase(string text, string brushKey)
+        {
+            MainWindow.THIS.flash_phase.Text = text;
+            MainWindow.THIS.flash_phase.Foreground = Palette.Get(brushKey);
         }
 
         sealed class ExtractionProgressSink : IProgress<ExtractionProgress>
@@ -741,6 +954,21 @@ namespace FastbootEnhance
             }
         }
 
+        static void openSelectedDevice()
+        {
+            if (MainWindow.THIS.fastboot_devices_list.SelectedItems.Count != 1)
+                return;
+
+            fastboot_devices_row cur = (fastboot_devices_row)MainWindow.THIS.fastboot_devices_list.SelectedItem;
+            cur_serial = cur.serial;
+            if (!checkCurDevExist())
+                return;
+            cur_status = FastbootStatus.show_actions;
+            MainWindow.THIS.fastboot_cur_device.Content = cur.serial;
+            appendLog("Opened device " + cur.serial + " (" + cur.name + ")");
+            change_page();
+        }
+
         public static void init()
         {
             devices = new List<fastboot_devices_row>();
@@ -751,24 +979,20 @@ namespace FastbootEnhance
             Thread refresher = new Thread(new ThreadStart(devicesListRefresher));
             refresher.IsBackground = true;
             refresher.Start();
+            MainWindow.THIS.main_tabs.Tag = string.Format(Properties.Resources.rail_devices, 0);
+
             MainWindow.THIS.fastboot_devices_list.MouseDoubleClick += delegate
             {
-                if (MainWindow.THIS.fastboot_devices_list.SelectedItems.Count == 0)
-                    return;
+                openSelectedDevice();
+            };
 
-                if (MainWindow.THIS.fastboot_devices_list.SelectedItems.Count > 1)
-                {
-                    MainWindow.THIS.fastboot_devices_list.SelectedItems.Clear();
+            // Keyboard users (and UI automation) open a device with Enter.
+            MainWindow.THIS.fastboot_devices_list.KeyDown += delegate (object sender, System.Windows.Input.KeyEventArgs e)
+            {
+                if (e.Key != System.Windows.Input.Key.Enter)
                     return;
-                }
-
-                fastboot_devices_row cur = (fastboot_devices_row)MainWindow.THIS.fastboot_devices_list.SelectedItem;
-                cur_serial = cur.serial;
-                if (!checkCurDevExist())
-                    return;
-                cur_status = FastbootStatus.show_actions;
-                MainWindow.THIS.fastboot_cur_device.Content = Properties.Resources.fastboot_current_device + cur.serial;
-                change_page();
+                e.Handled = true;
+                openSelectedDevice();
             };
 
             MainWindow.THIS.fastboot_remove.Click += delegate
@@ -785,13 +1009,11 @@ namespace FastbootEnhance
 
                 if (fastbootData.fastbootd)
                 {
-                    new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("reboot bootloader", 2, false));
+                    runStep(new StepCmdRunnerParam("reboot bootloader", 2, false));
                 }
                 else
                 {
-                    new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("reboot fastboot", 3, false));
+                    runStep(new StepCmdRunnerParam("reboot fastboot", 3, false));
                 }
             };
 
@@ -800,8 +1022,7 @@ namespace FastbootEnhance
                 if (!checkCurDevExist())
                     return;
 
-                new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("reboot", 0, false, true));
+                runStep(new StepCmdRunnerParam("reboot", 0, false, true));
 
                 cur_serial = null;
                 cur_status = FastbootStatus.show_devices;
@@ -813,8 +1034,7 @@ namespace FastbootEnhance
                 if (!checkCurDevExist())
                     return;
 
-                new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("reboot recovery", 0, false, true));
+                runStep(new StepCmdRunnerParam("reboot recovery", 0, false, true));
 
                 cur_serial = null;
                 cur_status = FastbootStatus.show_devices;
@@ -828,13 +1048,11 @@ namespace FastbootEnhance
 
                 if (fastbootData.current_slot == "a")
                 {
-                    new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("set_active b", 2, false));
+                    runStep(new StepCmdRunnerParam("set_active b", 2, false));
                 }
                 else if (fastbootData.current_slot == "b")
                 {
-                    new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("set_active a", 2, false));
+                    runStep(new StepCmdRunnerParam("set_active a", 2, false));
                 }
                 else
                 {
@@ -848,8 +1066,7 @@ namespace FastbootEnhance
                 if (!checkCurDevExist())
                     return;
 
-                new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("snapshot-update cancel", 2, true));
+                runStep(new StepCmdRunnerParam("snapshot-update cancel", 2, true));
             };
 
             MainWindow.THIS.fastboot_flash.Click += delegate
@@ -878,20 +1095,24 @@ namespace FastbootEnhance
                             ext_arg += "--disable-verity --disable-verification";
                         }
                     }
-                    new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("flash " + ext_arg + " \"" + target + "\" \"" + path + "\"", -1, true));
+                    runStep(new StepCmdRunnerParam("flash " + ext_arg + " \"" + target + "\" \"" + path + "\"", -1, true));
                 }), "Image File|*.img;*.image");
             };
 
             MainWindow.THIS.fastboot_erase.Click += delegate
             {
+                if (!checkCurDevExist())
+                    return;
+
                 if (singlePartitionCheck())
                     return;
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
 
-                new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("erase \"" + target + "\"", 2, false));
+                if (!Helper.confirm(string.Format(Properties.Resources.confirm_erase, target), Properties.Resources.confirm_title))
+                    return;
+
+                runStep(new StepCmdRunnerParam("erase \"" + target + "\"", 2, false));
             };
 
             MainWindow.THIS.fastboot_partition_list.SelectionChanged += delegate
@@ -948,8 +1169,10 @@ namespace FastbootEnhance
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
 
-                new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                .Start(new StepCmdRunnerParam("delete-logical-partition \"" + target + "\"", 2, false));
+                if (!Helper.confirm(string.Format(Properties.Resources.confirm_delete, target), Properties.Resources.confirm_title))
+                    return;
+
+                runStep(new StepCmdRunnerParam("delete-logical-partition \"" + target + "\"", 2, false));
             };
 
             MainWindow.THIS.fastboot_logical_create.Click += delegate
@@ -960,8 +1183,7 @@ namespace FastbootEnhance
                 new FastbootActionWindow(FastbootActionWindow.StartType.CREATE, "", 0,
                     delegate (string name, ulong size)
                    {
-                       new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                        .Start(new StepCmdRunnerParam(
+                       runStep(new StepCmdRunnerParam(
                             "create-logical-partition \"" + name + "\" \"" + size.ToString() + "\"", 2, false));
                    }).ShowDialog();
             };
@@ -980,14 +1202,20 @@ namespace FastbootEnhance
                     fastbootData.partition_size[target],
                     delegate (string name, ulong size)
                     {
-                        new Thread(new ParameterizedThreadStart(step_cmd_runner_err))
-                         .Start(new StepCmdRunnerParam(
+                        runStep(new StepCmdRunnerParam(
                              "resize-logical-partition \"" + name + "\" \"" + size.ToString() + "\"", 2, false));
                     }).ShowDialog();
             };
 
             MainWindow.THIS.fastboot_flash_payload.Click += delegate
             {
+                if (cur_serial == null || fastbootData == null)
+                {
+                    MessageBox.Show(Properties.Resources.flash_no_device);
+                    MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.device_tab;
+                    return;
+                }
+
                 if (!checkCurDevExist())
                     return;
 
@@ -1014,23 +1242,6 @@ namespace FastbootEnhance
             MainWindow.THIS.fastboot_partition_name_textbox.TextChanged += delegate
             {
                 listHelper.doFilter();
-            };
-
-            MainWindow.THIS.fastboot_show_logs.Click += delegate
-            {
-                if ((bool)MainWindow.THIS.fastboot_show_logs.IsChecked)
-                {
-                    logger = new Logger(new Action(delegate
-                    {
-                        logger = null;
-                        MainWindow.THIS.fastboot_show_logs.IsChecked = false;
-                    }));
-                    logger.Show();
-                }
-                else
-                {
-                    logger.Close();
-                }
             };
         }
     }

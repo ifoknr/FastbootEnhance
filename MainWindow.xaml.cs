@@ -46,12 +46,67 @@ namespace FastbootEnhance
                 Loaded += delegate { PayloadUI.openFromPath(path); };
             }
 
+            wireLogs();
+
+            // Closing mid-flash kills the worker between partitions and can leave the phone
+            // half written, so it has to be a deliberate choice.
+            Closing += delegate (object sender, System.ComponentModel.CancelEventArgs e)
+            {
+                if (!FastbootUI.flashing)
+                    return;
+
+                if (MessageBox.Show(Properties.Resources.confirm_close_flashing, Properties.Resources.confirm_title,
+                        MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
+                    e.Cancel = true;
+            };
+
             Closed += delegate
             {
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
             };
+        }
+
+        const int MaxLogBoxChars = 400000;
+
+        /// <summary>The Logs page shows the whole session; the Flash page shows the same feed.</summary>
+        void wireLogs()
+        {
+            log_text.Text = LogStore.Snapshot();
+
+            LogStore.LineAdded += line =>
+            {
+                Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    appendTo(log_text, line);
+                    if (FastbootUI.flashing)
+                        appendTo(flash_log, line);
+                }));
+            };
+
+            LogStore.Cleared += () => Dispatcher.BeginInvoke(new Action(delegate { log_text.Clear(); }));
+
+            log_clear.Click += delegate { LogStore.Clear(); };
+            log_copy.Click += delegate
+            {
+                try
+                {
+                    Clipboard.SetText(LogStore.Snapshot());
+                }
+                catch (System.Runtime.InteropServices.ExternalException)
+                {
+                    // Another app is holding the clipboard; nothing useful to do about it.
+                }
+            };
+        }
+
+        static void appendTo(System.Windows.Controls.TextBox box, string line)
+        {
+            if (box.Text.Length > MaxLogBoxChars)
+                box.Text = box.Text.Substring(box.Text.Length - MaxLogBoxChars / 2);
+            box.AppendText(line + "\n");
+            box.ScrollToEnd();
         }
 
         /// <summary>

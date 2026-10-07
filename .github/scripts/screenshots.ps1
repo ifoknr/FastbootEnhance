@@ -1,10 +1,12 @@
-# Launches the published app with a sample OTA and captures every tab, including the
-# nested ones, through UI Automation. Used by the screenshots workflow; also handy
-# locally:  pwsh .github/scripts/screenshots.ps1 -App publish\FastbootEnhance.exe -Payload sample\sample-ota.zip -Out shots
+# Drives the published app through a whole session on Windows and captures each screen:
+# payload inspection, picking a device, flashing a full OTA, the log, and About.
+# With the stand-in fastboot.exe from tools/FastbootEnhance.FakeFastboot it doubles as an
+# end-to-end test: it fails unless every partition of the sample OTA reaches "fastboot flash".
 param(
     [Parameter(Mandatory)] [string] $App,
     [Parameter(Mandatory)] [string] $Payload,
-    [Parameter(Mandatory)] [string] $Out
+    [Parameter(Mandatory)] [string] $Out,
+    [int] $ExpectedFlashes = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -23,9 +25,19 @@ public static class Win32 {
 "@
 [Win32]::SetProcessDPIAware() | Out-Null
 
+$UIA = [System.Windows.Automation.AutomationElement]
+$Scope = [System.Windows.Automation.TreeScope]
+$Type = [System.Windows.Automation.ControlType]
+
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
+# Screen names change as the UI does; start from an empty folder so nothing stale is kept.
+Get-ChildItem $Out -Filter *.png -ErrorAction SilentlyContinue | Remove-Item -Force
 $App = (Resolve-Path $App).Path
 $Payload = (Resolve-Path $Payload).Path
+$appDir = Split-Path $App
+$crashLog = Join-Path $env:TEMP 'FastbootEnhance\crash.log'
+$fakeLog = Join-Path $appDir 'fake-fastboot.log'
+Remove-Item $crashLog, $fakeLog -ErrorAction SilentlyContinue
 
 function Save-Desktop([string] $name) {
     $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
@@ -36,117 +48,153 @@ function Save-Desktop([string] $name) {
     $g.Dispose(); $bmp.Dispose()
 }
 
-function Save-Window([IntPtr] $hwnd, [string] $name) {
+function Fail([string] $why) {
+    Save-Desktop "00-desktop-on-failure"
+    if (Test-Path $crashLog) { Write-Host "---- crash.log ----"; Get-Content $crashLog | Write-Host }
+    if (Test-Path $fakeLog) { Write-Host "---- fake-fastboot.log ----"; Get-Content $fakeLog | Write-Host }
+    throw $why
+}
+
+function Save-Window([string] $name) {
     $r = New-Object Win32+RECT
-    [Win32]::GetWindowRect($hwnd, [ref] $r) | Out-Null
+    [Win32]::GetWindowRect($script:hwnd, [ref] $r) | Out-Null
     $w = $r.Right - $r.Left; $h = $r.Bottom - $r.Top
     $bmp = New-Object System.Drawing.Bitmap $w, $h
     $g = [System.Drawing.Graphics]::FromImage($bmp)
     $hdc = $g.GetHdc()
     # PW_RENDERFULLCONTENT (2) is needed for WPF, which draws through DirectX.
-    $ok = [Win32]::PrintWindow($hwnd, $hdc, 2)
+    $ok = [Win32]::PrintWindow($script:hwnd, $hdc, 2)
     $g.ReleaseHdc($hdc)
-    if (-not $ok) {
-        $g.CopyFromScreen($r.Left, $r.Top, 0, 0, $bmp.Size)
-    }
+    if (-not $ok) { $g.CopyFromScreen($r.Left, $r.Top, 0, 0, $bmp.Size) }
     $path = Join-Path $Out "$name.png"
     $bmp.Save($path, [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose(); $bmp.Dispose()
     Write-Host "saved $path (${w}x${h})"
 }
 
-function Find-All($parent, $controlType, $scope) {
-    $cond = New-Object System.Windows.Automation.PropertyCondition(
-        [System.Windows.Automation.AutomationElement]::ControlTypeProperty, $controlType)
-    return $parent.FindAll($scope, $cond)
+function By-Id($parent, [string] $id) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::AutomationIdProperty, $id)
+    return $parent.FindFirst($Scope::Descendants, $cond)
 }
 
-function Select-Tab($tab) {
-    $pattern = $tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern)
-    $pattern.Select()
-    Start-Sleep -Milliseconds 1200
-}
-
-function Slug([string] $text) {
-    return (($text -replace '[^A-Za-z0-9]+', '-').Trim('-')).ToLowerInvariant()
-}
-
-Write-Host "launching $App `"$Payload`""
-$proc = Start-Process -FilePath $App -ArgumentList "`"$Payload`"" -WorkingDirectory (Split-Path $App) -PassThru
-
-$hwnd = [IntPtr]::Zero
-for ($i = 0; $i -lt 90; $i++) {
-    Start-Sleep -Seconds 1
-    if ($proc.HasExited) { break }
-    $proc.Refresh()
-    if ($proc.MainWindowHandle -ne [IntPtr]::Zero) { $hwnd = $proc.MainWindowHandle; break }
-}
-
-if ($hwnd -eq [IntPtr]::Zero) {
-    Save-Desktop "00-desktop-on-failure"
-    if ($proc.HasExited) { throw "app exited during start-up with code $($proc.ExitCode)" }
-    throw "app window never appeared"
-}
-
-$crashLog = Join-Path $env:TEMP 'FastbootEnhance\crash.log'
-
-function Fail([string] $why) {
-    Save-Desktop "00-desktop-on-failure"
-    if (Test-Path $crashLog) { Write-Host "---- crash.log ----"; Get-Content $crashLog | Write-Host }
-    throw $why
-}
-
-# Give the payload time to open and the device list its first refresh.
-Start-Sleep -Seconds 8
-if ($proc.HasExited) { Fail "app exited after start-up with code $($proc.ExitCode)" }
-
-Save-Desktop "00-desktop"
-
-# Look the window up by process rather than trusting the first handle we saw: WPF can
-# replace its initial window handle while starting.
-$byProcess = New-Object System.Windows.Automation.PropertyCondition(
-    [System.Windows.Automation.AutomationElement]::ProcessIdProperty, $proc.Id)
-$root = $null
-for ($i = 0; $i -lt 20 -and $null -eq $root; $i++) {
-    try {
-        $root = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst(
-            [System.Windows.Automation.TreeScope]::Children, $byProcess)
-    } catch {
-        Write-Host "lookup attempt $i failed: $($_.Exception.Message)"
+function Wait-For([scriptblock] $probe, [int] $seconds, [string] $what) {
+    for ($i = 0; $i -lt $seconds * 2; $i++) {
+        $value = & $probe
+        if ($null -ne $value -and $value -ne $false) { return $value }
+        if ($script:proc.HasExited) { Fail "app exited while waiting for $what (code $($script:proc.ExitCode))" }
+        Start-Sleep -Milliseconds 500
     }
-    if ($null -eq $root) { Start-Sleep -Seconds 1 }
+    Fail "timed out waiting for $what"
 }
-if ($null -eq $root) { Fail "no top-level window found for pid $($proc.Id)" }
 
-$hwnd = [IntPtr]$root.Current.NativeWindowHandle
+function Select-Item($element) {
+    $element.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
+    Start-Sleep -Milliseconds 900
+}
+
+function Visible-Tabs($parent) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::TabItem)
+    return @($parent.FindAll($Scope::Descendants, $cond) | Where-Object { -not $_.Current.IsOffscreen })
+}
+
+# A top-level window of the app other than the main one: a file dialog or a message box.
+function Find-Dialog {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $script:proc.Id)
+    foreach ($w in $UIA::RootElement.FindAll($Scope::Children, $cond)) {
+        if ([IntPtr]$w.Current.NativeWindowHandle -ne $script:hwnd) { return $w }
+    }
+    foreach ($w in $script:root.FindAll($Scope::Children, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Window)))) {
+        return $w
+    }
+    return $null
+}
+
+function Send([string] $keys) {
+    [Win32]::SetForegroundWindow($script:hwnd) | Out-Null
+    [System.Windows.Forms.SendKeys]::SendWait($keys)
+}
+
+# ---------------------------------------------------------------- launch
+Write-Host "launching $App `"$Payload`""
+$script:proc = Start-Process -FilePath $App -ArgumentList "`"$Payload`"" -WorkingDirectory $appDir -PassThru
+
+$byProcess = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $proc.Id)
+$script:root = Wait-For { $UIA::RootElement.FindFirst($Scope::Children, $byProcess) } 60 "the main window"
+$script:hwnd = [IntPtr]$root.Current.NativeWindowHandle
 Write-Host "window: '$($root.Current.Name)' hwnd=$hwnd"
 [Win32]::SetForegroundWindow($hwnd) | Out-Null
 
-$mainTabs = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,
-    (New-Object System.Windows.Automation.PropertyCondition(
-        [System.Windows.Automation.AutomationElement]::AutomationIdProperty, 'main_tabs')))
-if ($null -eq $mainTabs) { Fail "main_tabs not found in '$($root.Current.Name)'" }
-
-$index = 1
-$topTabs = Find-All $mainTabs ([System.Windows.Automation.ControlType]::TabItem) ([System.Windows.Automation.TreeScope]::Children)
-foreach ($top in $topTabs) {
-    $topName = Slug $top.Current.Name
-    Select-Tab $top
-
-    # The fastboot tab hides its inner tabs until a device is picked; skip what is not on screen.
-    $nested = @(Find-All $top ([System.Windows.Automation.ControlType]::TabItem) ([System.Windows.Automation.TreeScope]::Descendants) |
-        Where-Object { -not $_.Current.IsOffscreen })
-    if ($nested.Count -eq 0) {
-        Save-Window $hwnd ('{0:D2}-{1}' -f $index, $topName); $index++
-        continue
-    }
-
-    foreach ($sub in $nested) {
-        Select-Tab $sub
-        Save-Window $hwnd ('{0:D2}-{1}-{2}' -f $index, $topName, (Slug $sub.Current.Name)); $index++
-    }
+$mainTabs = Wait-For { By-Id $root 'main_tabs' } 20 "main_tabs"
+function Go([string] $tabId) {
+    $tab = Wait-For { By-Id $mainTabs $tabId } 10 $tabId
+    Select-Item $tab
+    return $tab
 }
 
-if ($proc.HasExited) { throw "app exited while being captured, code $($proc.ExitCode)" }
+# ---------------------------------------------------------------- payload inspector
+$payloadTab = Go 'payload_tab'
+Wait-For { $p = By-Id $root 'payload_after_load'; $p -and -not $p.Current.IsOffscreen } 60 "the payload to open" | Out-Null
+$i = 1
+foreach ($sub in (Visible-Tabs $payloadTab)) {
+    Select-Item $sub
+    Save-Window ('{0:D2}-payload-{1}' -f $i, ($sub.Current.Name -replace '[^A-Za-z0-9]+', '-').Trim('-').ToLower()); $i++
+}
+
+# ---------------------------------------------------------------- device list and device
+Go 'device_tab' | Out-Null
+$devices = Wait-For { By-Id $root 'fastboot_devices_list' } 10 "the device list"
+$rowCond = New-Object System.Windows.Automation.OrCondition(
+    (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::DataItem)),
+    (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::ListItem)))
+$row = Wait-For { $devices.FindFirst($Scope::Descendants, $rowCond) } 20 "a device to appear"
+Save-Window ('{0:D2}-device-list' -f $i); $i++
+
+Select-Item $row
+$row.SetFocus()
+Send '{ENTER}'
+$actions = Wait-For { $p = By-Id $root 'fastboot_actions_page'; if ($p -and -not $p.Current.IsOffscreen) { $p } } 20 "the device page"
+Start-Sleep -Seconds 3   # getvar all
+
+foreach ($sub in (Visible-Tabs $actions)) {
+    Select-Item $sub
+    Save-Window ('{0:D2}-device-{1}' -f $i, ($sub.Current.Name -replace '[^A-Za-z0-9]+', '-').Trim('-').ToLower()); $i++
+}
+
+# ---------------------------------------------------------------- flash the sample OTA
+if ($ExpectedFlashes -gt 0) {
+    Go 'flash_tab' | Out-Null
+    $button = Wait-For { By-Id $root 'fastboot_flash_payload' } 10 "the flash button"
+    Wait-For { $button.Current.IsEnabled } 30 "the flash button to be enabled" | Out-Null
+    $button.SetFocus()
+    Send ' '
+
+    $dialog = Wait-For { Find-Dialog } 20 "the file dialog"
+    Write-Host "file dialog: '$($dialog.Current.Name)'"
+    Start-Sleep -Milliseconds 800
+    [System.Windows.Forms.SendKeys]::SendWait($Payload + '{ENTER}')
+
+    # The app shows "operation completed" (or an error) when it is done.
+    $done = Wait-For { Find-Dialog } 240 "flashing to finish"
+    Start-Sleep -Milliseconds 800
+    $message = ($done.FindAll($Scope::Descendants, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Text))) |
+        ForEach-Object { $_.Current.Name }) -join ' | '
+    Write-Host "dialog after flashing: $message"
+    Save-Window ('{0:D2}-flash' -f $i); $i++
+    Send '{ENTER}'
+    Start-Sleep -Seconds 2
+
+    $flashes = @(Get-Content $fakeLog | Where-Object { $_ -match ' flash ' }).Count
+    Write-Host "fastboot flash commands issued: $flashes (expected $ExpectedFlashes)"
+    if ($flashes -ne $ExpectedFlashes) { Fail "expected $ExpectedFlashes flash commands, saw $flashes" }
+}
+
+# ---------------------------------------------------------------- log and about
+Go 'logs_tab' | Out-Null
+Save-Window ('{0:D2}-logs' -f $i); $i++
+Go 'about_tab' | Out-Null
+Save-Window ('{0:D2}-about' -f $i); $i++
+
+if (Test-Path $crashLog) { Fail "the app recorded an unhandled exception" }
+if ($proc.HasExited) { Fail "app exited while being captured, code $($proc.ExitCode)" }
 Stop-Process -Id $proc.Id -Force
-Write-Host "captured $($index - 1) screens"
+Write-Host "captured $($i - 1) screens"

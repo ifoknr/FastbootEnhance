@@ -480,4 +480,184 @@
   <data name="yes" xml:space="preserve">
     <value>Yes</value>
   </data>
+  <data name="nav_device" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="nav_flash" xml:space="preserve">
+    <value>Flash</value>
+  </data>
+  <data name="nav_logs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="device_subtitle" xml:space="preserve">
+    <value>Live device state, partitions and quick actions</value>
+  </data>
+  <data name="device_list_title" xml:space="preserve">
+    <value>Connected devices</value>
+  </data>
+  <data name="device_list_hint" xml:space="preserve">
+    <value>Double-click a device, or select it and press Enter.</value>
+  </data>
+  <data name="device_list_empty" xml:space="preserve">
+    <value>No device in bootloader or fastbootd yet. Connect one and it shows up here within a second.</value>
+  </data>
+  <data name="device_variables" xml:space="preserve">
+    <value>Device variables</value>
+  </data>
+  <data name="quick_actions" xml:space="preserve">
+    <value>Quick actions</value>
+  </data>
+  <data name="preflash_checks" xml:space="preserve">
+    <value>Pre-flash checks</value>
+  </data>
+  <data name="partition_actions" xml:space="preserve">
+    <value>Partition actions</value>
+  </data>
+  <data name="check_unlocked" xml:space="preserve">
+    <value>Bootloader unlocked: images can be written</value>
+  </data>
+  <data name="check_locked" xml:space="preserve">
+    <value>Bootloader locked: the device will refuse to flash</value>
+  </data>
+  <data name="check_no_update" xml:space="preserve">
+    <value>No Virtual A/B update is pending</value>
+  </data>
+  <data name="check_update_pending" xml:space="preserve">
+    <value>A Virtual A/B update is {0}: cancel it before flashing</value>
+  </data>
+  <data name="check_cow" xml:space="preserve">
+    <value>Leftover COW partitions found: remove them before flashing</value>
+  </data>
+  <data name="check_fastbootd" xml:space="preserve">
+    <value>In fastbootd: logical partitions can be written</value>
+  </data>
+  <data name="check_bootloader" xml:space="preserve">
+    <value>In the bootloader: reboot to fastbootd to write logical partitions</value>
+  </data>
+  <data name="check_slot" xml:space="preserve">
+    <value>Active slot: {0}</value>
+  </data>
+  <data name="rail_devices" xml:space="preserve">
+    <value>{0} device(s) in fastboot mode</value>
+  </data>
+  <data name="rail_no_fastboot" xml:space="preserve">
+    <value>fastboot.exe is missing</value>
+  </data>
+  <data name="flash_subtitle" xml:space="preserve">
+    <value>Every image is extracted in parallel and checked against the manifest before anything is written</value>
+  </data>
+  <data name="flash_no_payload" xml:space="preserve">
+    <value>No payload chosen</value>
+  </data>
+  <data name="flash_no_device" xml:space="preserve">
+    <value>Pick a device on the Device page first.</value>
+  </data>
+  <data name="flash_target_none" xml:space="preserve">
+    <value>No device selected</value>
+  </data>
+  <data name="flash_target" xml:space="preserve">
+    <value>Target: {0}</value>
+  </data>
+  <data name="flash_note_verify" xml:space="preserve">
+    <value>Each image is checked against its SHA-256 before it is written.</value>
+  </data>
+  <data name="flash_note_order" xml:space="preserve">
+    <value>Nothing reaches the device until every image has extracted cleanly.</value>
+  </data>
+  <data name="flash_phase_idle" xml:space="preserve">
+    <value>Idle</value>
+  </data>
+  <data name="flash_phase_extract" xml:space="preserve">
+    <value>Extracting</value>
+  </data>
+  <data name="flash_phase_flash" xml:space="preserve">
+    <value>Flashing</value>
+  </data>
+  <data name="flash_phase_done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="flash_phase_failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="flash_state_queued" xml:space="preserve">
+    <value>Queued</value>
+  </data>
+  <data name="flash_state_extracting" xml:space="preserve">
+    <value>Extracting</value>
+  </data>
+  <data name="flash_state_verified" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="flash_state_flashing" xml:space="preserve">
+    <value>Flashing</value>
+  </data>
+  <data name="flash_state_flashed" xml:space="preserve">
+    <value>Flashed</value>
+  </data>
+  <data name="flash_state_failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="flash_state_not_written" xml:space="preserve">
+    <value>Not written</value>
+  </data>
+  <data name="label_phase" xml:space="preserve">
+    <value>Phase</value>
+  </data>
+  <data name="label_elapsed" xml:space="preserve">
+    <value>Elapsed</value>
+  </data>
+  <data name="label_written" xml:space="preserve">
+    <value>Written</value>
+  </data>
+  <data name="live_log" xml:space="preserve">
+    <value>Live log</value>
+  </data>
+  <data name="logs_subtitle" xml:space="preserve">
+    <value>Every fastboot command and its output in this session</value>
+  </data>
+  <data name="logs_copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="logs_clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="payload_subtitle" xml:space="preserve">
+    <value>Open a payload.bin or an OTA zip to inspect it and extract images</value>
+  </data>
+  <data name="payload_drop_hint" xml:space="preserve">
+    <value>Drop a payload.bin or OTA zip here</value>
+  </data>
+  <data name="column_codec" xml:space="preserve">
+    <value>Codec</value>
+  </data>
+  <data name="column_extractable" xml:space="preserve">
+    <value>Extractable</value>
+  </data>
+  <data name="column_progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="column_state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="column_partition" xml:space="preserve">
+    <value>Partition</value>
+  </data>
+  <data name="column_size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="about_engine" xml:space="preserve">
+    <value>Payload engine: zstd, xz and bzip2, multi-extent operations, parallel extraction with SHA-256 checks</value>
+  </data>
+  <data name="confirm_title" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="confirm_erase" xml:space="preserve">
+    <value>Erase the partition "{0}"? Everything on it will be lost.</value>
+  </data>
+  <data name="confirm_delete" xml:space="preserve">
+    <value>Delete the logical partition "{0}" from super? It cannot be undone.</value>
+  </data>
+  <data name="confirm_close_flashing" xml:space="preserve">
+    <value>A payload is being flashed. Closing now stops it part way and can leave the device unbootable. Close anyway?</value>
+  </data>
 </root>

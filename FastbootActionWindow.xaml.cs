@@ -20,6 +20,7 @@ namespace FastbootEnhance
             string partition_name, long size, FastbootLogicalCallback callback)
         {
             InitializeComponent();
+            Owner = MainWindow.THIS;
 
             this.name.Text = partition_name;
             this.size.Text = size.ToString();
