@@ -27,6 +27,9 @@
     <!-- Default templates fill the corner where two scroll bars meet with the system control
          colour, which is near-white; this keeps it dark. -->
     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#161A21"/>
 
     <FontFamily x:Key="Mono">Cascadia Mono, Consolas, Courier New</FontFamily>
 

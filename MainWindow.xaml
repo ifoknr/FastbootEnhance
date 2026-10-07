@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:props="clr-namespace:FastbootEnhance.Properties"
+        xmlns:local="clr-namespace:FastbootEnhance"
         mc:Ignorable="d"
         Title="{x:Static props:Resources.app_name}"
         Height="780" Width="1220" MinHeight="640" MinWidth="1000"
@@ -27,11 +28,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource PageHeader}">
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
-                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_device}"/>
-                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.device_subtitle}"/>
-                        </StackPanel>
+                    <DockPanel LastChildFill="True">
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                             <Border x:Name="fastboot_mode_badge" Style="{StaticResource Badge}" Margin="0,0,10,0" Visibility="Collapsed">
                                 <TextBlock x:Name="fastboot_mode_text" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Accent}"/>
@@ -44,6 +41,10 @@
                             </Border>
                             <Button x:Name="fastboot_remove" Style="{StaticResource GhostButton}" Visibility="Collapsed"
                                     Content="{x:Static props:Resources.fastboot_remove_device}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_device}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.device_subtitle}"/>
                         </StackPanel>
                     </DockPanel>
                 </Border>
@@ -58,7 +59,7 @@
                                 <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.device_list_hint}"/>
                             </StackPanel>
                             <Grid>
-                                <ListView x:Name="fastboot_devices_list" SelectionMode="Single">
+                                <ListView x:Name="fastboot_devices_list" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120" SelectionMode="Single">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="300" DisplayMemberBinding="{Binding serial}"/>
@@ -87,7 +88,7 @@
                                     <Border Style="{StaticResource Card}">
                                         <DockPanel>
                                             <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.device_variables}"/>
-                                            <ListView x:Name="fastboot_info_list">
+                                            <ListView x:Name="fastboot_info_list" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="90">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_name}" Width="165" DisplayMemberBinding="{Binding name}"/>
@@ -154,7 +155,7 @@
                                                     <TextBox x:Name="fastboot_partition_name_textbox" Width="240"/>
                                                 </StackPanel>
                                             </DockPanel>
-                                            <ListView x:Name="fastboot_partition_list">
+                                            <ListView x:Name="fastboot_partition_list" local:ColumnFill.Column="0" local:ColumnFill.MinWidth="120">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_name}" Width="205" DisplayMemberBinding="{Binding name}"/>
@@ -195,15 +196,15 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource PageHeader}">
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" MaxWidth="620">
-                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.fastboot_flash_payload}"/>
-                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.flash_subtitle}"/>
-                        </StackPanel>
+                    <DockPanel LastChildFill="True">
                         <Border DockPanel.Dock="Right" Style="{StaticResource Chip}">
                             <TextBlock x:Name="flash_target_device" FontFamily="{StaticResource Mono}" FontSize="12"
                                        Text="{x:Static props:Resources.flash_target_none}"/>
                         </Border>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.fastboot_flash_payload}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.flash_subtitle}"/>
+                        </StackPanel>
                     </DockPanel>
                 </Border>
 
@@ -252,7 +253,7 @@
                         <Border Style="{StaticResource Card}">
                             <DockPanel>
                                 <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.payload_partitions}"/>
-                                <ListView x:Name="flash_queue">
+                                <ListView x:Name="flash_queue" local:ColumnFill.Column="2" local:ColumnFill.MinWidth="60">
                                     <ListView.View>
                                         <GridView>
                                             <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="140" DisplayMemberBinding="{Binding Name}"/>
@@ -260,7 +261,7 @@
                                             <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="115">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ProgressBar Width="92" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                        <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
@@ -309,11 +310,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource PageHeader}">
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
-                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.payload_dumper}"/>
-                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.payload_subtitle}"/>
-                        </StackPanel>
+                    <DockPanel LastChildFill="True">
                         <Grid DockPanel.Dock="Right" VerticalAlignment="Center">
                             <StackPanel x:Name="payload_action_bar" Orientation="Horizontal">
                                 <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="320">
@@ -323,6 +320,10 @@
                             </StackPanel>
                             <ProgressBar x:Name="payload_progress" Width="300" Visibility="Hidden"/>
                         </Grid>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.payload_dumper}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.payload_subtitle}"/>
+                        </StackPanel>
                     </DockPanel>
                 </Border>
 
@@ -351,7 +352,7 @@
                         <TabControl>
                             <TabItem Header="{x:Static props:Resources.payload_basic_properties}">
                                 <Border Style="{StaticResource Card}">
-                                    <ListView x:Name="payload_info">
+                                    <ListView x:Name="payload_info" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="240" DisplayMemberBinding="{Binding title}"/>
@@ -380,7 +381,7 @@
                                                     <TextBox x:Name="payload_partition_name_textbox" Width="240"/>
                                                 </StackPanel>
                                             </DockPanel>
-                                            <ListView x:Name="payload_partition_info">
+                                            <ListView x:Name="payload_partition_info" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="70" local:ColumnFill.HideWhenNarrow="True">
                                                 <ListView.View>
                                                     <GridView>
                                                         <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="125" DisplayMemberBinding="{Binding name}"/>
@@ -420,7 +421,7 @@
 
                             <TabItem Header="{x:Static props:Resources.payload_dynamic_partition_metadata}">
                                 <Border Style="{StaticResource Card}">
-                                    <ListView x:Name="payload_dynamic_partition_meta">
+                                    <ListView x:Name="payload_dynamic_partition_meta" local:ColumnFill.Column="0" local:ColumnFill.MinWidth="200">
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn Header="{x:Static props:Resources.payload_dynamic_partition_metadata}" Width="640" DisplayMemberBinding="{Binding line}"/>
@@ -444,14 +445,14 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource PageHeader}">
-                    <DockPanel LastChildFill="False">
-                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center">
-                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_logs}"/>
-                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.logs_subtitle}"/>
-                        </StackPanel>
+                    <DockPanel LastChildFill="True">
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
                             <Button x:Name="log_copy" Margin="0,0,10,0" Content="{x:Static props:Resources.logs_copy}"/>
                             <Button x:Name="log_clear" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.logs_clear}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_logs}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.logs_subtitle}"/>
                         </StackPanel>
                     </DockPanel>
                 </Border>

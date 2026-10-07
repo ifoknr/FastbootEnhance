@@ -127,6 +127,20 @@ function Find-Dialog {
     return $null
 }
 
+# Presses the dialog's own button. Keys sent to the main window do not reach a modal box.
+function Close-Dialog($dialog) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Button)
+    $button = @($dialog.FindAll($Scope::Descendants, $cond)) | Select-Object -First 1
+    if ($null -ne $button) {
+        $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    } else {
+        [Win32]::SetForegroundWindow([IntPtr]$dialog.Current.NativeWindowHandle) | Out-Null
+        [System.Windows.Forms.SendKeys]::SendWait('{ENTER}')
+    }
+    Wait-For { $null -eq (Find-Dialog) } 10 "the dialog to close" | Out-Null
+    Start-Sleep -Milliseconds 800
+}
+
 function Send([string] $keys) {
     [Win32]::SetForegroundWindow($script:hwnd) | Out-Null
     [System.Windows.Forms.SendKeys]::SendWait($keys)
@@ -204,8 +218,7 @@ if ($ExpectedFlashes -gt 0) {
         ForEach-Object { $_.Current.Name }) -join ' | '
     Write-Host "dialog after flashing: $message"
     Save-Window ('{0:D2}-flash' -f $i); $i++
-    Send '{ENTER}'
-    Start-Sleep -Seconds 2
+    Close-Dialog $done
 
     $flashes = @(Get-Content $fakeLog | Where-Object { $_ -match ' flash ' }).Count
     Write-Host "fastboot flash commands issued: $flashes (expected $ExpectedFlashes)"
