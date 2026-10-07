@@ -18,6 +18,8 @@
 - Resize logical partitions
 - Unpack Payload.bin
 - **Extract specific image from Payload.bin**
+- **Back up partitions** (boot, vbmeta, persist, modem/IMEI data and more) over adb with root or a custom recovery, each image recorded with its SHA-256, and check a backup later
+- **Copy any file or folder from the phone** to the computer over adb, no root needed
 - Show Payload vars
 - Show dynamic partition metadata
 
@@ -52,7 +54,7 @@ Other things worth knowing:
 
 ## Usage
 
-- Download `Release.zip` from [Github Releases](https://github.com/xzr467706992/FastbootEnhance/releases)
+- Download `Release.zip` from [GitHub Releases](https://github.com/ifoknr/FastbootEnhance/releases)
 - Unzip
 - Click `FastbootEnhance.exe`
 
@@ -114,7 +116,10 @@ fbe-payload verify  <payload.bin|ota.zip> [-p name ...] [-j N]
 
 ## Credits
 
-- [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools)
+- Developed and maintained by **IFOKNR** — Telegram [@IFOKNR1](https://t.me/IFOKNR1), GitHub [ifoknr](https://github.com/ifoknr)
+- Based on the original [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by **LibXZR**, released under the MIT License (Copyright (c) 2021 LibXZR)
+
+- [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools) 37.0.1 (adb and fastboot; Apache License 2.0, see `platform-tools-NOTICE.txt`)
 - [Protobuf](https://github.com/protocolbuffers/protobuf)
 - [ZstdSharp](https://github.com/oleg-st/ZstdSharp)
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress)

@@ -17,7 +17,9 @@
     <Version>2.0.0</Version>
     <AssemblyTitle>FastbootEnhance</AssemblyTitle>
     <Product>FastbootEnhance</Product>
-    <Copyright>Copyright © 2021 LibXZR. All rights reserved.</Copyright>
+    <Authors>IFOKNR; LibXZR</Authors>
+    <Company>IFOKNR</Company>
+    <Copyright>Copyright © 2021 LibXZR, © 2026 IFOKNR. MIT License.</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <SatelliteResourceLanguages>en;zh-CN;ja-JP;ko-KR</SatelliteResourceLanguages>
     <!-- AssemblyInfo.cs is gone; these properties replace it. -->
@@ -53,12 +55,24 @@
 
   <ItemGroup>
     <Resource Include="icon.ico" />
+    <EmbeddedResource Include="LICENSE" LogicalName="LICENSE.txt" />
     <Resource Include="big_icon.png" />
   </ItemGroup>
 
-  <!-- Shipped alongside the app, never inside the single-file bundle: fastboot.exe is
-       started as its own process and needs the two Adb USB libraries next to it. -->
+  <!-- Android platform-tools 37.0.1, shipped alongside the app and never inside the
+       single-file bundle: fastboot.exe and adb.exe are started as their own processes and
+       need the two Adb USB libraries next to them. The NOTICE is required by their licence. -->
   <ItemGroup>
+    <Content Include="adb.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+    <Content Include="platform-tools-NOTICE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
     <Content Include="fastboot.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

@@ -1749,5 +1749,608 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("dialog_done", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Developer.
+        /// </summary>
+        public static string about_developer {
+            get {
+                return ResourceManager.GetString("about_developer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Original author.
+        /// </summary>
+        public static string about_original {
+            get {
+                return ResourceManager.GetString("about_original", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright (c) 2021 LibXZR..
+        /// </summary>
+        public static string about_original_detail {
+            get {
+                return ResourceManager.GetString("about_original_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Original project.
+        /// </summary>
+        public static string about_original_project {
+            get {
+                return ResourceManager.GetString("about_original_project", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        public static string about_license {
+            get {
+                return ResourceManager.GetString("about_license", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Backup.
+        /// </summary>
+        public static string nav_backup {
+            get {
+                return ResourceManager.GetString("nav_backup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save partitions and any file from the phone to this computer, over adb.
+        /// </summary>
+        public static string backup_subtitle {
+            get {
+                return ResourceManager.GetString("backup_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DEVICES OVER ADB.
+        /// </summary>
+        public static string backup_adb_devices {
+            get {
+                return ResourceManager.GetString("backup_adb_devices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Model.
+        /// </summary>
+        public static string backup_column_model {
+            get {
+                return ResourceManager.GetString("backup_column_model", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string backup_column_mode {
+            get {
+                return ResourceManager.GetString("backup_column_mode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Looking for devices… Boot Android with USB debugging on, or a custom recovery (TWRP, OrangeFox)..
+        /// </summary>
+        public static string backup_waiting {
+            get {
+                return ResourceManager.GetString("backup_waiting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device over adb. Turn on USB debugging in Developer options and connect the phone, or boot a custom recovery..
+        /// </summary>
+        public static string backup_no_device {
+            get {
+                return ResourceManager.GetString("backup_no_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock the phone and allow USB debugging for this computer..
+        /// </summary>
+        public static string backup_unauthorized {
+            get {
+                return ResourceManager.GetString("backup_unauthorized", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The device is in "{0}" mode. Partitions and files need Android or a custom recovery..
+        /// </summary>
+        public static string backup_not_ready {
+            get {
+                return ResourceManager.GetString("backup_not_ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files can be copied now. Partition backup needs root (Magisk, KernelSU) or a custom recovery; press "Read partition table" to check..
+        /// </summary>
+        public static string backup_root_unknown {
+            get {
+                return ResourceManager.GetString("backup_root_unknown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root shell available (recovery or adb root): partitions can be backed up..
+        /// </summary>
+        public static string backup_root_direct {
+            get {
+                return ResourceManager.GetString("backup_root_direct", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root through su: partitions can be backed up..
+        /// </summary>
+        public static string backup_root_su {
+            get {
+                return ResourceManager.GetString("backup_root_su", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Asking for root; allow the prompt on the phone if one appears..
+        /// </summary>
+        public static string backup_asking_root {
+            get {
+                return ResourceManager.GetString("backup_asking_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading partitions needs root. Root the phone with Magisk or KernelSU and allow the prompt, or boot a custom recovery such as TWRP or OrangeFox. Files can still be copied from the Files tab..
+        /// </summary>
+        public static string backup_needs_root {
+            get {
+                return ResourceManager.GetString("backup_needs_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The partition table could not be read from this device..
+        /// </summary>
+        public static string backup_no_table {
+            get {
+                return ResourceManager.GetString("backup_no_table", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions.
+        /// </summary>
+        public static string backup_tab_partitions {
+            get {
+                return ResourceManager.GetString("backup_tab_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files.
+        /// </summary>
+        public static string backup_tab_files {
+            get {
+                return ResourceManager.GetString("backup_tab_files", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read partition table.
+        /// </summary>
+        public static string backup_read {
+            get {
+                return ResourceManager.GetString("backup_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select critical.
+        /// </summary>
+        public static string backup_select_critical {
+            get {
+                return ResourceManager.GetString("backup_select_critical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string backup_select_none {
+            get {
+                return ResourceManager.GetString("backup_select_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by name.
+        /// </summary>
+        public static string backup_filter_hint {
+            get {
+                return ResourceManager.GetString("backup_filter_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SAVE TO.
+        /// </summary>
+        public static string backup_save_to {
+            get {
+                return ResourceManager.GetString("backup_save_to", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Change….
+        /// </summary>
+        public static string backup_change {
+            get {
+                return ResourceManager.GetString("backup_change", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Back up selected.
+        /// </summary>
+        public static string backup_start {
+            get {
+                return ResourceManager.GetString("backup_start", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string backup_cancel {
+            get {
+                return ResourceManager.GetString("backup_cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check a backup….
+        /// </summary>
+        public static string backup_verify {
+            get {
+                return ResourceManager.GetString("backup_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Backup check.
+        /// </summary>
+        public static string backup_verify_title {
+            get {
+                return ResourceManager.GetString("backup_verify_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open folder.
+        /// </summary>
+        public static string backup_open_folder {
+            get {
+                return ResourceManager.GetString("backup_open_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Each image is saved with its SHA-256 in SHA256SUMS, next to backup-info.txt. To restore one, flash it from Device › Partitions..
+        /// </summary>
+        public static string backup_note {
+            get {
+                return ResourceManager.GetString("backup_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading.
+        /// </summary>
+        public static string backup_state_reading {
+            get {
+                return ResourceManager.GetString("backup_state_reading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string backup_state_saved {
+            get {
+                return ResourceManager.GetString("backup_state_saved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped.
+        /// </summary>
+        public static string backup_state_skipped {
+            get {
+                return ResourceManager.GetString("backup_state_skipped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Critical.
+        /// </summary>
+        public static string backup_state_critical {
+            get {
+                return ResourceManager.GetString("backup_state_critical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tick the partitions to back up first, or press "Select critical"..
+        /// </summary>
+        public static string backup_nothing_selected {
+            get {
+                return ResourceManager.GetString("backup_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These partitions are large and will take a while and a lot of disk space:.
+        /// </summary>
+        public static string backup_large_warning {
+            get {
+                return ResourceManager.GetString("backup_large_warning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to read {0} of {1}; the device stopped sending (permission denied or disconnected).
+        /// </summary>
+        public static string backup_short_read {
+            get {
+                return ResourceManager.GetString("backup_short_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions were saved and their SHA-256 recorded in:.
+        /// </summary>
+        public static string backup_done {
+            get {
+                return ResourceManager.GetString("backup_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} partitions were saved in:.
+        /// </summary>
+        public static string backup_partial {
+            get {
+                return ResourceManager.GetString("backup_partial", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped. Unfinished files were removed..
+        /// </summary>
+        public static string backup_cancelled {
+            get {
+                return ResourceManager.GetString("backup_cancelled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This folder has no SHA256SUMS file, so there is nothing to check it against..
+        /// </summary>
+        public static string backup_verify_none {
+            get {
+                return ResourceManager.GetString("backup_verify_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All {0} files match their SHA-256..
+        /// </summary>
+        public static string backup_verify_ok {
+            get {
+                return ResourceManager.GetString("backup_verify_ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} files are missing or do not match:.
+        /// </summary>
+        public static string backup_verify_bad {
+            get {
+                return ResourceManager.GetString("backup_verify_bad", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Up.
+        /// </summary>
+        public static string files_up {
+            get {
+                return ResourceManager.GetString("files_up", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string files_go {
+            get {
+                return ResourceManager.GetString("files_go", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Internal storage.
+        /// </summary>
+        public static string files_quick_storage {
+            get {
+                return ResourceManager.GetString("files_quick_storage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string files_quick_dcim {
+            get {
+                return ResourceManager.GetString("files_quick_dcim", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pictures.
+        /// </summary>
+        public static string files_quick_pictures {
+            get {
+                return ResourceManager.GetString("files_quick_pictures", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string files_quick_download {
+            get {
+                return ResourceManager.GetString("files_quick_download", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Documents.
+        /// </summary>
+        public static string files_quick_documents {
+            get {
+                return ResourceManager.GetString("files_quick_documents", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string files_column_name {
+            get {
+                return ResourceManager.GetString("files_column_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string files_column_kind {
+            get {
+                return ResourceManager.GetString("files_column_kind", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Folder.
+        /// </summary>
+        public static string files_kind_folder {
+            get {
+                return ResourceManager.GetString("files_kind_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string files_kind_file {
+            get {
+                return ResourceManager.GetString("files_kind_file", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string files_kind_link {
+            get {
+                return ResourceManager.GetString("files_kind_link", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is empty, or Android does not allow reading it without root..
+        /// </summary>
+        public static string files_empty {
+            get {
+                return ResourceManager.GetString("files_empty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} folders, {1} files.
+        /// </summary>
+        public static string files_count {
+            get {
+                return ResourceManager.GetString("files_count", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copying {0}….
+        /// </summary>
+        public static string files_copying {
+            get {
+                return ResourceManager.GetString("files_copying", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to computer.
+        /// </summary>
+        public static string files_pull {
+            get {
+                return ResourceManager.GetString("files_pull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select files or folders (Ctrl or Shift for several) and copy them. Folders are copied with everything inside. Double-click a folder to open it..
+        /// </summary>
+        public static string files_note {
+            get {
+                return ResourceManager.GetString("files_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select the files or folders to copy first..
+        /// </summary>
+        public static string files_nothing_selected {
+            get {
+                return ResourceManager.GetString("files_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} items copied to:.
+        /// </summary>
+        public static string files_done {
+            get {
+                return ResourceManager.GetString("files_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} items copied to:.
+        /// </summary>
+        public static string files_partial {
+            get {
+                return ResourceManager.GetString("files_partial", resourceCulture);
+            }
+        }
     }
 }

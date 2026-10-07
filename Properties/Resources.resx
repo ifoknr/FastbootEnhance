@@ -685,4 +685,213 @@ Flash them anyway?</value>
   <data name="dialog_done" xml:space="preserve">
     <value>Done</value>
   </data>
+  <data name="about_developer" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="about_original" xml:space="preserve">
+    <value>Original author</value>
+  </data>
+  <data name="about_original_detail" xml:space="preserve">
+    <value>Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright (c) 2021 LibXZR.</value>
+  </data>
+  <data name="about_original_project" xml:space="preserve">
+    <value>Original project</value>
+  </data>
+  <data name="about_license" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="nav_backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="backup_subtitle" xml:space="preserve">
+    <value>Save partitions and any file from the phone to this computer, over adb</value>
+  </data>
+  <data name="backup_adb_devices" xml:space="preserve">
+    <value>DEVICES OVER ADB</value>
+  </data>
+  <data name="backup_column_model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="backup_column_mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="backup_waiting" xml:space="preserve">
+    <value>Looking for devices… Boot Android with USB debugging on, or a custom recovery (TWRP, OrangeFox).</value>
+  </data>
+  <data name="backup_no_device" xml:space="preserve">
+    <value>No device over adb. Turn on USB debugging in Developer options and connect the phone, or boot a custom recovery.</value>
+  </data>
+  <data name="backup_unauthorized" xml:space="preserve">
+    <value>Unlock the phone and allow USB debugging for this computer.</value>
+  </data>
+  <data name="backup_not_ready" xml:space="preserve">
+    <value>The device is in "{0}" mode. Partitions and files need Android or a custom recovery.</value>
+  </data>
+  <data name="backup_root_unknown" xml:space="preserve">
+    <value>Files can be copied now. Partition backup needs root (Magisk, KernelSU) or a custom recovery; press "Read partition table" to check.</value>
+  </data>
+  <data name="backup_root_direct" xml:space="preserve">
+    <value>Root shell available (recovery or adb root): partitions can be backed up.</value>
+  </data>
+  <data name="backup_root_su" xml:space="preserve">
+    <value>Root through su: partitions can be backed up.</value>
+  </data>
+  <data name="backup_asking_root" xml:space="preserve">
+    <value>Asking for root; allow the prompt on the phone if one appears.</value>
+  </data>
+  <data name="backup_needs_root" xml:space="preserve">
+    <value>Reading partitions needs root. Root the phone with Magisk or KernelSU and allow the prompt, or boot a custom recovery such as TWRP or OrangeFox. Files can still be copied from the Files tab.</value>
+  </data>
+  <data name="backup_no_table" xml:space="preserve">
+    <value>The partition table could not be read from this device.</value>
+  </data>
+  <data name="backup_tab_partitions" xml:space="preserve">
+    <value>Partitions</value>
+  </data>
+  <data name="backup_tab_files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="backup_read" xml:space="preserve">
+    <value>Read partition table</value>
+  </data>
+  <data name="backup_select_critical" xml:space="preserve">
+    <value>Select critical</value>
+  </data>
+  <data name="backup_select_none" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="backup_filter_hint" xml:space="preserve">
+    <value>Filter by name</value>
+  </data>
+  <data name="backup_save_to" xml:space="preserve">
+    <value>SAVE TO</value>
+  </data>
+  <data name="backup_change" xml:space="preserve">
+    <value>Change…</value>
+  </data>
+  <data name="backup_start" xml:space="preserve">
+    <value>Back up selected</value>
+  </data>
+  <data name="backup_cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="backup_verify" xml:space="preserve">
+    <value>Check a backup…</value>
+  </data>
+  <data name="backup_verify_title" xml:space="preserve">
+    <value>Backup check</value>
+  </data>
+  <data name="backup_open_folder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="backup_note" xml:space="preserve">
+    <value>Each image is saved with its SHA-256 in SHA256SUMS, next to backup-info.txt. To restore one, flash it from Device › Partitions.</value>
+  </data>
+  <data name="backup_state_reading" xml:space="preserve">
+    <value>Reading</value>
+  </data>
+  <data name="backup_state_saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="backup_state_skipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="backup_state_critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="backup_nothing_selected" xml:space="preserve">
+    <value>Tick the partitions to back up first, or press "Select critical".</value>
+  </data>
+  <data name="backup_large_warning" xml:space="preserve">
+    <value>These partitions are large and will take a while and a lot of disk space:
+
+{0}
+
+Back them up anyway?</value>
+  </data>
+  <data name="backup_short_read" xml:space="preserve">
+    <value>read {0} of {1}; the device stopped sending (permission denied or disconnected)</value>
+  </data>
+  <data name="backup_done" xml:space="preserve">
+    <value>{0} partitions were saved and their SHA-256 recorded in:
+{1}</value>
+  </data>
+  <data name="backup_partial" xml:space="preserve">
+    <value>{0} of {1} partitions were saved in:
+{2}</value>
+  </data>
+  <data name="backup_cancelled" xml:space="preserve">
+    <value>Stopped. Unfinished files were removed.</value>
+  </data>
+  <data name="backup_verify_none" xml:space="preserve">
+    <value>This folder has no SHA256SUMS file, so there is nothing to check it against.</value>
+  </data>
+  <data name="backup_verify_ok" xml:space="preserve">
+    <value>All {0} files match their SHA-256.</value>
+  </data>
+  <data name="backup_verify_bad" xml:space="preserve">
+    <value>{0} of {1} files are missing or do not match:</value>
+  </data>
+  <data name="files_up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="files_go" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="files_quick_storage" xml:space="preserve">
+    <value>Internal storage</value>
+  </data>
+  <data name="files_quick_dcim" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="files_quick_pictures" xml:space="preserve">
+    <value>Pictures</value>
+  </data>
+  <data name="files_quick_download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="files_quick_documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="files_column_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="files_column_kind" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="files_kind_folder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="files_kind_file" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="files_kind_link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="files_empty" xml:space="preserve">
+    <value>This folder is empty, or Android does not allow reading it without root.</value>
+  </data>
+  <data name="files_count" xml:space="preserve">
+    <value>{0} folders, {1} files</value>
+  </data>
+  <data name="files_copying" xml:space="preserve">
+    <value>Copying {0}…</value>
+  </data>
+  <data name="files_pull" xml:space="preserve">
+    <value>Copy to computer</value>
+  </data>
+  <data name="files_note" xml:space="preserve">
+    <value>Select files or folders (Ctrl or Shift for several) and copy them. Folders are copied with everything inside. Double-click a folder to open it.</value>
+  </data>
+  <data name="files_nothing_selected" xml:space="preserve">
+    <value>Select the files or folders to copy first.</value>
+  </data>
+  <data name="files_done" xml:space="preserve">
+    <value>{0} items copied to:
+{1}</value>
+  </data>
+  <data name="files_partial" xml:space="preserve">
+    <value>{0} of {1} items copied to:
+{2}</value>
+  </data>
 </root>

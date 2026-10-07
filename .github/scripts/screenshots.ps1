@@ -1,12 +1,15 @@
 # Drives the published app through a whole session on Windows and captures each screen:
-# payload inspection, picking a device, flashing a full OTA, the log, and About.
-# With the stand-in fastboot.exe from tools/FastbootEnhance.FakeFastboot it doubles as an
-# end-to-end test: it fails unless every partition of the sample OTA reaches "fastboot flash".
+# payload inspection, picking a device, flashing a full OTA, backup over adb, the log, About.
+# With the stand-ins from tools/FastbootEnhance.FakeFastboot and FakeAdb it doubles as an
+# end-to-end test: it fails unless every partition of the sample OTA reaches "fastboot flash",
+# every critical partition of the stand-in phone is backed up with a matching SHA-256, and
+# the chosen files are copied to the computer.
 param(
     [Parameter(Mandatory)] [string] $App,
     [Parameter(Mandatory)] [string] $Payload,
     [Parameter(Mandatory)] [string] $Out,
-    [int] $ExpectedFlashes = 0
+    [int] $ExpectedFlashes = 0,
+    [int] $ExpectedBackups = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -40,7 +43,10 @@ $Payload = (Resolve-Path $Payload).Path
 $appDir = Split-Path $App
 $crashLog = Join-Path $env:TEMP 'FastbootEnhance\crash.log'
 $fakeLog = Join-Path $appDir 'fake-fastboot.log'
-Remove-Item $crashLog, $fakeLog -ErrorAction SilentlyContinue
+$fakeAdbLog = Join-Path $appDir 'fake-adb.log'
+$saveRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'FastbootEnhance'
+Remove-Item $crashLog, $fakeLog, $fakeAdbLog -ErrorAction SilentlyContinue
+Remove-Item $saveRoot -Recurse -Force -ErrorAction SilentlyContinue
 
 function Save-Desktop([string] $name) {
     $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
@@ -55,6 +61,7 @@ function Fail([string] $why) {
     Save-Desktop "00-desktop-on-failure"
     if (Test-Path $crashLog) { Write-Host "---- crash.log ----"; Get-Content $crashLog | Write-Host }
     if (Test-Path $fakeLog) { Write-Host "---- fake-fastboot.log ----"; Get-Content $fakeLog | Write-Host }
+    if (Test-Path $fakeAdbLog) { Write-Host "---- fake-adb.log ----"; Get-Content $fakeAdbLog | Write-Host }
     throw $why
 }
 
@@ -242,6 +249,77 @@ if ($ExpectedFlashes -gt 0) {
     $flashes = @(Get-Content $fakeLog | Where-Object { $_ -match ' flash ' }).Count
     Write-Host "fastboot flash commands issued: $flashes (expected $ExpectedFlashes)"
     if ($flashes -ne $ExpectedFlashes) { Fail "expected $ExpectedFlashes flash commands, saw $flashes" }
+}
+
+# ---------------------------------------------------------------- backup over adb
+function Press([string] $id) {
+    $button = Wait-For { By-Id $root $id } 10 $id
+    Wait-For { $button.Current.IsEnabled } 30 "$id to be enabled" | Out-Null
+    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+}
+
+function Rows($list) {
+    return @($list.FindAll($Scope::Descendants, $rowCond))
+}
+
+if ($ExpectedBackups -gt 0) {
+    Go 'backup_tab' | Out-Null
+    $adbList = Wait-For { By-Id $root 'backup_devices' } 10 "the adb device list"
+    Wait-For { (Rows $adbList).Count -gt 0 } 30 "a device over adb" | Out-Null
+
+    # Files: the list of /sdcard loads by itself once the device is picked.
+    Select-Item (Wait-For { By-Id $root 'backup_files_tab' } 10 "the Files tab")
+    $files = Wait-For { By-Id $root 'files_list' } 10 "the file list"
+    Wait-For { (Rows $files).Count -ge 5 } 30 "the /sdcard listing" | Out-Null
+    Press 'files_quick_documents'
+    # The stand-in's Documents folder holds two files; /sdcard holds nine entries.
+    Wait-For { (Rows $files).Count -eq 2 } 30 "the Documents listing" | Out-Null
+    $docs = Rows $files
+    Write-Host "documents listed: $($docs.Count)"
+    $docs[0].GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
+    foreach ($row in ($docs | Select-Object -Skip 1)) {
+        $row.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).AddToSelection()
+    }
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-backup-files' -f $i); $i++
+    Press 'files_pull'
+    $pulled = Wait-For { Find-Dialog } 60 "the copy to finish"
+    Start-Sleep -Milliseconds 600
+    Close-Dialog $pulled
+
+    $copied = @(Get-ChildItem (Join-Path $saveRoot 'Files') -Recurse -File -ErrorAction SilentlyContinue)
+    Write-Host "files copied: $($copied.Name -join ', ')"
+    if (-not ($copied.Name -contains "Ahmed's notes.txt") -or -not ($copied.Name -contains 'invoice 2026.pdf')) {
+        Fail "the selected documents were not copied to $saveRoot\Files"
+    }
+
+    # Partitions: read the table (critical ones come pre-selected), back them up, check hashes.
+    Select-Item (Wait-For { By-Id $root 'backup_partitions_tab' } 10 "the Partitions tab")
+    Press 'backup_read'
+    $parts = Wait-For { By-Id $root 'backup_partition_list' } 10 "the partition list"
+    Wait-For { (Rows $parts).Count -ge 10 } 60 "the partition table" | Out-Null
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-backup-partitions' -f $i); $i++
+
+    Press 'backup_start'
+    $done = Wait-For { Find-Dialog } 240 "the backup to finish"
+    Start-Sleep -Milliseconds 800
+    Save-Window ('{0:D2}-backup-done' -f $i); $i++
+    Close-Dialog $done
+
+    $folder = Get-ChildItem (Join-Path $saveRoot 'Backups') -Directory | Sort-Object LastWriteTime | Select-Object -Last 1
+    if ($null -eq $folder) { Fail "no backup folder was written under $saveRoot\Backups" }
+    $sums = @(Get-Content (Join-Path $folder.FullName 'SHA256SUMS') | Where-Object { $_ })
+    Write-Host "backup in $($folder.Name): $($sums.Count) images"
+    if ($sums.Count -ne $ExpectedBackups) { Fail "expected $ExpectedBackups images in SHA256SUMS, found $($sums.Count)" }
+    foreach ($line in $sums) {
+        $hash, $name = $line -split '  ', 2
+        $actual = (Get-FileHash (Join-Path $folder.FullName $name) -Algorithm SHA256).Hash.ToLower()
+        if ($actual -ne $hash) { Fail "$name does not match its recorded SHA-256" }
+    }
+    if (-not (Test-Path (Join-Path $folder.FullName 'backup-info.txt'))) { Fail "backup-info.txt is missing" }
+    $reads = @(Get-Content $fakeAdbLog | Where-Object { $_ -match 'exec-out' }).Count
+    Write-Host "partitions read over adb: $reads; all hashes match"
 }
 
 # ---------------------------------------------------------------- log and about

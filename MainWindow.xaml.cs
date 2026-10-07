@@ -23,6 +23,7 @@ namespace FastbootEnhance
 
             PayloadUI.init();
             FastbootUI.init();
+            BackupUI.init();
 
             Title += " v" + version;
 
@@ -54,6 +55,7 @@ namespace FastbootEnhance
             Closed += delegate
             {
                 FastbootUI.abortFlash();
+                BackupUI.shutdown();
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
@@ -156,6 +158,26 @@ namespace FastbootEnhance
             {
                 ThemedDialog.Show(e.Message);
             }
+        }
+
+        private void Telegram_Click(object sender, RoutedEventArgs e)
+        {
+            openInBrowser("https://t.me/IFOKNR1");
+        }
+
+        private void GitHub_Click(object sender, RoutedEventArgs e)
+        {
+            openInBrowser("https://github.com/ifoknr");
+        }
+
+        /// <summary>The MIT licence of the original project, shipped inside the app.</summary>
+        private void License_Click(object sender, RoutedEventArgs e)
+        {
+            string text;
+            using (Stream stream = typeof(MainWindow).Assembly.GetManifestResourceStream("LICENSE.txt"))
+            using (StreamReader reader = new StreamReader(stream))
+                text = reader.ReadToEnd();
+            ThemedDialog.Show(text.Trim(), Properties.Resources.about_license);
         }
 
         private void Thread_Click(object sender, RoutedEventArgs e)

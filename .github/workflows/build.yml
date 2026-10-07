@@ -65,7 +65,7 @@ jobs:
         run: |
           Get-ChildItem publish | Select-Object Name, Length
           # fastboot.exe runs as its own process, so it must sit beside the exe, not inside it.
-          foreach ($f in 'FastbootEnhance.exe', 'fastboot.exe', 'AdbWinApi.dll', 'AdbWinUsbApi.dll') {
+          foreach ($f in 'FastbootEnhance.exe', 'fastboot.exe', 'adb.exe', 'AdbWinApi.dll', 'AdbWinUsbApi.dll', 'platform-tools-NOTICE.txt') {
             if (-not (Test-Path (Join-Path publish $f))) { throw "$f missing from publish output" }
           }
 

@@ -38,6 +38,10 @@
     <Geometry x:Key="IconFlash">M13,2 L4,14 H11 L10,22 L19,10 H12 Z</Geometry>
     <Geometry x:Key="IconPayload">M21,8 L12,3 L3,8 V16 L12,21 L21,16 Z M3,8 L12,13 L21,8 M12,13 V21</Geometry>
     <Geometry x:Key="IconLogs">M4,5 H20 M4,12 H15 M4,19 H11</Geometry>
+    <Geometry x:Key="IconBackup">M3,5 H21 V9 H3 Z M5,9 V19 H19 V9 M10,13 H14</Geometry>
+    <Geometry x:Key="IconFolder">M3,6 A1,1 0 0 1 4,5 H9 L11,7 H20 A1,1 0 0 1 21,8 V18 A1,1 0 0 1 20,19 H4 A1,1 0 0 1 3,18 Z</Geometry>
+    <Geometry x:Key="IconFile">M6,3 H14 L19,8 V21 H6 Z M14,3 V8 H19</Geometry>
+    <Geometry x:Key="IconGitHub">M12,1.5 A10.5,10.5 0 0 0 8.7,22 C9.2,22.1 9.4,21.8 9.4,21.5 V19.6 C6.5,20.2 5.9,18.3 5.9,18.3 C5.4,17.1 4.7,16.8 4.7,16.8 C3.8,16.1 4.8,16.2 4.8,16.2 C5.8,16.3 6.4,17.3 6.4,17.3 C7.3,18.9 8.9,18.4 9.5,18.1 C9.6,17.5 9.9,17 10.2,16.8 C7.8,16.5 5.4,15.6 5.4,11.6 C5.4,10.5 5.8,9.6 6.4,8.9 C6.3,8.6 6,7.6 6.5,6.2 C6.5,6.2 7.4,5.9 9.4,7.3 A10,10 0 0 1 14.6,7.3 C16.6,5.9 17.5,6.2 17.5,6.2 C18,7.6 17.7,8.6 17.6,8.9 C18.2,9.6 18.6,10.5 18.6,11.6 C18.6,15.6 16.2,16.5 13.8,16.8 C14.2,17.1 14.6,17.8 14.6,18.8 V21.5 C14.6,21.8 14.8,22.1 15.3,22 A10.5,10.5 0 0 0 12,1.5 Z</Geometry>
     <Geometry x:Key="IconAbout">M12,2 A10,10 0 1 1 11.99,2 Z M12,11 V17 M12,7 V8</Geometry>
 
     <!-- Text -->
@@ -499,10 +503,8 @@
                         <Border Background="{StaticResource Rail}" BorderBrush="{StaticResource Line}" BorderThickness="0,0,1,0">
                             <DockPanel Margin="14,18,14,16">
                                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4,0,0,24">
-                                    <Border Width="32" Height="32" CornerRadius="9" Background="{StaticResource Accent}">
-                                        <Path Data="{StaticResource IconFlash}" Fill="{StaticResource AccentInk}"
-                                              Stretch="Uniform" Margin="8"/>
-                                    </Border>
+                                    <Image Source="/big_icon.png" Width="34" Height="34"
+                                           RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
                                         <TextBlock Text="Fastboot Enhance" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
                                         <TextBlock Text="v2.0.0" FontSize="11" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}"/>

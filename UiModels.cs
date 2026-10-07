@@ -112,4 +112,122 @@ namespace FastbootEnhance
                 handler(this, new PropertyChangedEventArgs(property));
         }
     }
+
+    /// <summary>One partition on the Backup page.</summary>
+    sealed class BackupRow : INotifyPropertyChanged
+    {
+        public enum Stage { Idle, Queued, Reading, Saved, Failed, Skipped }
+
+        bool selected;
+        double progress;
+        Stage stage = Stage.Idle;
+
+        public BackupRow(FastbootEnhance.Core.Adb.DevicePartition partition)
+        {
+            Partition = partition;
+        }
+
+        public FastbootEnhance.Core.Adb.DevicePartition Partition { get; }
+        public string Name => Partition.Name;
+        public string Size => Partition.Size >= 0 ? FastbootEnhance.Core.ByteSize.Format(Partition.Size) : "?";
+
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                if (selected == value)
+                    return;
+                selected = value;
+                Raise(nameof(Selected));
+            }
+        }
+
+        public double Progress
+        {
+            get { return progress; }
+            set
+            {
+                if (progress == value)
+                    return;
+                progress = value;
+                Raise(nameof(Progress));
+            }
+        }
+
+        public Stage Current
+        {
+            get { return stage; }
+            set
+            {
+                if (stage == value)
+                    return;
+                stage = value;
+                Raise(nameof(Current));
+                Raise(nameof(State));
+                Raise(nameof(StateBrush));
+            }
+        }
+
+        public string State
+        {
+            get
+            {
+                switch (stage)
+                {
+                    case Stage.Queued: return Properties.Resources.flash_state_queued;
+                    case Stage.Reading: return Properties.Resources.backup_state_reading;
+                    case Stage.Saved: return Properties.Resources.backup_state_saved;
+                    case Stage.Failed: return Properties.Resources.flash_state_failed;
+                    case Stage.Skipped: return Properties.Resources.backup_state_skipped;
+                    default: return Partition.IsCritical ? Properties.Resources.backup_state_critical : "";
+                }
+            }
+        }
+
+        public Brush StateBrush
+        {
+            get
+            {
+                switch (stage)
+                {
+                    case Stage.Saved: return Palette.Get("Ok");
+                    case Stage.Failed: return Palette.Get("Danger");
+                    case Stage.Skipped: return Palette.Get("Warn");
+                    case Stage.Idle: return Palette.Get("Faint");
+                    case Stage.Queued: return Palette.Get("Faint");
+                    default: return Palette.Get("Accent");
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void Raise(string property)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(property));
+        }
+    }
+
+    /// <summary>One file or folder in the Files list.</summary>
+    sealed class FileRow
+    {
+        public FileRow(FastbootEnhance.Core.Adb.DeviceEntry entry)
+        {
+            Entry = entry;
+        }
+
+        public FastbootEnhance.Core.Adb.DeviceEntry Entry { get; }
+        public string Name => Entry.Name;
+        public string Size => Entry.IsFolder ? "" : FastbootEnhance.Core.ByteSize.Format(Entry.Size);
+        public string Kind => Entry.IsFolder ? Properties.Resources.files_kind_folder
+            : Entry.IsLink ? Properties.Resources.files_kind_link
+            : Properties.Resources.files_kind_file;
+
+        /// <summary>A folder glyph or a page glyph, from the theme's icon set.</summary>
+        public Geometry Icon => (Geometry)Application.Current.FindResource(Entry.IsFolder ? "IconFolder" : "IconFile");
+        public Brush IconBrush => Palette.Get(Entry.IsFolder ? "Accent" : "Dim");
+    }
 }
