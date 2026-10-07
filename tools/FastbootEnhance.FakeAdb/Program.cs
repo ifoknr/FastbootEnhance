@@ -8,6 +8,10 @@ namespace FastbootEnhance.FakeAdb
     /// as root. It answers the commands the Backup page sends: devices, id -u, the partition
     /// listing script, exec-out cat of a partition (deterministic bytes, so hashes can be
     /// checked), stat folder listings and pull. Every call is logged to fake-adb.log.
+    ///
+    /// A fake-adb.mode file next to the executable changes the phone it plays, read on every
+    /// call: "none" (no phone on adb, as when it sits in fastboot), "android" (a booted, rooted
+    /// system where adb runs as the shell user and root comes through su) or "recovery".
     /// </summary>
     static class Program
     {
@@ -52,14 +56,32 @@ namespace FastbootEnhance.FakeAdb
             ["/sdcard/Music"] = new (string, long)[0],
         };
 
+        static readonly string Mode = ReadMode();
+
+        static bool Android => Mode == "android";
+
+        static string ReadMode()
+        {
+            try
+            {
+                string path = Path.Combine(AppContext.BaseDirectory, "fake-adb.mode");
+                if (File.Exists(path))
+                    return File.ReadAllText(path).Trim();
+            }
+            catch (IOException)
+            {
+            }
+            return "recovery";
+        }
+
         static int Main(string[] args)
         {
-            Log(string.Join(" | ", args));
+            Log("[" + Mode + "] " + string.Join(" | ", args));
 
             List<string> rest = new List<string>(args);
             if (rest.Count >= 2 && rest[0] == "-s")
             {
-                if (rest[1] != Serial)
+                if (rest[1] != Serial || Mode == "none")
                 {
                     Console.Error.WriteLine("adb: device '" + rest[1] + "' not found");
                     return 1;
@@ -72,8 +94,11 @@ namespace FastbootEnhance.FakeAdb
             switch (command)
             {
                 case "devices":
-                    Console.Out.Write("List of devices attached\n" + Serial
-                        + "\trecovery product:sample_a64 model:Sample_A64 device:sample transport_id:3\n\n");
+                    Console.Out.Write("List of devices attached\n");
+                    if (Mode != "none")
+                        Console.Out.Write(Serial + "\t" + (Android ? "device" : "recovery")
+                            + " product:sample_a64 model:Sample_A64 device:sample transport_id:3\n");
+                    Console.Out.Write("\n");
                     return 0;
                 case "kill-server":
                 case "start-server":
@@ -92,7 +117,13 @@ namespace FastbootEnhance.FakeAdb
 
         static int Shell(string command)
         {
-            if (command == "id -u" || command == "su -c 'id -u'")
+            // In Android, adb runs as the shell user (uid 2000) and root comes from su.
+            if (command == "id -u")
+            {
+                Console.Out.Write(Android ? "2000\n" : "0\n");
+                return 0;
+            }
+            if (command == "su -c 'id -u'")
             {
                 Console.Out.Write("0\n");
                 return 0;
@@ -100,6 +131,9 @@ namespace FastbootEnhance.FakeAdb
 
             if (command.Contains("/dev/block/by-name") && command.Contains("blockdev"))
             {
+                if (Android && !command.StartsWith("su -c '", StringComparison.Ordinal))
+                    return 0;   // the shell user cannot see the sizes; the app must use su
+
                 StringBuilder listing = new StringBuilder("DIR:/dev/block/by-name\n");
                 foreach (var (name, size) in Partitions)
                     listing.Append("P:").Append(name).Append(':').Append(size).Append('\n');
@@ -158,6 +192,8 @@ namespace FastbootEnhance.FakeAdb
             Match match = Regex.Match(command, @"cat /dev/block/by-name/([A-Za-z0-9._-]+)");
             if (!match.Success)
                 return 1;
+            if (Android && !command.StartsWith("su -c '", StringComparison.Ordinal))
+                return 1;   // permission denied without root
             string name = match.Groups[1].Value;
             long size = Partitions.Where(p => p.name == name).Select(p => p.size).FirstOrDefault();
             if (size <= 0)

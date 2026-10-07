@@ -3090,5 +3090,149 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("images_row_block_kinds", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is in Fastboot mode.
+        /// </summary>
+        public static string backup_fb_title {
+            get {
+                return ResourceManager.GetString("backup_fb_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fastboot can write partitions but cannot read them back: on retail phones Android does not allow it. Backup works over adb, so the phone has to leave Fastboot first, in one of these ways:.
+        /// </summary>
+        public static string backup_fb_why {
+            get {
+                return ResourceManager.GetString("backup_fb_why", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start Android.
+        /// </summary>
+        public static string backup_fb_android {
+            get {
+                return ResourceManager.GetString("backup_fb_android", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files can be copied right away. USB debugging must be on; partition backup also needs root (Magisk or KernelSU)..
+        /// </summary>
+        public static string backup_fb_android_note {
+            get {
+                return ResourceManager.GetString("backup_fb_android_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start the recovery.
+        /// </summary>
+        public static string backup_fb_recovery {
+            get {
+                return ResourceManager.GetString("backup_fb_recovery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to For a custom recovery that is installed (TWRP, OrangeFox): partitions and files, no root needed. The stock recovery has no adb..
+        /// </summary>
+        public static string backup_fb_recovery_note {
+            get {
+                return ResourceManager.GetString("backup_fb_recovery_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot a recovery image once, without installing it.
+        /// </summary>
+        public static string backup_fb_boot {
+            get {
+                return ResourceManager.GetString("backup_fb_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sends a TWRP or OrangeFox image made for this phone and starts it; nothing on the phone is changed. Needs an unlocked bootloader..
+        /// </summary>
+        public static string backup_fb_boot_note {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose recovery image….
+        /// </summary>
+        public static string backup_fb_boot_button {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restarting {0}… This page switches over by itself when the phone answers on adb..
+        /// </summary>
+        public static string backup_fb_rebooting {
+            get {
+                return ResourceManager.GetString("backup_fb_rebooting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sending {0} to the phone….
+        /// </summary>
+        public static string backup_fb_sending {
+            get {
+                return ResourceManager.GetString("backup_fb_sending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The recovery image was sent and started. Once it has loaded, the phone shows up here over adb and the backup can start..
+        /// </summary>
+        public static string backup_fb_booted {
+            get {
+                return ResourceManager.GetString("backup_fb_booted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone did not boot the image.  {0}  Check that the bootloader is unlocked and that the image was made for this phone. Some phones (Samsung and a few others) do not support booting an image without flashing it..
+        /// </summary>
+        public static string backup_fb_boot_failed {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a boot or recovery image. Choose the .img of TWRP or OrangeFox made for this phone..
+        /// </summary>
+        public static string backup_fb_not_boot_image {
+            get {
+                return ResourceManager.GetString("backup_fb_not_boot_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Choose the image again once it is back..
+        /// </summary>
+        public static string backup_fb_userspace {
+            get {
+                return ResourceManager.GetString("backup_fb_userspace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to fastboot did not finish: {0}.
+        /// </summary>
+        public static string backup_fb_failed {
+            get {
+                return ResourceManager.GetString("backup_fb_failed", resourceCulture);
+            }
+        }
     }
 }

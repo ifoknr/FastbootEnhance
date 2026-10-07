@@ -22,6 +22,7 @@ Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR
 - Unpack Payload.bin
 - **Extract specific image from Payload.bin**
 - **Back up partitions** (boot, vbmeta, persist, modem/IMEI data and more) over adb with root or a custom recovery, each image recorded with its SHA-256, and check a backup later
+- A phone left in fastboot is recognised on the Backup page, which explains why it cannot be backed up there and gets it out: reboot to Android or recovery, or boot a TWRP / OrangeFox image once without flashing it
 - **Image Tools** (a native port of AOSP libsparse and liblp, no external programs):
   - inspect any image: sparse or raw, super, ext4, EROFS, F2FS, boot, vendor_boot, vbmeta
   - sparse to raw (`simg2img`), including images split into `*_sparsechunk.N` parts, with CRC-32 checks

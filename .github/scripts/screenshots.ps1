@@ -45,8 +45,11 @@ $appDir = Split-Path $App
 $crashLog = Join-Path $env:TEMP 'FastbootStudio\crash.log'
 $fakeLog = Join-Path $appDir 'fake-fastboot.log'
 $fakeAdbLog = Join-Path $appDir 'fake-adb.log'
+# The stand-ins read these to play a phone in another mode; see FakeAdb and FakeFastboot.
+$adbMode = Join-Path $appDir 'fake-adb.mode'
+$fastbootMode = Join-Path $appDir 'fake-fastboot.mode'
 $saveRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Fastboot Studio'
-Remove-Item $crashLog, $fakeLog, $fakeAdbLog -ErrorAction SilentlyContinue
+Remove-Item $crashLog, $fakeLog, $fakeAdbLog, $adbMode, $fastbootMode -ErrorAction SilentlyContinue
 Remove-Item $saveRoot -Recurse -Force -ErrorAction SilentlyContinue
 
 function Save-Desktop([string] $name) {
@@ -266,8 +269,86 @@ function Rows($list) {
     return @($list.FindAll($Scope::Descendants, $rowCond))
 }
 
+# Picks a file in the open file dialog, then waits for that dialog (not whatever window
+# comes next) to go away.
+function Choose-File([string] $path, [string] $what) {
+    $dialog = Wait-For { Find-Dialog } 20 $what
+    $fileHwnd = $dialog.Current.NativeWindowHandle
+    Start-Sleep -Milliseconds 800
+    [System.Windows.Forms.SendKeys]::SendWait($path + '{ENTER}')
+    Wait-For { $d = Find-Dialog; $null -eq $d -or $d.Current.NativeWindowHandle -ne $fileHwnd } 20 "$what to close" | Out-Null
+}
+
+# Presses a dialog button by its label, for questions where the first button is not the answer.
+function Answer-Dialog($dialog, [string] $label) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Button)
+    $button = @($dialog.FindAll($Scope::Descendants, $cond)) | Where-Object { $_.Current.Name -eq $label } | Select-Object -First 1
+    if ($null -eq $button) { Fail "the dialog has no '$label' button" }
+    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    Wait-For { $null -eq (Find-Dialog) } 10 "the dialog to close" | Out-Null
+    Start-Sleep -Milliseconds 800
+}
+
+function Fastboot-Log([string] $pattern) {
+    return @(Get-Content $fakeLog | Where-Object { $_ -match $pattern }).Count
+}
+
+# Hashes every image a backup recorded in SHA256SUMS against the file it wrote.
+function Check-Backup([string] $what) {
+    $folder = Get-ChildItem (Join-Path $saveRoot 'Backups') -Directory | Sort-Object LastWriteTime | Select-Object -Last 1
+    if ($null -eq $folder) { Fail "no backup folder was written under $saveRoot\Backups ($what)" }
+    $sums = @(Get-Content (Join-Path $folder.FullName 'SHA256SUMS') | Where-Object { $_ })
+    Write-Host "backup in $($folder.Name) ($what): $($sums.Count) images"
+    if ($sums.Count -ne $ExpectedBackups) { Fail "expected $ExpectedBackups images in SHA256SUMS, found $($sums.Count) ($what)" }
+    foreach ($line in $sums) {
+        $hash, $name = $line -split '  ', 2
+        $actual = (Get-FileHash (Join-Path $folder.FullName $name) -Algorithm SHA256).Hash.ToLower()
+        if ($actual -ne $hash) { Fail "$name does not match its recorded SHA-256 ($what)" }
+    }
+    if (-not (Test-Path (Join-Path $folder.FullName 'backup-info.txt'))) { Fail "backup-info.txt is missing ($what)" }
+}
+
+$twrp = Join-Path (Split-Path $Payload) 'twrp-sample.img'
+
 if ($ExpectedBackups -gt 0) {
+    # ------------------------------------------------------------ phone in fastboot
+    # Nothing on adb, the phone in fastboot: the page explains and offers a way out instead
+    # of waiting for a device forever.
+    Set-Content $adbMode 'none'
     Go 'backup_tab' | Out-Null
+    Wait-For { Shown $root 'backup_fb_reboot_recovery' } 30 "the fastboot panel" | Out-Null
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-backup-fastboot' -f $i); $i++
+
+    Press 'backup_fb_reboot_recovery'
+    Wait-For { (Fastboot-Log 'reboot recovery') -gt 0 } 20 "fastboot reboot recovery" | Out-Null
+    Write-Host "fastboot panel: reboot recovery sent"
+
+    # The stand-in sits in fastbootd, which cannot boot an image: the app offers to go to
+    # the bootloader first. Then the image is sent for real.
+    Press 'backup_fb_boot_image'
+    Choose-File $twrp "the recovery image dialog"
+    $ask = Wait-For { Find-Dialog } 30 "the fastbootd question"
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-backup-fastbootd-question' -f $i); $i++
+    Answer-Dialog $ask 'Yes'
+    Wait-For { (Fastboot-Log 'reboot bootloader') -gt 0 } 20 "fastboot reboot bootloader" | Out-Null
+    if ((Fastboot-Log ' boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
+
+    Press 'backup_fb_boot_image'
+    Choose-File $twrp "the recovery image dialog"
+    $booted = Wait-For { Find-Dialog } 30 "the recovery image to boot"
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-backup-recovery-booted' -f $i); $i++
+    Close-Dialog $booted
+    if ((Fastboot-Log ' boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the recovery image was not issued once" }
+    Write-Host "fastboot panel: recovery image booted"
+
+    # The "recovery" comes up on adb: the panel gives way to the backup tabs.
+    Remove-Item $adbMode, $fastbootMode -ErrorAction SilentlyContinue
+    Wait-For { $null -eq (Shown $root 'backup_fb_reboot_recovery') } 30 "the fastboot panel to go" | Out-Null
+
+    # ------------------------------------------------------------ custom recovery
     $adbList = Wait-For { By-Id $root 'backup_devices' } 10 "the adb device list"
     Wait-For { (Rows $adbList).Count -gt 0 } 30 "a device over adb" | Out-Null
 
@@ -317,17 +398,7 @@ if ($ExpectedBackups -gt 0) {
     Save-Window ('{0:D2}-backup-done' -f $i); $i++
     Close-Dialog $done
 
-    $folder = Get-ChildItem (Join-Path $saveRoot 'Backups') -Directory | Sort-Object LastWriteTime | Select-Object -Last 1
-    if ($null -eq $folder) { Fail "no backup folder was written under $saveRoot\Backups" }
-    $sums = @(Get-Content (Join-Path $folder.FullName 'SHA256SUMS') | Where-Object { $_ })
-    Write-Host "backup in $($folder.Name): $($sums.Count) images"
-    if ($sums.Count -ne $ExpectedBackups) { Fail "expected $ExpectedBackups images in SHA256SUMS, found $($sums.Count)" }
-    foreach ($line in $sums) {
-        $hash, $name = $line -split '  ', 2
-        $actual = (Get-FileHash (Join-Path $folder.FullName $name) -Algorithm SHA256).Hash.ToLower()
-        if ($actual -ne $hash) { Fail "$name does not match its recorded SHA-256" }
-    }
-    if (-not (Test-Path (Join-Path $folder.FullName 'backup-info.txt'))) { Fail "backup-info.txt is missing" }
+    Check-Backup 'recovery'
     $reads = @(Get-Content $fakeAdbLog | Where-Object { $_ -match 'exec-out' }).Count
     Write-Host "partitions read over adb: $reads; all hashes match"
 }
@@ -421,7 +492,17 @@ if ($Arabic) {
     Go 'flash_tab' | Out-Null
     Save-Window 'ar-03-flash'
 
+    # The phone in fastboot, then booted into a rooted Android: adb is the shell user there
+    # and every partition read has to go through su.
+    if ($ExpectedBackups -gt 0) { Set-Content $adbMode 'none' }
     Go 'backup_tab' | Out-Null
+    if ($ExpectedBackups -gt 0) {
+        Wait-For { Shown $root 'backup_fb_reboot_system' } 30 "the fastboot panel (Arabic)" | Out-Null
+        Start-Sleep -Milliseconds 600
+        Save-Window 'ar-09-backup-fastboot'
+        Set-Content $adbMode 'android'
+        Wait-For { $null -eq (Shown $root 'backup_fb_reboot_system') } 30 "the fastboot panel to go (Arabic)" | Out-Null
+    }
     $adbList = Wait-For { By-Id $root 'backup_devices' } 10 "the adb device list (Arabic)"
     Wait-For { (Rows $adbList).Count -gt 0 } 30 "a device over adb (Arabic)" | Out-Null
     Select-Item (Wait-For { By-Id $root 'backup_files_tab' } 10 "the Files tab (Arabic)")
@@ -434,6 +515,19 @@ if ($Arabic) {
     Wait-For { (Rows $parts).Count -ge 3 } 60 "the partition table (Arabic)" | Out-Null
     Start-Sleep -Milliseconds 600
     Save-Window 'ar-05-backup-partitions'
+
+    if ($ExpectedBackups -gt 0) {
+        Start-Sleep -Seconds 1   # a new backup folder needs a newer timestamp than the first
+        Press 'backup_start'
+        $done = Wait-For { Find-Dialog } 240 "the backup to finish (Arabic, su)"
+        Start-Sleep -Milliseconds 600
+        Close-Dialog $done
+        Check-Backup 'android with su'
+        $viaSu = @(Get-Content $fakeAdbLog | Where-Object { $_ -match '^\S+\s+\[android\].*exec-out \| su -c' }).Count
+        Write-Host "partitions read through su: $viaSu"
+        if ($viaSu -ne $ExpectedBackups) { Fail "expected $ExpectedBackups partition reads through su, saw $viaSu" }
+        Remove-Item $adbMode -ErrorAction SilentlyContinue
+    }
 
     if (Test-Path $superPart) {
         Go 'images_tab' | Out-Null

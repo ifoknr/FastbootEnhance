@@ -1148,4 +1148,56 @@ Continue?</value>
   <data name="images_row_block_kinds" xml:space="preserve">
     <value>Data / fill / don't care</value>
   </data>
+  <data name="backup_fb_title" xml:space="preserve">
+    <value>{0} is in Fastboot mode</value>
+  </data>
+  <data name="backup_fb_why" xml:space="preserve">
+    <value>Fastboot can write partitions but cannot read them back: on retail phones Android does not allow it. Backup works over adb, so the phone has to leave Fastboot first, in one of these ways:</value>
+  </data>
+  <data name="backup_fb_android" xml:space="preserve">
+    <value>Start Android</value>
+  </data>
+  <data name="backup_fb_android_note" xml:space="preserve">
+    <value>Files can be copied right away. USB debugging must be on; partition backup also needs root (Magisk or KernelSU).</value>
+  </data>
+  <data name="backup_fb_recovery" xml:space="preserve">
+    <value>Start the recovery</value>
+  </data>
+  <data name="backup_fb_recovery_note" xml:space="preserve">
+    <value>For a custom recovery that is installed (TWRP, OrangeFox): partitions and files, no root needed. The stock recovery has no adb.</value>
+  </data>
+  <data name="backup_fb_boot" xml:space="preserve">
+    <value>Boot a recovery image once, without installing it</value>
+  </data>
+  <data name="backup_fb_boot_note" xml:space="preserve">
+    <value>Sends a TWRP or OrangeFox image made for this phone and starts it; nothing on the phone is changed. Needs an unlocked bootloader.</value>
+  </data>
+  <data name="backup_fb_boot_button" xml:space="preserve">
+    <value>Choose recovery image…</value>
+  </data>
+  <data name="backup_fb_rebooting" xml:space="preserve">
+    <value>Restarting {0}… This page switches over by itself when the phone answers on adb.</value>
+  </data>
+  <data name="backup_fb_sending" xml:space="preserve">
+    <value>Sending {0} to the phone…</value>
+  </data>
+  <data name="backup_fb_booted" xml:space="preserve">
+    <value>The recovery image was sent and started. Once it has loaded, the phone shows up here over adb and the backup can start.</value>
+  </data>
+  <data name="backup_fb_boot_failed" xml:space="preserve">
+    <value>The phone did not boot the image.
+
+{0}
+
+Check that the bootloader is unlocked and that the image was made for this phone. Some phones (Samsung and a few others) do not support booting an image without flashing it.</value>
+  </data>
+  <data name="backup_fb_not_boot_image" xml:space="preserve">
+    <value>This file is not a boot or recovery image. Choose the .img of TWRP or OrangeFox made for this phone.</value>
+  </data>
+  <data name="backup_fb_userspace" xml:space="preserve">
+    <value>The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Choose the image again once it is back.</value>
+  </data>
+  <data name="backup_fb_failed" xml:space="preserve">
+    <value>fastboot did not finish: {0}</value>
+  </data>
 </root>

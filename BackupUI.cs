@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using FastbootEnhance.Core;
 using FastbootEnhance.Core.Adb;
+using FastbootEnhance.Core.Images;
 
 namespace FastbootEnhance
 {
@@ -79,6 +80,11 @@ namespace FastbootEnhance
                 if (picked != null && (current == null || picked.Serial != current.Serial))
                     selectDevice(picked);
             };
+
+            // Phone in fastboot
+            W.backup_fb_reboot_system.Click += delegate { fastbootReboot("reboot"); };
+            W.backup_fb_reboot_recovery.Click += delegate { fastbootReboot("reboot recovery"); };
+            W.backup_fb_boot_image.Click += delegate { bootRecoveryImage(); };
 
             // Partitions
             W.backup_read.Click += delegate { readPartitionTable(); };
@@ -177,13 +183,21 @@ namespace FastbootEnhance
                     continue;
                 }
 
+                // A phone in the bootloader or fastbootd is invisible to adb. Look for it there
+                // too, so the page can say what is wrong instead of waiting forever. Not while a
+                // flash is running: that fastboot has the phone and must not be disturbed.
+                List<string> inFastboot = found.Any(d => d.Usable) || FastbootUI.flashing
+                    ? new List<string>() : listFastboot();
+
                 bool same = found.Count == devices.Count && found.Zip(devices,
                     (a, b) => a.Serial == b.Serial && a.State == b.State).All(x => x);
-                if (same)
-                    continue;
-
                 List<AdbDevice> latest = found;
-                ui(delegate { showDevices(latest); });
+                ui(delegate
+                {
+                    if (!same)
+                        showDevices(latest);
+                    showFastboot(inFastboot);
+                });
             }
         }
 
@@ -208,6 +222,271 @@ namespace FastbootEnhance
             if (current == null || keep.Serial != current.Serial || keep.State != current.State)
                 selectDevice(keep);
         }
+
+        // ------------------------------------------------------------------ phone in fastboot
+
+        static List<string> fastbootSerials = new List<string>();
+
+        /// <summary>The phone last rebooted or booted from this panel, and when.</summary>
+        static string fastbootTarget;
+        static DateTime fastbootLeftAt = DateTime.MinValue;
+
+        /// <summary>How long the panel waits for a rebooted phone to show up on adb.</summary>
+        static readonly TimeSpan RebootWait = TimeSpan.FromMinutes(2);
+
+        static volatile bool fastbootBusy;
+
+        /// <summary>
+        /// Set when a reboot or boot was sent; once the phone has dropped off fastboot, seeing it
+        /// there again means it came back (a reboot to the bootloader, or a failed start).
+        /// </summary>
+        static bool fastbootSentAway;
+        static bool fastbootGone;
+
+        static List<string> listFastboot()
+        {
+            List<string> serials = new List<string>();
+            try
+            {
+                string output;
+                runFastboot(null, "devices", Fastboot.ShortCommand, out output);
+                foreach (string line in output.Split('\n'))
+                {
+                    string[] parts = line.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (parts.Length >= 2 && parts[1].StartsWith("fastboot", StringComparison.Ordinal))
+                        serials.Add(parts[0].Trim());
+                }
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            catch (Exception e)
+            {
+                log("fastboot poll failed: " + e.Message);
+            }
+            return serials;
+        }
+
+        /// <summary>
+        /// Runs fastboot to the end and returns its exit code (null when it timed out), with
+        /// stdout and stderr together in <paramref name="output"/>.
+        /// </summary>
+        static int? runFastboot(string serial, string action, TimeSpan timeout, out string output)
+        {
+            using (Fastboot fastboot = new Fastboot(serial, action, timeout))
+            {
+                // Both pipes at once: fastboot writes its progress to stderr, and reading one
+                // pipe to the end while the other fills up would hang both processes.
+                System.Threading.Tasks.Task<string> errors = fastboot.stderr.ReadToEndAsync();
+                string standard = fastboot.stdout.ReadToEnd();
+                output = standard + errors.Result;
+                return fastboot.WaitForExit();
+            }
+        }
+
+        /// <summary>
+        /// Shows the fastboot panel in place of the backup tabs while a phone sits in fastboot
+        /// with nothing usable on adb, or while a phone sent away from it is still restarting.
+        /// </summary>
+        static void showFastboot(List<string> serials)
+        {
+            fastbootSerials = serials;
+            bool onAdb = current != null && current.Usable;
+            if (onAdb)
+            {
+                fastbootLeftAt = DateTime.MinValue;
+                fastbootSentAway = false;
+            }
+            else if (fastbootSentAway && !fastbootBusy)
+            {
+                if (serials.Count == 0)
+                {
+                    fastbootGone = true;
+                }
+                else if (fastbootGone)
+                {
+                    fastbootSentAway = false;
+                    fastbootLeftAt = DateTime.MinValue;
+                    W.backup_fb_status.Text = "";
+                }
+            }
+
+            bool restarting = DateTime.Now - fastbootLeftAt < RebootWait;
+            bool show = !onAdb && !busy && (serials.Count > 0 || restarting || fastbootBusy);
+
+            W.backup_fastboot_panel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            W.backup_tabs.Visibility = show ? Visibility.Hidden : Visibility.Visible;
+            if (!show)
+            {
+                if (!fastbootBusy)
+                    W.backup_fb_status.Text = "";
+                return;
+            }
+
+            string serial = serials.Count > 0 ? serials[0] : fastbootTarget;
+            W.backup_fb_title.Text = string.Format(Properties.Resources.backup_fb_title, Helper.ltr(serial ?? ""));
+            bool ready = serials.Count > 0 && !fastbootBusy;
+            W.backup_fb_reboot_system.IsEnabled = ready;
+            W.backup_fb_reboot_recovery.IsEnabled = ready;
+            W.backup_fb_boot_image.IsEnabled = ready;
+        }
+
+        /// <summary>Runs one fastboot job on a worker thread, with the panel's buttons off.</summary>
+        static void fastbootJob(string serial, string status, Action work)
+        {
+            if (fastbootBusy)
+                return;
+            fastbootBusy = true;
+            fastbootTarget = serial;
+            W.backup_fb_status.Text = status;
+            showFastboot(fastbootSerials);
+
+            Thread thread = new Thread(delegate ()
+            {
+                try
+                {
+                    work();
+                }
+                catch (Exception e)
+                {
+                    log("fastboot (" + serial + "): " + e.Message);
+                    ui(delegate { W.backup_fb_status.Text = ""; });
+                    ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    ui(delegate
+                    {
+                        fastbootBusy = false;
+                        showFastboot(fastbootSerials);
+                    });
+                }
+            });
+            thread.IsBackground = true;
+            thread.Start();
+        }
+
+        /// <summary>The last few lines fastboot printed, which is where it says what failed.</summary>
+        static string fastbootTail(string output)
+        {
+            string[] lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(line => line.Trim()).Where(line => line.Length > 0).ToArray();
+            return lines.Length == 0 ? "?" : string.Join("\n", lines.Skip(Math.Max(0, lines.Length - 4)));
+        }
+
+        /// <summary>Restarts the phone out of fastboot; reboot alone for Android, or "reboot recovery".</summary>
+        static void fastbootReboot(string action)
+        {
+            string serial = fastbootSerials.FirstOrDefault();
+            if (serial == null)
+                return;
+
+            fastbootJob(serial, string.Format(Properties.Resources.backup_fb_rebooting, Helper.ltr(serial)), delegate
+            {
+                string output;
+                int? code = runFastboot(serial, action, Fastboot.ShortCommand, out output);
+                log("fastboot " + action + " (" + serial + "): " + (code == 0 ? "OK" : fastbootTail(output)));
+                if (code != 0)
+                    throw new InvalidOperationException(string.Format(Properties.Resources.backup_fb_failed, fastbootTail(output)));
+                ui(delegate { sentAway(true); });
+            });
+        }
+
+        /// <summary>A reboot or boot went through; <paramref name="leaving"/> when it leaves fastboot.</summary>
+        static void sentAway(bool leaving)
+        {
+            fastbootSentAway = true;
+            fastbootGone = false;
+            if (leaving)
+                fastbootLeftAt = DateTime.Now;
+        }
+
+        /// <summary>True when "getvar is-userspace" says the phone is in fastbootd.</summary>
+        static bool isUserspace(string output)
+        {
+            foreach (string line in output.Split('\n'))
+            {
+                int at = line.IndexOf("is-userspace", StringComparison.Ordinal);
+                if (at < 0)
+                    continue;
+                string value = line.Substring(at + "is-userspace".Length).TrimStart(':', ' ').Trim();
+                return value.StartsWith("yes", StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Sends a TWRP or OrangeFox image with "fastboot boot": the phone starts it once from
+        /// memory, nothing is flashed, and the recovery then serves adb as root.
+        /// </summary>
+        static void bootRecoveryImage()
+        {
+            string serial = fastbootSerials.FirstOrDefault();
+            if (serial == null || fastbootBusy)
+                return;
+
+            Helper.fileSelect(delegate (string path)
+            {
+                ImageInfo info;
+                try
+                {
+                    info = ImageProbe.Identify(path);
+                }
+                catch (Exception e)
+                {
+                    ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (info.IsSparse || info.Kind != ImageKind.BootImage)
+                {
+                    ThemedDialog.Show(Properties.Resources.backup_fb_not_boot_image, Properties.Resources.error,
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                string name = Path.GetFileName(path);
+                fastbootJob(serial, string.Format(Properties.Resources.backup_fb_sending, Helper.ltr(name)), delegate
+                {
+                    string vars;
+                    runFastboot(serial, "getvar is-userspace", Fastboot.ShortCommand, out vars);
+                    if (isUserspace(vars))
+                    {
+                        log("fastboot boot: " + serial + " is in fastbootd");
+                        if (!Helper.confirm(Properties.Resources.backup_fb_userspace, Properties.Resources.nav_backup))
+                        {
+                            ui(delegate { W.backup_fb_status.Text = ""; });
+                            return;
+                        }
+                        string rebootOutput;
+                        int? rebootCode = runFastboot(serial, "reboot bootloader", Fastboot.ShortCommand, out rebootOutput);
+                        log("fastboot reboot bootloader (" + serial + "): " + (rebootCode == 0 ? "OK" : fastbootTail(rebootOutput)));
+                        if (rebootCode != 0)
+                            throw new InvalidOperationException(string.Format(Properties.Resources.backup_fb_failed, fastbootTail(rebootOutput)));
+                        ui(delegate
+                        {
+                            sentAway(false);
+                            W.backup_fb_status.Text = string.Format(Properties.Resources.backup_fb_rebooting, Helper.ltr(serial));
+                        });
+                        return;
+                    }
+
+                    string output;
+                    int? code = runFastboot(serial, "boot \"" + path + "\"", Fastboot.LongCommand, out output);
+                    log("fastboot boot " + name + " (" + serial + "): " + (code == 0 ? "OK" : fastbootTail(output)));
+                    if (code != 0)
+                        throw new InvalidOperationException(string.Format(Properties.Resources.backup_fb_boot_failed, fastbootTail(output)));
+
+                    ui(delegate
+                    {
+                        sentAway(true);
+                        W.backup_fb_status.Text = Properties.Resources.backup_fb_booted;
+                    });
+                    ThemedDialog.Done(Properties.Resources.backup_fb_booted);
+                });
+            }, "Boot / recovery images|*.img;*.bin|All files|*.*");
+        }
+
+        // ------------------------------------------------------------------ adb device
 
         static void selectDevice(AdbDevice device)
         {

@@ -1148,4 +1148,56 @@
   <data name="images_row_block_kinds" xml:space="preserve">
     <value>بيانات / تعبئة / متجاهلة</value>
   </data>
+  <data name="backup_fb_title" xml:space="preserve">
+    <value>الجهاز {0} في وضع الفاست بوت</value>
+  </data>
+  <data name="backup_fb_why" xml:space="preserve">
+    <value>الفاست بوت يكتب الأقسام لكنه لا يستطيع قراءتها: أندرويد يمنع ذلك في الجوالات التجارية. النسخ الاحتياطي يعمل عبر adb، لذا يجب إخراج الجوال من الفاست بوت أولاً بإحدى هذه الطرق:</value>
+  </data>
+  <data name="backup_fb_android" xml:space="preserve">
+    <value>تشغيل أندرويد</value>
+  </data>
+  <data name="backup_fb_android_note" xml:space="preserve">
+    <value>يمكن نسخ الملفات مباشرة. يجب تفعيل تصحيح USB، ونسخ الأقسام يحتاج روت أيضاً (Magisk أو KernelSU).</value>
+  </data>
+  <data name="backup_fb_recovery" xml:space="preserve">
+    <value>تشغيل الريكفري</value>
+  </data>
+  <data name="backup_fb_recovery_note" xml:space="preserve">
+    <value>إذا كان عندك ريكفري مخصص مثبّت (TWRP أو OrangeFox): الأقسام والملفات بدون روت. الريكفري الأصلي لا يدعم adb.</value>
+  </data>
+  <data name="backup_fb_boot" xml:space="preserve">
+    <value>تشغيل صورة ريكفري مؤقتاً بدون تثبيتها</value>
+  </data>
+  <data name="backup_fb_boot_note" xml:space="preserve">
+    <value>يرسل صورة TWRP أو OrangeFox الخاصة بجوالك ويشغّلها، بدون أي تغيير على الجوال. يحتاج بوت لودر مفتوح.</value>
+  </data>
+  <data name="backup_fb_boot_button" xml:space="preserve">
+    <value>اختيار صورة الريكفري…</value>
+  </data>
+  <data name="backup_fb_rebooting" xml:space="preserve">
+    <value>جارٍ إعادة تشغيل {0}… ستنتقل هذه الصفحة تلقائياً عندما يتصل الجوال عبر adb.</value>
+  </data>
+  <data name="backup_fb_sending" xml:space="preserve">
+    <value>جارٍ إرسال {0} إلى الجوال…</value>
+  </data>
+  <data name="backup_fb_booted" xml:space="preserve">
+    <value>تم إرسال صورة الريكفري وتشغيلها. بعد اكتمال التحميل سيظهر الجوال هنا عبر adb ويمكنك بدء النسخ.</value>
+  </data>
+  <data name="backup_fb_boot_failed" xml:space="preserve">
+    <value>لم يقبل الجوال تشغيل الصورة.
+
+{0}
+
+تأكد أن البوت لودر مفتوح وأن الصورة مخصصة لهذا الجوال. بعض الجوالات (مثل سامسونج) لا تدعم تشغيل صورة بدون تفليشها.</value>
+  </data>
+  <data name="backup_fb_not_boot_image" xml:space="preserve">
+    <value>هذا الملف ليس صورة إقلاع أو ريكفري. اختر ملف ‎.img‎ الخاص بـ TWRP أو OrangeFox لهذا الجوال.</value>
+  </data>
+  <data name="backup_fb_userspace" xml:space="preserve">
+    <value>الجوال في وضع fastbootd، وهذا الوضع لا يستطيع تشغيل صورة. إعادة تشغيله إلى البوت لودر الآن؟ بعد رجوعه اختر الصورة مرة أخرى.</value>
+  </data>
+  <data name="backup_fb_failed" xml:space="preserve">
+    <value>لم يكتمل أمر fastboot: {0}</value>
+  </data>
 </root>

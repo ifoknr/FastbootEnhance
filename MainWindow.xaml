@@ -662,7 +662,61 @@
                         </Grid>
                     </Border>
 
-                    <TabControl Grid.Row="1">
+                    <!-- The phone is in fastboot: say why backup cannot work there and how to get out of it. -->
+                    <Border x:Name="backup_fastboot_panel" Grid.Row="1" Style="{StaticResource WarnCard}" VerticalAlignment="Top"
+                            Visibility="Collapsed" Panel.ZIndex="1">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <Border DockPanel.Dock="Left" Width="34" Height="34" CornerRadius="10" Background="{StaticResource WarnSoft}"
+                                        BorderBrush="{StaticResource WarnLine}" BorderThickness="1" Margin="0,0,14,0" VerticalAlignment="Top">
+                                    <Path FlowDirection="LeftToRight" Data="M12,3 L22,20.5 H2 Z M12,9.5 V14 M12,17 V17.5" Stroke="{StaticResource Warn}"
+                                          StrokeThickness="2" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          Stretch="Uniform" Width="18" Height="18"/>
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock x:Name="backup_fb_title" Style="{StaticResource CardTitle}" Margin="0,0,0,4"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_why}"/>
+                                </StackPanel>
+                            </DockPanel>
+
+                            <Grid Margin="48,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Margin="0,0,16,14">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_android}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_android_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_reboot_system" Grid.Column="1" MinWidth="190" VerticalAlignment="Top" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.fastboot_reboot_system}"/>
+
+                                <StackPanel Grid.Row="1" Margin="0,0,16,14">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_recovery}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_recovery_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_reboot_recovery" Grid.Row="1" Grid.Column="1" MinWidth="190" VerticalAlignment="Top" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.fastboot_reboot_recovery}"/>
+
+                                <StackPanel Grid.Row="2" Margin="0,0,16,0">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_boot}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_boot_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_boot_image" Grid.Row="2" Grid.Column="1" MinWidth="190" VerticalAlignment="Top"
+                                        Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.backup_fb_boot_button}"/>
+                            </Grid>
+
+                            <TextBlock x:Name="backup_fb_status" Style="{StaticResource Note}" Margin="48,14,0,0" Foreground="{StaticResource Accent}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TabControl x:Name="backup_tabs" Grid.Row="1">
                         <!-- Partitions -->
                         <TabItem x:Name="backup_partitions_tab" Header="{x:Static props:Resources.backup_tab_partitions}">
                             <Grid>

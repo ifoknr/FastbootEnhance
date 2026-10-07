@@ -99,7 +99,22 @@ namespace FastbootEnhance.SampleGen
             Console.WriteLine("wrote " + zip + " (" + new FileInfo(zip).Length / 1024 / 1024 + " MB)");
 
             WriteSuper(outDir);
+            WriteRecoveryImage(outDir);
             return 0;
+        }
+
+        /// <summary>
+        /// A stand-in for a TWRP image: just the boot image magic and a page-sized header, which
+        /// is all the app checks before handing the file to "fastboot boot".
+        /// </summary>
+        static void WriteRecoveryImage(string outDir)
+        {
+            byte[] image = new byte[2 << 20];
+            System.Text.Encoding.ASCII.GetBytes("ANDROID!").CopyTo(image, 0);
+            BitConverter.GetBytes(4096u).CopyTo(image, 36);   // page_size
+            string path = Path.Combine(outDir, "twrp-sample.img");
+            File.WriteAllBytes(path, image);
+            Console.WriteLine("wrote " + path);
         }
 
         /// <summary>

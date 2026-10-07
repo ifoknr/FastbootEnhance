@@ -5,6 +5,8 @@ namespace FastbootEnhance.FakeFastboot
     /// commands the app sends with output shaped like the real tool's (status on stderr,
     /// "devices" on stdout) so the UI can be driven end to end in CI. Every command is
     /// appended to fake-fastboot.log next to the executable, so a run can be checked.
+    /// "reboot bootloader" moves it to the bootloader (remembered in fake-fastboot.mode), where
+    /// "boot" works; any other reboot puts it back in fastbootd.
     /// </summary>
     static class Program
     {
@@ -53,7 +55,15 @@ namespace FastbootEnhance.FakeFastboot
                 case "flash":
                     return Flash(rest);
 
+                case "boot":
+                    return Boot(rest);
+
                 case "reboot":
+                    SetBootloader(rest.Count > 1 && rest[1] == "bootloader");
+                    Console.Error.WriteLine(Describe(rest) + " OKAY [  0.050s]");
+                    Console.Error.WriteLine("Finished. Total time: 0.050s");
+                    return 0;
+
                 case "set_active":
                 case "erase":
                 case "snapshot-update":
@@ -73,7 +83,7 @@ namespace FastbootEnhance.FakeFastboot
         static void GetVarAll()
         {
             TextWriter err = Console.Error;
-            err.WriteLine("(bootloader) is-userspace:yes");
+            err.WriteLine("(bootloader) is-userspace:" + (InBootloader() ? "no" : "yes"));
             err.WriteLine("(bootloader) product:sample_a64");
             err.WriteLine("(bootloader) secure:yes");
             err.WriteLine("(bootloader) unlocked:yes");
@@ -114,6 +124,52 @@ namespace FastbootEnhance.FakeFastboot
             Console.Error.WriteLine("Sending '" + slotted + "' (" + kb + " KB)            OKAY [  0.120s]");
             Thread.Sleep(150);
             Console.Error.WriteLine("Writing '" + slotted + "'                          OKAY [  0.080s]");
+            Console.Error.WriteLine("Finished. Total time: 0.210s");
+            return 0;
+        }
+
+        static string ModePath => Path.Combine(AppContext.BaseDirectory, "fake-fastboot.mode");
+
+        static bool InBootloader()
+        {
+            try
+            {
+                return File.Exists(ModePath) && File.ReadAllText(ModePath).Trim() == "bootloader";
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+        }
+
+        static void SetBootloader(bool bootloader)
+        {
+            if (bootloader)
+                File.WriteAllText(ModePath, "bootloader");
+            else if (File.Exists(ModePath))
+                File.Delete(ModePath);
+        }
+
+        /// <summary>"fastboot boot IMAGE": refused by fastbootd, as on a real phone.</summary>
+        static int Boot(List<string> rest)
+        {
+            if (!InBootloader())
+            {
+                Console.Error.WriteLine("Sending 'boot.img'                                 OKAY [  0.100s]");
+                Console.Error.WriteLine("Booting                                            FAILED (remote: 'Unrecognized command boot')");
+                Console.Error.WriteLine("fastboot: error: Command failed");
+                return 1;
+            }
+            string image = rest.Count > 1 ? rest[1] : "";
+            if (!File.Exists(image))
+            {
+                Console.Error.WriteLine("fastboot: error: cannot load '" + image + "'");
+                return 1;
+            }
+            long kb = new FileInfo(image).Length / 1024;
+            Console.Error.WriteLine("Sending 'boot.img' (" + kb + " KB)                    OKAY [  0.150s]");
+            Thread.Sleep(150);
+            Console.Error.WriteLine("Booting                                            OKAY [  0.050s]");
             Console.Error.WriteLine("Finished. Total time: 0.210s");
             return 0;
         }
