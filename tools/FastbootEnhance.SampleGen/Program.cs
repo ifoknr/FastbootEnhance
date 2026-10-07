@@ -97,7 +97,56 @@ namespace FastbootEnhance.SampleGen
 
             string zip = builder.WriteToZip(outDir, "sample-ota.zip", stored: true);
             Console.WriteLine("wrote " + zip + " (" + new FileInfo(zip).Length / 1024 / 1024 + " MB)");
+
+            WriteSuper(outDir);
             return 0;
+        }
+
+        /// <summary>
+        /// A sparse super image split in parts, like a factory image's super.img_sparsechunk.N,
+        /// with a file of the expected SHA-256 of each partition and of the expanded image, so a
+        /// test can check what the app extracts.
+        /// </summary>
+        static void WriteSuper(string outDir)
+        {
+            var partitions = new (string name, int megabytes, bool erofs)[]
+            {
+                ("system_a", 48, true), ("system_ext_a", 16, true), ("product_a", 24, true),
+                ("vendor_a", 24, false), ("odm_a", 4, true),
+            };
+            FastbootEnhance.Core.Images.SuperBuilder builder = new FastbootEnhance.Core.Images.SuperBuilder { HeaderFlags = 1 };
+            builder.AddGroup("qti_dynamic_partitions_a", 240UL << 20);
+            builder.AddGroup("qti_dynamic_partitions_b", 240UL << 20);
+            List<string> expected = new List<string>();
+            int seed = 100;
+            foreach (var p in partitions)
+            {
+                byte[] data = RomLike(p.megabytes << 20, seed++);
+                if (p.erofs)
+                    BitConverter.GetBytes(0xE0F5E1E2u).CopyTo(data, 1024);
+                else
+                    BitConverter.GetBytes((ushort)0xEF53).CopyTo(data, 1024 + 56);
+                builder.AddPartition(p.name, "qti_dynamic_partitions_a", new MemoryStream(data));
+                builder.AddPartition(p.name.Replace("_a", "_b"), "qti_dynamic_partitions_b", null);
+                expected.Add(Sha256Hex(data) + "  " + p.name + ".img");
+            }
+
+            string raw = Path.Combine(outDir, "super-sample.raw");
+            using (FileStream file = new FileStream(raw, FileMode.Create, FileAccess.ReadWrite))
+                builder.Write(file, 256L << 20);
+            expected.Add(Sha256Hex(File.ReadAllBytes(raw)) + "  super.raw.img");
+
+            FastbootEnhance.Core.Images.SparseWriteResult sparse = FastbootEnhance.Core.Images.SparseConverter.ToSparse(
+                raw, Path.Combine(outDir, "super.img_sparsechunk"), 4096, 40L << 20, null, System.Threading.CancellationToken.None);
+            File.Delete(raw);
+            File.WriteAllLines(Path.Combine(outDir, "super-expected.sha256"), expected);
+            Console.WriteLine("wrote super.img_sparsechunk.0.." + (sparse.Files.Count - 1) + " (" + sparse.Bytes / 1024 / 1024 + " MB)");
+        }
+
+        static string Sha256Hex(byte[] data)
+        {
+            using (System.Security.Cryptography.SHA256 sha = System.Security.Cryptography.SHA256.Create())
+                return string.Concat(sha.ComputeHash(data).Select(b => b.ToString("x2")));
         }
 
         /// <summary>A quarter of each block random, the rest zero: compresses about 4:1, like system images.</summary>

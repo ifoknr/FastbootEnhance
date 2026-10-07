@@ -36,6 +36,16 @@ namespace FastbootEnhance.PayloadTool
                         return Extract(rest);
                     case "verify":
                         return Verify(rest);
+                    case "imginfo":
+                        return ImageCommands.ImgInfo(rest);
+                    case "simg2img":
+                        return ImageCommands.Simg2Img(rest);
+                    case "img2simg":
+                        return ImageCommands.Img2Simg(rest);
+                    case "lpunpack":
+                        return ImageCommands.LpUnpack(rest);
+                    case "mksuper":
+                        return ImageCommands.MkSuper(rest);
                     case "-h":
                     case "--help":
                     case "help":
@@ -60,6 +70,11 @@ namespace FastbootEnhance.PayloadTool
             catch (FileNotFoundException e)
             {
                 Console.Error.WriteLine("not found: " + e.FileName);
+                return 1;
+            }
+            catch (InvalidDataException e)
+            {
+                Console.Error.WriteLine("image error: " + e.Message);
                 return 1;
             }
             catch (OperationCanceledException)
@@ -91,6 +106,7 @@ namespace FastbootEnhance.PayloadTool
             Console.WriteLine("  info    <payload.bin|ota.zip>");
             Console.WriteLine("  extract <payload.bin|ota.zip> -o <dir> [-p name ...] [-j N] [--no-verify] [--force]");
             Console.WriteLine("  verify  <payload.bin|ota.zip> [-p name ...] [-j N]");
+            ImageCommands.Usage();
             Console.WriteLine();
             Console.WriteLine("  -o  output directory");
             Console.WriteLine("  -p  only these partitions (default: all)");

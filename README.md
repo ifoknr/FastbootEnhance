@@ -22,6 +22,11 @@ Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR
 - Unpack Payload.bin
 - **Extract specific image from Payload.bin**
 - **Back up partitions** (boot, vbmeta, persist, modem/IMEI data and more) over adb with root or a custom recovery, each image recorded with its SHA-256, and check a backup later
+- **Image Tools** (a native port of AOSP libsparse and liblp, no external programs):
+  - inspect any image: sparse or raw, super, ext4, EROFS, F2FS, boot, vendor_boot, vbmeta
+  - sparse to raw (`simg2img`), including images split into `*_sparsechunk.N` parts, with CRC-32 checks
+  - raw to sparse (`img2simg`) and splitting into parts (`simg2simg`), byte-identical to the AOSP tools
+  - unpack `super.img` (`lpunpack`) straight from a sparse or split image, every metadata checksum verified
 - Interface in **Arabic** (right to left), English, Chinese, Japanese and Korean
 - **Copy any file or folder from the phone** to the computer over adb, no root needed
 - Show Payload vars
@@ -119,6 +124,8 @@ fbe-payload verify  <payload.bin|ota.zip> [-p name ...] [-j N]
 ( The checksum will be automatically done if "ignore checksum" is not checked )
 
 ## Credits
+
+- Sparse image tools ported from AOSP libsparse ([android-simg2img](https://github.com/ifoknr/android-simg2img), Apache License 2.0); super image format from AOSP liblp
 
 - Developed and maintained by **IFOKNR** — Telegram [@IFOKNR1](https://t.me/IFOKNR1), GitHub [ifoknr](https://github.com/ifoknr)
 - Based on the original [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by **LibXZR**, released under the MIT License (Copyright (c) 2021 LibXZR)

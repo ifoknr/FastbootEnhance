@@ -332,6 +332,60 @@ if ($ExpectedBackups -gt 0) {
     Write-Host "partitions read over adb: $reads; all hashes match"
 }
 
+# ---------------------------------------------------------------- image tools
+# Opens the sample sparse super (three parts) through the file dialog, extracts its
+# partitions and expands it to raw, then checks every SHA-256 against what SampleGen wrote.
+$sampleDir = Split-Path $Payload
+$superPart = Join-Path $sampleDir 'super.img_sparsechunk.0'
+$expectedFile = Join-Path $sampleDir 'super-expected.sha256'
+
+function Open-Image([string] $path) {
+    Press 'images_open'
+    $dialog = Wait-For { Find-Dialog } 20 "the image file dialog"
+    Start-Sleep -Milliseconds 800
+    [System.Windows.Forms.SendKeys]::SendWait($path + '{ENTER}')
+    Wait-For { $null -eq (Find-Dialog) } 20 "the image file dialog to close" | Out-Null
+}
+
+if (Test-Path $superPart) {
+    Go 'images_tab' | Out-Null
+    Save-Window ('{0:D2}-images-empty' -f $i); $i++
+    Open-Image $superPart
+    $superList = Wait-For { By-Id $root 'images_partitions' } 30 "the super partition list"
+    Wait-For { (Rows $superList).Count -ge 3 } 60 "the super partitions" | Out-Null
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-images-super' -f $i); $i++
+
+    Press 'images_extract'
+    $done = Wait-For { Find-Dialog } 120 "the extraction to finish"
+    Start-Sleep -Milliseconds 800
+    Save-Window ('{0:D2}-images-extracted' -f $i); $i++
+    Close-Dialog $done
+
+    $expected = @{}
+    foreach ($line in Get-Content $expectedFile) { $h, $n = $line -split '  ', 2; $expected[$n] = $h }
+    $unpacked = Join-Path $sampleDir 'super_unpacked'
+    foreach ($name in @('system_a.img', 'system_ext_a.img', 'product_a.img', 'vendor_a.img', 'odm_a.img')) {
+        $file = Join-Path $unpacked $name
+        if (-not (Test-Path $file)) { Fail "$name was not extracted" }
+        $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLower()
+        if ($hash -ne $expected[$name]) { Fail "$name does not match its expected SHA-256" }
+    }
+    Write-Host "super: 5 partitions extracted from 3 sparse parts, all SHA-256 match"
+
+    Select-Item (Wait-For { By-Id $root 'images_details_tab' } 10 "the Details tab")
+    Start-Sleep -Milliseconds 500
+    Save-Window ('{0:D2}-images-details' -f $i); $i++
+
+    Press 'images_to_raw'
+    $done = Wait-For { Find-Dialog } 120 "the conversion to raw"
+    Start-Sleep -Milliseconds 600
+    Close-Dialog $done
+    $rawHash = (Get-FileHash (Join-Path $sampleDir 'super.raw.img') -Algorithm SHA256).Hash.ToLower()
+    if ($rawHash -ne $expected['super.raw.img']) { Fail "super.raw.img does not match the image SampleGen built" }
+    Write-Host "super: 3 sparse parts expanded to raw, SHA-256 matches"
+}
+
 # ---------------------------------------------------------------- log and about
 Go 'logs_tab' | Out-Null
 Save-Window ('{0:D2}-logs' -f $i); $i++
@@ -381,6 +435,15 @@ if ($Arabic) {
     Start-Sleep -Milliseconds 600
     Save-Window 'ar-05-backup-partitions'
 
+    if (Test-Path $superPart) {
+        Go 'images_tab' | Out-Null
+        Open-Image $superPart
+        $superList = Wait-For { By-Id $root 'images_partitions' } 30 "the super partition list (Arabic)"
+        Wait-For { (Rows $superList).Count -ge 3 } 60 "the super partitions (Arabic)" | Out-Null
+        Start-Sleep -Milliseconds 600
+        Save-Window 'ar-08-images-super'
+    }
+
     # A dialog: switching back to English asks to restart. Answer "No" (the first button).
     Go 'about_tab' | Out-Null
     Save-Window 'ar-06-about'
@@ -397,5 +460,5 @@ if ($Arabic) {
     if ($proc.HasExited) { Fail "the Arabic app exited while being captured, code $($proc.ExitCode)" }
     Stop-Process -Id $proc.Id -Force
     Remove-Item Env:FASTBOOT_STUDIO_LANG
-    Write-Host "captured 7 Arabic screens"
+    Write-Host "captured the Arabic screens"
 }

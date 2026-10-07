@@ -2505,5 +2505,581 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("language_busy", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image Tools.
+        /// </summary>
+        public static string nav_images {
+            get {
+                return ResourceManager.GetString("nav_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Inspect, convert and unpack Android images: sparse, super, ext4, EROFS and more.
+        /// </summary>
+        public static string images_subtitle {
+            get {
+                return ResourceManager.GetString("images_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open image….
+        /// </summary>
+        public static string images_open {
+            get {
+                return ResourceManager.GetString("images_open", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Drop an image here.
+        /// </summary>
+        public static string images_drop_hint {
+            get {
+                return ResourceManager.GetString("images_drop_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to system.img, super.img, vendor.img… sparse or raw. For an image split into parts (system.img_sparsechunk.0, .1…) open any one part; the others are found automatically..
+        /// </summary>
+        public static string images_drop_detail {
+            get {
+                return ResourceManager.GetString("images_drop_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string images_tab_details {
+            get {
+                return ResourceManager.GetString("images_tab_details", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions in super.
+        /// </summary>
+        public static string images_tab_partitions {
+            get {
+                return ResourceManager.GetString("images_tab_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse chunks.
+        /// </summary>
+        public static string images_tab_chunks {
+            get {
+                return ResourceManager.GetString("images_tab_chunks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string images_select_all {
+            get {
+                return ResourceManager.GetString("images_select_all", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group / state.
+        /// </summary>
+        public static string images_column_group {
+            get {
+                return ResourceManager.GetString("images_column_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string images_column_type {
+            get {
+                return ResourceManager.GetString("images_column_type", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to First block.
+        /// </summary>
+        public static string images_column_start {
+            get {
+                return ResourceManager.GetString("images_column_start", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Blocks.
+        /// </summary>
+        public static string images_column_blocks {
+            get {
+                return ResourceManager.GetString("images_column_blocks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extract partitions (lpunpack).
+        /// </summary>
+        public static string images_extract {
+            get {
+                return ResourceManager.GetString("images_extract", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Convert to raw (simg2img).
+        /// </summary>
+        public static string images_to_raw {
+            get {
+                return ResourceManager.GetString("images_to_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Convert to sparse (img2simg).
+        /// </summary>
+        public static string images_to_sparse {
+            get {
+                return ResourceManager.GetString("images_to_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Split into parts (simg2simg).
+        /// </summary>
+        public static string images_resplit {
+            get {
+                return ResourceManager.GetString("images_resplit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Split into parts of at most.
+        /// </summary>
+        public static string images_split {
+            get {
+                return ResourceManager.GetString("images_split", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to empty slot.
+        /// </summary>
+        public static string images_empty_slot {
+            get {
+                return ResourceManager.GetString("images_empty_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Several files were chosen, but they are not sparse parts of one image. Open one image at a time..
+        /// </summary>
+        public static string images_parts_not_sparse {
+            get {
+                return ResourceManager.GetString("images_parts_not_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Super (dynamic partitions).
+        /// </summary>
+        public static string images_kind_super {
+            get {
+                return ResourceManager.GetString("images_kind_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ext4 file system.
+        /// </summary>
+        public static string images_kind_ext4 {
+            get {
+                return ResourceManager.GetString("images_kind_ext4", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to EROFS file system.
+        /// </summary>
+        public static string images_kind_erofs {
+            get {
+                return ResourceManager.GetString("images_kind_erofs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to F2FS file system.
+        /// </summary>
+        public static string images_kind_f2fs {
+            get {
+                return ResourceManager.GetString("images_kind_f2fs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot image.
+        /// </summary>
+        public static string images_kind_boot {
+            get {
+                return ResourceManager.GetString("images_kind_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Vendor boot image.
+        /// </summary>
+        public static string images_kind_vendor_boot {
+            get {
+                return ResourceManager.GetString("images_kind_vendor_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to vbmeta (Android Verified Boot).
+        /// </summary>
+        public static string images_kind_vbmeta {
+            get {
+                return ResourceManager.GetString("images_kind_vbmeta", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA payload (open it in Payload Dumper).
+        /// </summary>
+        public static string images_kind_payload {
+            get {
+                return ResourceManager.GetString("images_kind_payload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Zip archive.
+        /// </summary>
+        public static string images_kind_zip {
+            get {
+                return ResourceManager.GetString("images_kind_zip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string images_row_file {
+            get {
+                return ResourceManager.GetString("images_row_file", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} parts.
+        /// </summary>
+        public static string images_parts {
+            get {
+                return ResourceManager.GetString("images_parts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Format.
+        /// </summary>
+        public static string images_row_format {
+            get {
+                return ResourceManager.GetString("images_row_format", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw image.
+        /// </summary>
+        public static string images_format_raw {
+            get {
+                return ResourceManager.GetString("images_format_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        public static string images_row_content {
+            get {
+                return ResourceManager.GetString("images_row_content", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image size.
+        /// </summary>
+        public static string images_row_size {
+            get {
+                return ResourceManager.GetString("images_row_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size on disk.
+        /// </summary>
+        public static string images_row_disk {
+            get {
+                return ResourceManager.GetString("images_row_disk", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Block size.
+        /// </summary>
+        public static string images_row_block_size {
+            get {
+                return ResourceManager.GetString("images_row_block_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Blocks.
+        /// </summary>
+        public static string images_row_blocks {
+            get {
+                return ResourceManager.GetString("images_row_blocks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} total · {1} data · {2} fill · {3} don't care.
+        /// </summary>
+        public static string images_blocks_detail {
+            get {
+                return ResourceManager.GetString("images_blocks_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chunks.
+        /// </summary>
+        public static string images_row_chunks {
+            get {
+                return ResourceManager.GetString("images_row_chunks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CRC-32.
+        /// </summary>
+        public static string images_row_crc {
+            get {
+                return ResourceManager.GetString("images_row_crc", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to not recorded.
+        /// </summary>
+        public static string images_crc_none {
+            get {
+                return ResourceManager.GetString("images_crc_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata.
+        /// </summary>
+        public static string images_row_metadata {
+            get {
+                return ResourceManager.GetString("images_row_metadata", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to version {0}, {1} slots.
+        /// </summary>
+        public static string images_metadata_detail {
+            get {
+                return ResourceManager.GetString("images_metadata_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to read from the backup copy.
+        /// </summary>
+        public static string images_backup_copy {
+            get {
+                return ResourceManager.GetString("images_backup_copy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual A/B.
+        /// </summary>
+        public static string images_row_vab {
+            get {
+                return ResourceManager.GetString("images_row_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions.
+        /// </summary>
+        public static string images_row_partitions {
+            get {
+                return ResourceManager.GetString("images_row_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} with data, {1} in total.
+        /// </summary>
+        public static string images_partitions_detail {
+            get {
+                return ResourceManager.GetString("images_partitions_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string images_row_group {
+            get {
+                return ResourceManager.GetString("images_row_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to no limit.
+        /// </summary>
+        public static string images_unlimited {
+            get {
+                return ResourceManager.GetString("images_unlimited", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Super size.
+        /// </summary>
+        public static string images_row_super_size {
+            get {
+                return ResourceManager.GetString("images_row_super_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions are read straight from the image, sparse or not, and every metadata checksum is verified. Each one is saved as name.img in a folder next to the image..
+        /// </summary>
+        public static string images_note_super {
+            get {
+                return ResourceManager.GetString("images_note_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Converting to raw rebuilds the full image (all parts together) and verifies any CRC-32 it carries. Splitting makes parts fastboot can flash one by one..
+        /// </summary>
+        public static string images_note_sparse {
+            get {
+                return ResourceManager.GetString("images_note_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Converting to sparse stores repeated blocks as one record, the format fastboot and factory images use. The output matches AOSP img2simg byte for byte..
+        /// </summary>
+        public static string images_note_raw {
+            get {
+                return ResourceManager.GetString("images_note_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These already exist and will be replaced:.
+        /// </summary>
+        public static string images_overwrite {
+            get {
+                return ResourceManager.GetString("images_overwrite", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done in {0} s.
+        /// </summary>
+        public static string images_done_in {
+            get {
+                return ResourceManager.GetString("images_done_in", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw image written:.
+        /// </summary>
+        public static string images_raw_done {
+            get {
+                return ResourceManager.GetString("images_raw_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CRC-32 {0}.
+        /// </summary>
+        public static string images_crc_line {
+            get {
+                return ResourceManager.GetString("images_crc_line", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recorded checksum(s) verified.
+        /// </summary>
+        public static string images_crc_checked {
+            get {
+                return ResourceManager.GetString("images_crc_checked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the largest part size in megabytes, for example 512..
+        /// </summary>
+        public static string images_split_invalid {
+            get {
+                return ResourceManager.GetString("images_split_invalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open a single sparse image to split it. To join parts, convert them to raw first..
+        /// </summary>
+        public static string images_resplit_one {
+            get {
+                return ResourceManager.GetString("images_resplit_one", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sparse file(s) written ({1}):.
+        /// </summary>
+        public static string images_sparse_done {
+            get {
+                return ResourceManager.GetString("images_sparse_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tick the partitions to extract first..
+        /// </summary>
+        public static string images_nothing_selected {
+            get {
+                return ResourceManager.GetString("images_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions extracted to:.
+        /// </summary>
+        public static string images_extract_done {
+            get {
+                return ResourceManager.GetString("images_extract_done", resourceCulture);
+            }
+        }
     }
 }

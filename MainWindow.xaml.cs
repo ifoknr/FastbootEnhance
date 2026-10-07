@@ -25,6 +25,7 @@ namespace FastbootEnhance
             PayloadUI.init();
             FastbootUI.init();
             BackupUI.init();
+            ImageToolsUI.init();
 
             Title += " v" + version;
 
@@ -33,7 +34,19 @@ namespace FastbootEnhance
             if (args.Length > 1 && File.Exists(args[1]))
             {
                 string path = args[1];
-                Loaded += delegate { PayloadUI.openFromPath(path); };
+                Loaded += delegate
+                {
+                    // A payload or an OTA zip goes to the Payload Dumper; any other image to Image Tools.
+                    if (looksLikePayload(path))
+                    {
+                        PayloadUI.openFromPath(path);
+                    }
+                    else
+                    {
+                        main_tabs.SelectedItem = images_tab;
+                        ImageToolsUI.openFromPath(path);
+                    }
+                };
             }
 
             wireLogs();
@@ -44,7 +57,7 @@ namespace FastbootEnhance
             Closing += delegate (object sender, System.ComponentModel.CancelEventArgs e)
             {
                 string question = FastbootUI.flashing ? Properties.Resources.confirm_close_flashing
-                    : PayloadUI.extracting ? Properties.Resources.confirm_close_extracting
+                    : PayloadUI.extracting || ImageToolsUI.busy ? Properties.Resources.confirm_close_extracting
                     : null;
                 if (question == null)
                     return;
@@ -58,6 +71,7 @@ namespace FastbootEnhance
             {
                 FastbootUI.abortFlash();
                 BackupUI.shutdown();
+                ImageToolsUI.shutdown();
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
@@ -94,6 +108,30 @@ namespace FastbootEnhance
                         App.Restart();
                 };
                 language_buttons.Children.Add(button);
+            }
+        }
+
+        static bool looksLikePayload(string path)
+        {
+            try
+            {
+                byte[] magic = new byte[4];
+                using (FileStream file = File.OpenRead(path))
+                {
+                    if (file.Read(magic, 0, 4) < 4)
+                        return true;
+                }
+                bool payload = magic[0] == 'C' && magic[1] == 'r' && magic[2] == 'A' && magic[3] == 'U';
+                bool zip = magic[0] == 0x50 && magic[1] == 0x4B;
+                return payload || zip;
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
             }
         }
 

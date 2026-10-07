@@ -945,4 +945,204 @@
   <data name="language_busy" xml:space="preserve">
     <value>انتظر حتى ينتهي التفليش أو الاستخراج الجاري قبل تغيير اللغة.</value>
   </data>
+  <data name="nav_images" xml:space="preserve">
+    <value>أدوات الصور</value>
+  </data>
+  <data name="images_subtitle" xml:space="preserve">
+    <value>افحص صور أندرويد وحوّلها وفكّها: sparse و super و ext4 و EROFS وغيرها</value>
+  </data>
+  <data name="images_open" xml:space="preserve">
+    <value>فتح صورة…</value>
+  </data>
+  <data name="images_drop_hint" xml:space="preserve">
+    <value>اسحب صورة إلى هنا</value>
+  </data>
+  <data name="images_drop_detail" xml:space="preserve">
+    <value>مثل system.img و super.img و vendor.img… سواء كانت sparse أو raw. للصور المقسّمة إلى أجزاء (system.img_sparsechunk.0 و .1…) افتح أي جزء وسيُعثر على البقية تلقائيًا.</value>
+  </data>
+  <data name="images_tab_details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="images_tab_partitions" xml:space="preserve">
+    <value>أقسام super</value>
+  </data>
+  <data name="images_tab_chunks" xml:space="preserve">
+    <value>مقاطع sparse</value>
+  </data>
+  <data name="images_select_all" xml:space="preserve">
+    <value>تحديد الكل</value>
+  </data>
+  <data name="images_column_group" xml:space="preserve">
+    <value>المجموعة / الحالة</value>
+  </data>
+  <data name="images_column_type" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="images_column_start" xml:space="preserve">
+    <value>أول كتلة</value>
+  </data>
+  <data name="images_column_blocks" xml:space="preserve">
+    <value>الكتل</value>
+  </data>
+  <data name="images_extract" xml:space="preserve">
+    <value>استخراج الأقسام (lpunpack)</value>
+  </data>
+  <data name="images_to_raw" xml:space="preserve">
+    <value>تحويل إلى raw (simg2img)</value>
+  </data>
+  <data name="images_to_sparse" xml:space="preserve">
+    <value>تحويل إلى sparse (img2simg)</value>
+  </data>
+  <data name="images_resplit" xml:space="preserve">
+    <value>تقسيم إلى أجزاء (simg2simg)</value>
+  </data>
+  <data name="images_split" xml:space="preserve">
+    <value>تقسيم إلى أجزاء بحد أقصى</value>
+  </data>
+  <data name="images_empty_slot" xml:space="preserve">
+    <value>شق فارغ</value>
+  </data>
+  <data name="images_parts_not_sparse" xml:space="preserve">
+    <value>اخترت أكثر من ملف لكنها ليست أجزاء sparse لصورة واحدة. افتح صورة واحدة في كل مرة.</value>
+  </data>
+  <data name="images_kind_super" xml:space="preserve">
+    <value>Super (أقسام ديناميكية)</value>
+  </data>
+  <data name="images_kind_ext4" xml:space="preserve">
+    <value>نظام ملفات ext4</value>
+  </data>
+  <data name="images_kind_erofs" xml:space="preserve">
+    <value>نظام ملفات EROFS</value>
+  </data>
+  <data name="images_kind_f2fs" xml:space="preserve">
+    <value>نظام ملفات F2FS</value>
+  </data>
+  <data name="images_kind_boot" xml:space="preserve">
+    <value>صورة إقلاع (boot)</value>
+  </data>
+  <data name="images_kind_vendor_boot" xml:space="preserve">
+    <value>صورة vendor_boot</value>
+  </data>
+  <data name="images_kind_vbmeta" xml:space="preserve">
+    <value>vbmeta (التحقق من الإقلاع)</value>
+  </data>
+  <data name="images_kind_payload" xml:space="preserve">
+    <value>payload تحديث OTA (افتحه في مستخرج Payload)</value>
+  </data>
+  <data name="images_kind_zip" xml:space="preserve">
+    <value>ملف مضغوط Zip</value>
+  </data>
+  <data name="images_row_file" xml:space="preserve">
+    <value>الملف</value>
+  </data>
+  <data name="images_parts" xml:space="preserve">
+    <value>{0} أجزاء</value>
+  </data>
+  <data name="images_row_format" xml:space="preserve">
+    <value>الصيغة</value>
+  </data>
+  <data name="images_format_raw" xml:space="preserve">
+    <value>صورة raw</value>
+  </data>
+  <data name="images_row_content" xml:space="preserve">
+    <value>المحتوى</value>
+  </data>
+  <data name="images_row_size" xml:space="preserve">
+    <value>حجم الصورة</value>
+  </data>
+  <data name="images_row_disk" xml:space="preserve">
+    <value>الحجم على القرص</value>
+  </data>
+  <data name="images_row_block_size" xml:space="preserve">
+    <value>حجم الكتلة</value>
+  </data>
+  <data name="images_row_blocks" xml:space="preserve">
+    <value>الكتل</value>
+  </data>
+  <data name="images_blocks_detail" xml:space="preserve">
+    <value>{0} إجمالي · {1} بيانات · {2} تعبئة · {3} متجاهلة</value>
+  </data>
+  <data name="images_row_chunks" xml:space="preserve">
+    <value>المقاطع</value>
+  </data>
+  <data name="images_row_crc" xml:space="preserve">
+    <value>CRC-32</value>
+  </data>
+  <data name="images_crc_none" xml:space="preserve">
+    <value>غير مسجّل</value>
+  </data>
+  <data name="images_row_metadata" xml:space="preserve">
+    <value>البيانات الوصفية</value>
+  </data>
+  <data name="images_metadata_detail" xml:space="preserve">
+    <value>الإصدار {0}، {1} شق</value>
+  </data>
+  <data name="images_backup_copy" xml:space="preserve">
+    <value>قُرئت من النسخة الاحتياطية</value>
+  </data>
+  <data name="images_row_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="images_row_partitions" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="images_partitions_detail" xml:space="preserve">
+    <value>{0} فيها بيانات، {1} إجمالًا</value>
+  </data>
+  <data name="images_row_group" xml:space="preserve">
+    <value>المجموعة</value>
+  </data>
+  <data name="images_unlimited" xml:space="preserve">
+    <value>بلا حد</value>
+  </data>
+  <data name="images_row_super_size" xml:space="preserve">
+    <value>حجم super</value>
+  </data>
+  <data name="images_note_super" xml:space="preserve">
+    <value>تُقرأ الأقسام مباشرة من الصورة سواء كانت sparse أو لا، ويُتحقق من كل بصمات البيانات الوصفية. يُحفظ كل قسم باسم name.img في مجلد بجانب الصورة.</value>
+  </data>
+  <data name="images_note_sparse" xml:space="preserve">
+    <value>التحويل إلى raw يعيد بناء الصورة كاملة (كل الأجزاء معًا) ويتحقق من أي CRC-32 مسجّل فيها. التقسيم ينتج أجزاء يمكن تفليشها واحدًا تلو الآخر.</value>
+  </data>
+  <data name="images_note_raw" xml:space="preserve">
+    <value>التحويل إلى sparse يخزّن الكتل المتكررة كسجل واحد، وهي الصيغة التي يستخدمها fastboot وصور المصنع. الناتج مطابق لأداة img2simg من AOSP بايت بايت.</value>
+  </data>
+  <data name="images_overwrite" xml:space="preserve">
+    <value>هذه الملفات موجودة وسيتم استبدالها:
+
+{0}
+
+هل تريد المتابعة؟</value>
+  </data>
+  <data name="images_done_in" xml:space="preserve">
+    <value>تم خلال {0} ث</value>
+  </data>
+  <data name="images_raw_done" xml:space="preserve">
+    <value>تمت كتابة صورة raw:
+{0}
+{1}</value>
+  </data>
+  <data name="images_crc_line" xml:space="preserve">
+    <value>CRC-32 {0}</value>
+  </data>
+  <data name="images_crc_checked" xml:space="preserve">
+    <value>تم التحقق من {0} بصمة مسجّلة</value>
+  </data>
+  <data name="images_split_invalid" xml:space="preserve">
+    <value>اكتب أكبر حجم للجزء بالميجابايت، مثل 512.</value>
+  </data>
+  <data name="images_resplit_one" xml:space="preserve">
+    <value>افتح صورة sparse واحدة لتقسيمها. لدمج الأجزاء، حوّلها إلى raw أولًا.</value>
+  </data>
+  <data name="images_sparse_done" xml:space="preserve">
+    <value>تمت كتابة {0} ملف sparse ({1}):
+{2}</value>
+  </data>
+  <data name="images_nothing_selected" xml:space="preserve">
+    <value>حدد الأقسام المراد استخراجها أولًا.</value>
+  </data>
+  <data name="images_extract_done" xml:space="preserve">
+    <value>تم استخراج {0} قسم إلى:
+{1}</value>
+  </data>
 </root>

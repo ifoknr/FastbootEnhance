@@ -448,6 +448,167 @@
             </Grid>
         </TabItem>
 
+        <!-- ============================== Image tools ============================== -->
+        <TabItem x:Name="images_tab" Header="{x:Static props:Resources.nav_images}" Tag="{StaticResource IconLayers}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel x:Name="images_header_actions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Collapsed">
+                            <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="260">
+                                <TextBlock x:Name="images_file_name" FontFamily="{StaticResource Mono}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                            </Border>
+                            <Button x:Name="images_open_other" Margin="0,0,10,0" Content="{x:Static props:Resources.images_open}"/>
+                            <Button x:Name="images_close" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.payload_remove_file}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_images}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.images_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <!-- Nothing open: drop zone -->
+                    <Grid x:Name="images_empty" AllowDrop="True" Background="Transparent">
+                        <Border Style="{StaticResource Card}" Width="600" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Padding="40,34" BorderBrush="{StaticResource AccentLine}">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="56" Height="56" CornerRadius="14" Background="{StaticResource AccentSoft}" HorizontalAlignment="Center" Margin="0,0,0,18">
+                                    <Path Data="{StaticResource IconLayers}" Stroke="{StaticResource Accent}" StrokeThickness="1.8"
+                                          StrokeLineJoin="Round" Stretch="Uniform" Margin="15"/>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{x:Static props:Resources.images_drop_hint}"/>
+                                <TextBlock Style="{StaticResource Note}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,6,0,22"
+                                           Text="{x:Static props:Resources.images_drop_detail}"/>
+                                <Grid HorizontalAlignment="Center">
+                                    <Button x:Name="images_open" Style="{StaticResource AccentButton}" MinWidth="180" MinHeight="40"
+                                            Content="{x:Static props:Resources.images_open}"/>
+                                    <ProgressBar x:Name="images_opening" Width="260" IsIndeterminate="True" Visibility="Hidden" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- An image is open -->
+                    <Grid x:Name="images_loaded" Visibility="Collapsed" AllowDrop="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TabControl x:Name="images_tabs">
+                            <TabItem x:Name="images_details_tab" Header="{x:Static props:Resources.images_tab_details}">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="images_details" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="190" DisplayMemberBinding="{Binding Name}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_value}" Width="300" DisplayMemberBinding="{Binding Value}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </Border>
+                            </TabItem>
+                            <TabItem x:Name="images_partitions_tab" Header="{x:Static props:Resources.images_tab_partitions}">
+                                <Border Style="{StaticResource Card}">
+                                    <DockPanel>
+                                        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                            <Button x:Name="images_select_all" Margin="0,0,8,0" Content="{x:Static props:Resources.images_select_all}"/>
+                                            <Button x:Name="images_select_none" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.backup_select_none}"/>
+                                        </WrapPanel>
+                                        <ListView x:Name="images_partitions" SelectionMode="Single" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="70">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn Width="38">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" IsEnabled="{Binding CanExtract}" Focusable="False"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="130" DisplayMemberBinding="{Binding Name}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="80">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="140">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Detail}" Foreground="{Binding StateBrush}" TextTrimming="CharacterEllipsis"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </DockPanel>
+                                </Border>
+                            </TabItem>
+                            <TabItem x:Name="images_chunks_tab" Header="{x:Static props:Resources.images_tab_chunks}">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="images_chunks" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="80">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="#" Width="60" DisplayMemberBinding="{Binding Index}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_type}" Width="100" DisplayMemberBinding="{Binding Type}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_start}" Width="110" DisplayMemberBinding="{Binding Start}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_blocks}" Width="90" DisplayMemberBinding="{Binding Blocks}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="100" DisplayMemberBinding="{Binding Size}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </Border>
+                            </TabItem>
+                        </TabControl>
+
+                        <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_save_to}"/>
+                                <DockPanel Margin="0,0,0,14">
+                                    <Button x:Name="images_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
+                                            Content="{x:Static props:Resources.backup_change}"/>
+                                    <TextBlock x:Name="images_out_folder" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5"
+                                               Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                </DockPanel>
+
+                                <Button x:Name="images_extract" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_extract}"/>
+                                <Button x:Name="images_to_raw" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_to_raw}"/>
+                                <Button x:Name="images_to_sparse" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_to_sparse}"/>
+
+                                <CheckBox x:Name="images_split" Margin="0,4,0,6" Content="{x:Static props:Resources.images_split}"/>
+                                <DockPanel Margin="26,0,0,12">
+                                    <TextBlock DockPanel.Dock="Right" Text="MB" Foreground="{StaticResource Dim}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                    <TextBox x:Name="images_split_mb" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="512"/>
+                                </DockPanel>
+
+                                <Button x:Name="images_cancel" Style="{StaticResource DangerButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.backup_cancel}"/>
+                                <ProgressBar x:Name="images_progress" Height="6" Margin="0,4,0,6"/>
+                                <TextBlock x:Name="images_progress_text" FontFamily="{StaticResource Mono}" FontSize="11" Foreground="{StaticResource Dim}"
+                                           TextTrimming="CharacterEllipsis" Margin="0,0,0,12"/>
+                                <Button x:Name="images_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.backup_open_folder}"/>
+                                <TextBlock x:Name="images_note" Style="{StaticResource Note}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </TabItem>
+
         <!-- ============================== Backup ============================== -->
         <TabItem x:Name="backup_tab" Header="{x:Static props:Resources.nav_backup}" Tag="{StaticResource IconBackup}">
             <Grid>

@@ -21,6 +21,20 @@ namespace FastbootEnhance.Core
             }
         }
 
+        /// <summary>Fills the whole buffer, or returns false when the stream ends first.</summary>
+        internal static bool TryReadExactly(Stream stream, byte[] buffer)
+        {
+            int read = 0;
+            while (read < buffer.Length)
+            {
+                int got = stream.Read(buffer, read, buffer.Length - read);
+                if (got <= 0)
+                    return false;
+                read += got;
+            }
+            return true;
+        }
+
         internal static byte[] ReadExactly(Stream stream, int count, string whenShort)
         {
             byte[] buffer = new byte[count];
