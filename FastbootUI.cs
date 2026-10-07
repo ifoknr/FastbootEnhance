@@ -63,7 +63,7 @@ namespace FastbootEnhance
                         break;
 
                     string[] param = line.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (cur_serial == param[0])
+                    if (param.Length > 0 && cur_serial == param[0])
                         return true;
                 }
                 MessageBox.Show(Properties.Resources.fastboot_device_not_exist);
@@ -82,19 +82,26 @@ namespace FastbootEnhance
                 if (cur_status == FastbootStatus.show_actions)
                     continue;
 
-                List<fastboot_devices_row> tmp = new List<fastboot_devices_row>();
-
-                using (Fastboot fastboot = new Fastboot(null, "devices"))
+                List<fastboot_devices_row> tmp;
+                try
                 {
-                    while (true)
+                    tmp = listDevices();
+                }
+                catch (FileNotFoundException e)
+                {
+                    // Without fastboot.exe there is nothing to poll; say so once and stop,
+                    // rather than letting the exception take the whole app down.
+                    MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                     {
-                        string line = fastboot.stdout.ReadLine();
-                        if (line == null)
-                            break;
-
-                        string[] param = line.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                        tmp.Add(new fastboot_devices_row(param[0], param[1]));
-                    }
+                        MessageBox.Show(e.Message + "\n" + e.FileName, Properties.Resources.error,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }));
+                    return;
+                }
+                catch (Exception e)
+                {
+                    appendLog("device poll failed: " + e.Message);
+                    continue;
                 }
 
                 if (tmp.Count != devices.Count)
@@ -117,6 +124,29 @@ namespace FastbootEnhance
                     }
                 }
             }
+        }
+
+        static List<fastboot_devices_row> listDevices()
+        {
+            List<fastboot_devices_row> found = new List<fastboot_devices_row>();
+
+            using (Fastboot fastboot = new Fastboot(null, "devices"))
+            {
+                while (true)
+                {
+                    string line = fastboot.stdout.ReadLine();
+                    if (line == null)
+                        break;
+
+                    string[] param = line.Split(new char[] { '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (param.Length < 2)
+                        continue;
+
+                    found.Add(new fastboot_devices_row(param[0], param[1]));
+                }
+            }
+
+            return found;
         }
 
         class fastboot_devices_row
@@ -717,7 +747,10 @@ namespace FastbootEnhance
             cur_status = FastbootStatus.show_devices;
             change_page();
 
-            new Thread(new ThreadStart(devicesListRefresher)).Start();
+            // Background, so it never keeps the process alive after the window closes.
+            Thread refresher = new Thread(new ThreadStart(devicesListRefresher));
+            refresher.IsBackground = true;
+            refresher.Start();
             MainWindow.THIS.fastboot_devices_list.MouseDoubleClick += delegate
             {
                 if (MainWindow.THIS.fastboot_devices_list.SelectedItems.Count == 0)

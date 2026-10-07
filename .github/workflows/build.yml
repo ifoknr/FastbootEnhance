@@ -60,9 +60,14 @@ jobs:
           dotnet publish FastbootEnhance.csproj -c Release -r win-x64
           --self-contained true -p:PublishSingleFile=true -o publish
 
-      - name: Show published output
+      - name: Check published output
         shell: pwsh
-        run: Get-ChildItem publish | Select-Object Name, Length
+        run: |
+          Get-ChildItem publish | Select-Object Name, Length
+          # fastboot.exe runs as its own process, so it must sit beside the exe, not inside it.
+          foreach ($f in 'FastbootEnhance.exe', 'fastboot.exe', 'AdbWinApi.dll', 'AdbWinUsbApi.dll') {
+            if (-not (Test-Path (Join-Path publish $f))) { throw "$f missing from publish output" }
+          }
 
       - uses: actions/upload-artifact@v4
         with:

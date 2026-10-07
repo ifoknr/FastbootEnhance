@@ -56,16 +56,23 @@
     <Resource Include="big_icon.png" />
   </ItemGroup>
 
-  <!-- Shipped alongside the app; fastboot.exe needs the two Adb USB libraries. -->
+  <!-- Shipped alongside the app, never inside the single-file bundle: fastboot.exe is
+       started as its own process and needs the two Adb USB libraries next to it. -->
   <ItemGroup>
     <Content Include="fastboot.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Include="AdbWinApi.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
     <Content Include="AdbWinUsbApi.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
 
