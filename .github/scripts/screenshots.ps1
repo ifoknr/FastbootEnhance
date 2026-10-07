@@ -87,6 +87,13 @@ function Wait-For([scriptblock] $probe, [int] $seconds, [string] $what) {
     Fail "timed out waiting for $what"
 }
 
+# Grid and Border have no automation peer, so readiness is judged from a control that does.
+function Shown($parent, [string] $id) {
+    $e = By-Id $parent $id
+    if ($null -ne $e -and -not $e.Current.IsOffscreen) { return $e }
+    return $null
+}
+
 function Select-Item($element) {
     $element.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
     Start-Sleep -Milliseconds 900
@@ -133,7 +140,7 @@ function Go([string] $tabId) {
 
 # ---------------------------------------------------------------- payload inspector
 $payloadTab = Go 'payload_tab'
-Wait-For { $p = By-Id $root 'payload_after_load'; $p -and -not $p.Current.IsOffscreen } 60 "the payload to open" | Out-Null
+Wait-For { Shown $root 'payload_info' } 60 "the payload to open" | Out-Null
 $i = 1
 foreach ($sub in (Visible-Tabs $payloadTab)) {
     Select-Item $sub
@@ -141,7 +148,7 @@ foreach ($sub in (Visible-Tabs $payloadTab)) {
 }
 
 # ---------------------------------------------------------------- device list and device
-Go 'device_tab' | Out-Null
+$deviceTab = Go 'device_tab'
 $devices = Wait-For { By-Id $root 'fastboot_devices_list' } 10 "the device list"
 $rowCond = New-Object System.Windows.Automation.OrCondition(
     (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::DataItem)),
@@ -152,10 +159,10 @@ Save-Window ('{0:D2}-device-list' -f $i); $i++
 Select-Item $row
 $row.SetFocus()
 Send '{ENTER}'
-$actions = Wait-For { $p = By-Id $root 'fastboot_actions_page'; if ($p -and -not $p.Current.IsOffscreen) { $p } } 20 "the device page"
+Wait-For { Shown $root 'fastboot_info_list' } 20 "the device page" | Out-Null
 Start-Sleep -Seconds 3   # getvar all
 
-foreach ($sub in (Visible-Tabs $actions)) {
+foreach ($sub in (Visible-Tabs $deviceTab)) {
     Select-Item $sub
     Save-Window ('{0:D2}-device-{1}' -f $i, ($sub.Current.Name -replace '[^A-Za-z0-9]+', '-').Trim('-').ToLower()); $i++
 }

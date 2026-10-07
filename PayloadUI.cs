@@ -31,11 +31,14 @@ namespace FastbootEnhance
             {
                 case page_status.empty:
                     MainWindow.THIS.payload_before_load.Visibility = Visibility.Visible;
-                    MainWindow.THIS.payload_after_load.Visibility = Visibility.Hidden;
+                    MainWindow.THIS.payload_after_load.Visibility = Visibility.Collapsed;
+                    // The file chip and Remove live in the page header; with no file they mean nothing.
+                    MainWindow.THIS.payload_action_bar.Visibility = Visibility.Collapsed;
                     break;
                 case page_status.loaded:
-                    MainWindow.THIS.payload_before_load.Visibility = Visibility.Hidden;
+                    MainWindow.THIS.payload_before_load.Visibility = Visibility.Collapsed;
                     MainWindow.THIS.payload_after_load.Visibility = Visibility.Visible;
+                    MainWindow.THIS.payload_action_bar.Visibility = Visibility.Visible;
                     break;
             }
         }
