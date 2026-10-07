@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
 
@@ -35,16 +35,14 @@ namespace FastbootEnhance
         double progress;
         Stage stage = Stage.Queued;
 
-        public FlashRow(string name, string size, string codec)
+        public FlashRow(string name, string size)
         {
             Name = name;
             Size = size;
-            Codec = codec;
         }
 
         public string Name { get; }
         public string Size { get; }
-        public string Codec { get; }
 
         /// <summary>0 to 100. Extraction fills the first half, writing to the device the second.</summary>
         public double Progress

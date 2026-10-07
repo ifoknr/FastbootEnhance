@@ -90,8 +90,8 @@
                                             <ListView x:Name="fastboot_info_list">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_name}" Width="200" DisplayMemberBinding="{Binding name}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_value}" Width="260" DisplayMemberBinding="{Binding value}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_name}" Width="165" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_value}" Width="155" DisplayMemberBinding="{Binding value}"/>
                                                     </GridView>
                                                 </ListView.View>
                                             </ListView>
@@ -157,9 +157,9 @@
                                             <ListView x:Name="fastboot_partition_list">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_name}" Width="240" DisplayMemberBinding="{Binding name}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_size}" Width="130" DisplayMemberBinding="{Binding size}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_is_dynamic}" Width="120" DisplayMemberBinding="{Binding is_logical}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_name}" Width="205" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_size}" Width="120" DisplayMemberBinding="{Binding size}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_is_dynamic}" Width="110" DisplayMemberBinding="{Binding is_logical}"/>
                                                     </GridView>
                                                 </ListView.View>
                                             </ListView>
@@ -246,7 +246,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="18"/>
-                            <ColumnDefinition Width="280"/>
+                            <ColumnDefinition Width="250"/>
                         </Grid.ColumnDefinitions>
 
                         <Border Style="{StaticResource Card}">
@@ -255,17 +255,16 @@
                                 <ListView x:Name="flash_queue">
                                     <ListView.View>
                                         <GridView>
-                                            <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="170" DisplayMemberBinding="{Binding Name}"/>
-                                            <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="95" DisplayMemberBinding="{Binding Size}"/>
-                                            <GridViewColumn Header="{x:Static props:Resources.column_codec}" Width="100" DisplayMemberBinding="{Binding Codec}"/>
-                                            <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="150">
+                                            <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="140" DisplayMemberBinding="{Binding Name}"/>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="115">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <ProgressBar Width="126" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                        <ProgressBar Width="92" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
-                                            <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="110">
+                                            <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="100">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding State}" Foreground="{Binding StateBrush}" FontWeight="SemiBold"/>
@@ -317,7 +316,7 @@
                         </StackPanel>
                         <Grid DockPanel.Dock="Right" VerticalAlignment="Center">
                             <StackPanel x:Name="payload_action_bar" Orientation="Horizontal">
-                                <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="460">
+                                <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="320">
                                     <Label x:Name="payload_cur_open" FontFamily="{StaticResource Mono}" FontSize="11.5"/>
                                 </Border>
                                 <Button x:Name="payload_remove" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.payload_remove_file}"/>
@@ -384,11 +383,11 @@
                                             <ListView x:Name="payload_partition_info">
                                                 <ListView.View>
                                                     <GridView>
-                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="140" DisplayMemberBinding="{Binding name}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="95" DisplayMemberBinding="{Binding size}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.column_codec}" Width="105" DisplayMemberBinding="{Binding codecs}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.column_extractable}" Width="95" DisplayMemberBinding="{Binding extractable}"/>
-                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="230">
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="125" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="85" DisplayMemberBinding="{Binding size}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.column_codec}" Width="90" DisplayMemberBinding="{Binding codecs}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.column_extractable}" Width="85" DisplayMemberBinding="{Binding extractable}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="190">
                                                             <GridViewColumn.CellTemplate>
                                                                 <DataTemplate>
                                                                     <TextBlock Text="{Binding hash}" FontFamily="{StaticResource Mono}" FontSize="11"

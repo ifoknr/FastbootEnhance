@@ -21,6 +21,7 @@ public static class Win32 {
     [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr h);
     [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out RECT r);
     [DllImport("user32.dll")] public static extern bool PrintWindow(IntPtr h, IntPtr hdc, uint flags);
+    [DllImport("user32.dll")] public static extern bool RedrawWindow(IntPtr h, IntPtr rect, IntPtr region, uint flags);
 }
 "@
 [Win32]::SetProcessDPIAware() | Out-Null
@@ -56,6 +57,11 @@ function Fail([string] $why) {
 }
 
 function Save-Window([string] $name) {
+    # Make WPF repaint everything first. After a native dialog closes, a capture can
+    # otherwise pick up regions of the window that have not been redrawn yet.
+    # RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN | RDW_UPDATENOW | RDW_FRAME
+    [Win32]::RedrawWindow($script:hwnd, [IntPtr]::Zero, [IntPtr]::Zero, 0x0585) | Out-Null
+    Start-Sleep -Milliseconds 600
     $r = New-Object Win32+RECT
     [Win32]::GetWindowRect($script:hwnd, [ref] $r) | Out-Null
     $w = $r.Right - $r.Left; $h = $r.Bottom - $r.Top

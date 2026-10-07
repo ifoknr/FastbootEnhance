@@ -699,7 +699,7 @@ namespace FastbootEnhance
             Dictionary<string, FlashRow> rowByName = new Dictionary<string, FlashRow>(StringComparer.Ordinal);
             foreach (PayloadPartitionInfo part in parts)
             {
-                FlashRow row = new FlashRow(part.Name, Helper.byte2AUnit(part.UnpackedSize), string.Join(", ", part.Codecs));
+                FlashRow row = new FlashRow(part.Name, Helper.byte2AUnit(part.UnpackedSize));
                 rows.Add(row);
                 rowByName[part.Name] = row;
             }

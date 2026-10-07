@@ -82,7 +82,8 @@ namespace FastbootEnhance
                 closeCurrent();
                 payload = opened;
                 cur_status = page_status.loaded;
-                MainWindow.THIS.payload_cur_open.Content = Properties.Resources.payload_current_file + filename;
+                MainWindow.THIS.payload_cur_open.Content = Path.GetFileName(filename);
+                MainWindow.THIS.payload_cur_open.ToolTip = Properties.Resources.payload_current_file + filename;
                 refreshData();
                 switchMainView();
             });

@@ -24,6 +24,10 @@
     <SolidColorBrush x:Key="Ok" Color="#5BD97A"/>
     <SolidColorBrush x:Key="Thumb" Color="#3A4350"/>
 
+    <!-- Default templates fill the corner where two scroll bars meet with the system control
+         colour, which is near-white; this keeps it dark. -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#161A21"/>
+
     <FontFamily x:Key="Mono">Cascadia Mono, Consolas, Courier New</FontFamily>
 
     <!-- Navigation icons, drawn as strokes on a 24 unit grid. -->
