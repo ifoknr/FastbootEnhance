@@ -88,15 +88,44 @@ if ($hwnd -eq [IntPtr]::Zero) {
     throw "app window never appeared"
 }
 
+$crashLog = Join-Path $env:TEMP 'FastbootEnhance\crash.log'
+
+function Fail([string] $why) {
+    Save-Desktop "00-desktop-on-failure"
+    if (Test-Path $crashLog) { Write-Host "---- crash.log ----"; Get-Content $crashLog | Write-Host }
+    throw $why
+}
+
 # Give the payload time to open and the device list its first refresh.
 Start-Sleep -Seconds 8
+if ($proc.HasExited) { Fail "app exited after start-up with code $($proc.ExitCode)" }
+
+Save-Desktop "00-desktop"
+
+# Look the window up by process rather than trusting the first handle we saw: WPF can
+# replace its initial window handle while starting.
+$byProcess = New-Object System.Windows.Automation.PropertyCondition(
+    [System.Windows.Automation.AutomationElement]::ProcessIdProperty, $proc.Id)
+$root = $null
+for ($i = 0; $i -lt 20 -and $null -eq $root; $i++) {
+    try {
+        $root = [System.Windows.Automation.AutomationElement]::RootElement.FindFirst(
+            [System.Windows.Automation.TreeScope]::Children, $byProcess)
+    } catch {
+        Write-Host "lookup attempt $i failed: $($_.Exception.Message)"
+    }
+    if ($null -eq $root) { Start-Sleep -Seconds 1 }
+}
+if ($null -eq $root) { Fail "no top-level window found for pid $($proc.Id)" }
+
+$hwnd = [IntPtr]$root.Current.NativeWindowHandle
+Write-Host "window: '$($root.Current.Name)' hwnd=$hwnd"
 [Win32]::SetForegroundWindow($hwnd) | Out-Null
 
-$root = [System.Windows.Automation.AutomationElement]::FromHandle($hwnd)
 $mainTabs = $root.FindFirst([System.Windows.Automation.TreeScope]::Descendants,
     (New-Object System.Windows.Automation.PropertyCondition(
         [System.Windows.Automation.AutomationElement]::AutomationIdProperty, 'main_tabs')))
-if ($null -eq $mainTabs) { Save-Desktop "00-desktop-on-failure"; throw "main_tabs not found" }
+if ($null -eq $mainTabs) { Fail "main_tabs not found in '$($root.Current.Name)'" }
 
 $index = 1
 $topTabs = Find-All $mainTabs ([System.Windows.Automation.ControlType]::TabItem) ([System.Windows.Automation.TreeScope]::Children)
