@@ -10,8 +10,15 @@ namespace FastbootEnhance
         /// <summary>Enough for devices, getvar, reboot and the other short commands.</summary>
         public static readonly TimeSpan ShortCommand = TimeSpan.FromSeconds(60);
 
-        /// <summary>Generous enough for writing or erasing a multi-gigabyte partition over slow USB.</summary>
+        /// <summary>For reboots and other control commands that can wait on a slow device.</summary>
         public static readonly TimeSpan LongCommand = TimeSpan.FromMinutes(15);
+
+        /// <summary>
+        /// For commands that write to the device. A fixed limit could kill fastboot halfway
+        /// through a large image on slow USB and leave the partition partly written, which is
+        /// worse than a command that takes its time.
+        /// </summary>
+        public static readonly TimeSpan NoLimit = Timeout.InfiniteTimeSpan;
 
         /// <summary>
         /// Resolved once against the directory the app was installed into. The old code used
@@ -83,6 +90,29 @@ namespace FastbootEnhance
             if (timedOut)
                 return null;
             return current.ExitCode;
+        }
+
+        /// <summary>
+        /// Stops fastboot from another thread (the app is closing) and waits briefly for it to
+        /// let go of the image it was sending.
+        /// </summary>
+        public void Abort()
+        {
+            Process current = process;
+            if (current == null)
+                return;
+            try
+            {
+                KillQuietly(current);
+                current.WaitForExit(5000);
+            }
+            catch (InvalidOperationException)
+            {
+                // Disposed by its owner in the meantime; it is already gone.
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+            }
         }
 
         static void KillQuietly(Process target)

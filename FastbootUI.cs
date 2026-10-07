@@ -68,10 +68,21 @@ namespace FastbootEnhance
                         return true;
                 }
                 MessageBox.Show(Properties.Resources.fastboot_device_not_exist);
-                cur_status = FastbootStatus.show_devices;
-                change_page();
+                leaveDevice();
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Back to the device list. The variables read from the device go too, so nothing later
+        /// (a payload flash, the pre-flash checks) can act on what an earlier device reported.
+        /// </summary>
+        static void leaveDevice()
+        {
+            cur_serial = null;
+            fastbootData = null;
+            cur_status = FastbootStatus.show_devices;
+            change_page();
         }
 
         static void devicesListRefresher()
@@ -186,8 +197,17 @@ namespace FastbootEnhance
             }
         }
 
+        /// <summary>
+        /// How many operations hold the controls. Each lock is matched by exactly one unlock,
+        /// and the controls come back only when the last one finishes.
+        /// </summary>
+        static int lockDepth;
+
         static void action_lock()
         {
+            lockDepth++;
+            if (lockDepth > 1)
+                return;
             MainWindow.THIS.fastboot_progress_bar.Value = 0;
             MainWindow.THIS.fastboot_action_bar.IsEnabled = false;
             MainWindow.THIS.fastboot_progress_bar.Visibility = Visibility.Visible;
@@ -201,6 +221,10 @@ namespace FastbootEnhance
 
         static void action_unlock()
         {
+            if (lockDepth > 0)
+                lockDepth--;
+            if (lockDepth > 0)
+                return;
             MainWindow.THIS.fastboot_progress_bar.Visibility = Visibility.Hidden;
             MainWindow.THIS.fastboot_action_bar.IsEnabled = true;
             Helper.TaskbarItemHelper.stop();
@@ -210,6 +234,9 @@ namespace FastbootEnhance
         }
 
         static Helper.ListHelper<fastboot_partition_row> listHelper;
+
+        /// <summary>Long enough for a phone rebooting into fastbootd to come back.</summary>
+        static readonly TimeSpan GetvarTimeout = TimeSpan.FromMinutes(3);
 
         static void load_fastboot_vars()
         {
@@ -228,10 +255,29 @@ namespace FastbootEnhance
                 FastbootData loaded;
                 try
                 {
-                    using (Fastboot fastboot = new Fastboot(serial, "getvar all"))
+                    using (Fastboot fastboot = new Fastboot(serial, "getvar all", GetvarTimeout))
                     {
                         // fastboot bug: Must read stderr first or stdout would be blocked
-                        loaded = new FastbootData(fastboot.stderr.ReadToEnd());
+                        string output = fastboot.stderr.ReadToEnd();
+                        int? exitCode = fastboot.WaitForExit();
+                        if (exitCode == null)
+                        {
+                            throw new TimeoutException("the device did not answer \"getvar all\" within "
+                                + GetvarTimeout.TotalMinutes + " minutes");
+                        }
+
+                        loaded = new FastbootData(output);
+
+                        // Some old bootloaders reject "all" but still list a few variables; only
+                        // a failure that told us nothing at all is treated as one.
+                        bool learned = loaded.product != null || loaded.current_slot != null
+                            || loaded.partition_size.Count > 0 || loaded.max_download_size > 0;
+                        if (exitCode != 0 && !learned)
+                        {
+                            string[] lines = output.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                            throw new IOException("fastboot getvar all exited with code " + exitCode
+                                + (lines.Length > 0 ? ": " + lines[lines.Length - 1].Trim() : ""));
+                        }
                     }
                 }
                 catch (Exception e)
@@ -241,20 +287,22 @@ namespace FastbootEnhance
                     {
                         MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
                         action_unlock();
+                        if (cur_serial != serial)
+                            return;
                         MessageBox.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
-                        cur_serial = null;
-                        cur_status = FastbootStatus.show_devices;
-                        change_page();
+                        leaveDevice();
                     }));
                     return;
                 }
 
                 MainWindow.THIS.Dispatcher.Invoke(delegate
                 {
-                    fastbootData = loaded;
-                    showFastbootVars();
                     MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
                     action_unlock();
+                    if (cur_serial != serial)
+                        return;
+                    fastbootData = loaded;
+                    showFastbootVars();
                 });
             }));
             loader.IsBackground = true;
@@ -411,8 +459,14 @@ namespace FastbootEnhance
             /// </summary>
             public string serial;
 
+            /// <summary>Control commands get a limit; anything that writes is left to finish.</summary>
+            public TimeSpan timeout;
+
             public StepCmdRunnerParam(string cmd, int step_count, bool hint_on_done, bool skip_var_refresh = false)
             {
+                this.timeout = cmd.StartsWith("reboot") || cmd.StartsWith("set_active") || cmd.StartsWith("snapshot-update")
+                    ? Fastboot.LongCommand
+                    : Fastboot.NoLimit;
                 this.cmd = cmd;
                 this.step_count = step_count;
                 this.show_dialog_on_done = hint_on_done;
@@ -423,6 +477,12 @@ namespace FastbootEnhance
 
         static void runStep(StepCmdRunnerParam param)
         {
+            // Locked here, on the click, so a second click cannot start the command again
+            // before the worker gets going.
+            action_lock();
+            if (param.step_count <= 0)
+                MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
+
             Thread worker = new Thread(new ParameterizedThreadStart(step_cmd_runner_err));
             worker.IsBackground = true;
             worker.Start(param);
@@ -432,19 +492,12 @@ namespace FastbootEnhance
         {
             StepCmdRunnerParam param = (StepCmdRunnerParam)raw_param;
 
-            MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
-            {
-                action_lock();
-                if (param.step_count <= 0)
-                    MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = true;
-            }));
-
             appendLog("> fastboot " + param.cmd);
             string failure = null;
 
             try
             {
-                using (Fastboot fastboot = new Fastboot(param.serial, param.cmd, Fastboot.LongCommand))
+                using (Fastboot fastboot = new Fastboot(param.serial, param.cmd, param.timeout))
                 {
                     int count = 0;
                     while (true)
@@ -470,7 +523,7 @@ namespace FastbootEnhance
                     if (exitCode != 0)
                     {
                         failure = "fastboot " + param.cmd + ": " + (exitCode == null
-                            ? "did not finish within " + Fastboot.LongCommand.TotalMinutes + " minutes and was stopped"
+                            ? "did not finish within " + param.timeout.TotalMinutes + " minutes and was stopped"
                             : "exited with code " + exitCode);
                         appendLog(failure);
                     }
@@ -485,9 +538,7 @@ namespace FastbootEnhance
             MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
             {
                 MainWindow.THIS.fastboot_progress_bar.IsIndeterminate = false;
-
-                if (param.skip_var_refresh || failure != null)
-                    action_unlock();
+                action_unlock();
 
                 if (failure != null)
                 {
@@ -495,7 +546,7 @@ namespace FastbootEnhance
                     return;
                 }
 
-                if (!param.skip_var_refresh)
+                if (!param.skip_var_refresh && cur_serial != null && cur_serial == param.serial)
                     load_fastboot_vars();
                 if (param.show_dialog_on_done)
                     MessageBox.Show(Properties.Resources.operation_completed);
@@ -629,6 +680,20 @@ namespace FastbootEnhance
                         return;
                     }
 
+                    List<string> unverifiable = opened.Partitions
+                        .Where(part => string.IsNullOrEmpty(part.ExpectedSha256))
+                        .Select(part => part.Name)
+                        .ToList();
+
+                    if (unverifiable.Count > 0 && !Helper.confirm(
+                            string.Format(Properties.Resources.flash_unverified, string.Join(", ", unverifiable)),
+                            Properties.Resources.confirm_title))
+                    {
+                        opened.Dispose();
+                        action_unlock();
+                        return;
+                    }
+
                     // The device must still be the one the user picked when they clicked flash.
                     if (serial == null || serial != cur_serial || fastbootData == null)
                     {
@@ -712,6 +777,7 @@ namespace FastbootEnhance
             MainWindow.THIS.flash_count.Text = "0 / " + parts.Count;
             MainWindow.THIS.flash_overall_progress.Value = 0;
             MainWindow.THIS.flash_log.Clear();
+            MainWindow.THIS.flash_log.Tag = null;
             setPhase(Properties.Resources.flash_phase_extract, "Accent");
             MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.flash_tab;
 
@@ -769,8 +835,11 @@ namespace FastbootEnhance
                     }));
                 });
 
+            // The lock taken by openPayloadThenFlash carries over and is released when this ends.
             flashing = true;
-            action_lock();
+
+            CancellationTokenSource cancel = new CancellationTokenSource();
+            flashCancel = cancel;
 
             Thread worker = new Thread(new ThreadStart(delegate
             {
@@ -786,7 +855,7 @@ namespace FastbootEnhance
 
                     ExtractionReport report = PayloadExtractor.ExtractAll(
                         payload, staging, parts.Select(part => part.Name), options, progress,
-                        CancellationToken.None);
+                        cancel.Token);
 
                     foreach (PartitionResult result in report.Results)
                     {
@@ -824,9 +893,14 @@ namespace FastbootEnhance
                             updateRow(result.Partition, FlashRow.Stage.Flashing, 75.0);
 
                             int? exitCode;
+                            cancel.Token.ThrowIfCancellationRequested();
                             using (Fastboot fastboot = new Fastboot(serial,
-                                "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\"", Fastboot.LongCommand))
+                                "flash \"" + result.Partition + "\" \"" + result.OutputPath + "\"", Fastboot.NoLimit))
                             {
+                                activeFlash = fastboot;
+                                // abortFlash may have looked for a process just before this one started.
+                                if (cancel.IsCancellationRequested)
+                                    fastboot.Abort();
                                 while (true)
                                 {
                                     string line = fastboot.stderr.ReadLine();
@@ -836,13 +910,14 @@ namespace FastbootEnhance
                                 }
 
                                 exitCode = fastboot.WaitForExit();
+                                activeFlash = null;
                             }
 
                             // Without this the dialog reported success even when every write failed.
                             if (exitCode != 0)
                             {
                                 error = result.Partition + ": fastboot " + (exitCode == null
-                                    ? "did not finish within " + Fastboot.LongCommand.TotalMinutes + " minutes and was stopped"
+                                    ? "was stopped before it finished"
                                     : "exited with code " + exitCode);
                                 appendLog(error);
                                 updateRow(result.Partition, FlashRow.Stage.Failed, null);
@@ -899,10 +974,14 @@ namespace FastbootEnhance
                 MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                 {
                     flashing = false;
+                    flashWorker = null;
+                    flashCancel = null;
                     ticker.Stop();
                     clock.Stop();
                     MainWindow.THIS.flash_elapsed.Text = clock.Elapsed.ToString(@"mm\:ss");
-                    load_fastboot_vars();
+                    action_unlock();
+                    if (cur_serial == serial)
+                        load_fastboot_vars();
 
                     if (summary == null)
                     {
@@ -921,7 +1000,33 @@ namespace FastbootEnhance
             }));
 
             worker.IsBackground = true;
+            flashWorker = worker;
             worker.Start();
+        }
+
+        static volatile Fastboot activeFlash;
+        static volatile CancellationTokenSource flashCancel;
+        static volatile Thread flashWorker;
+
+        /// <summary>
+        /// Called when the window closes mid-flash, after the user agreed to stop. Stops the
+        /// extraction and the fastboot process writing the current image, then waits for the
+        /// worker to remove its staging images, so neither a stray fastboot.exe nor gigabytes
+        /// of images outlive the app.
+        /// </summary>
+        public static void abortFlash()
+        {
+            CancellationTokenSource cancel = flashCancel;
+            if (cancel != null)
+                cancel.Cancel();
+
+            Fastboot running = activeFlash;
+            if (running != null)
+                running.Abort();
+
+            Thread worker = flashWorker;
+            if (worker != null)
+                worker.Join(TimeSpan.FromSeconds(10));
         }
 
         static void setPhase(string text, string brushKey)
@@ -973,9 +1078,7 @@ namespace FastbootEnhance
 
             MainWindow.THIS.fastboot_remove.Click += delegate
             {
-                cur_serial = null;
-                cur_status = FastbootStatus.show_devices;
-                change_page();
+                leaveDevice();
             };
 
             MainWindow.THIS.fastboot_reboot_d.Click += delegate
@@ -1000,9 +1103,7 @@ namespace FastbootEnhance
 
                 runStep(new StepCmdRunnerParam("reboot", 0, false, true));
 
-                cur_serial = null;
-                cur_status = FastbootStatus.show_devices;
-                change_page();
+                leaveDevice();
             };
 
             MainWindow.THIS.fastboot_reboot_recovery.Click += delegate
@@ -1012,9 +1113,7 @@ namespace FastbootEnhance
 
                 runStep(new StepCmdRunnerParam("reboot recovery", 0, false, true));
 
-                cur_serial = null;
-                cur_status = FastbootStatus.show_devices;
-                change_page();
+                leaveDevice();
             };
 
             MainWindow.THIS.fastboot_ab_switch.Click += delegate
@@ -1185,7 +1284,7 @@ namespace FastbootEnhance
 
             MainWindow.THIS.fastboot_flash_payload.Click += delegate
             {
-                if (cur_serial == null || fastbootData == null)
+                if (cur_status != FastbootStatus.show_actions || cur_serial == null || fastbootData == null)
                 {
                     MessageBox.Show(Properties.Resources.flash_no_device);
                     MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.device_tab;
@@ -1198,9 +1297,10 @@ namespace FastbootEnhance
                 if (vabStagingCheck())
                     return;
 
+                string serial = cur_serial;
                 Helper.fileSelect(new Helper.PathSelectCallback(delegate (string path)
                 {
-                    openPayloadThenFlash(path, cur_serial);
+                    openPayloadThenFlash(path, serial);
                 }), "Payload or OTA package|*.bin;*.zip|All Files|*.*");
             };
 

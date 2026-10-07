@@ -1713,5 +1713,14 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("confirm_close_extracting", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These partitions carry no SHA-256 in the payload, so their images cannot be checked before they are written:.
+        /// </summary>
+        public static string flash_unverified {
+            get {
+                return ResourceManager.GetString("flash_unverified", resourceCulture);
+            }
+        }
     }
 }

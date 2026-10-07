@@ -52,6 +52,7 @@ namespace FastbootEnhance
 
             Closed += delegate
             {
+                FastbootUI.abortFlash();
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
@@ -75,7 +76,11 @@ namespace FastbootEnhance
                 }));
             };
 
-            LogStore.Cleared += () => Dispatcher.BeginInvoke(new Action(delegate { log_text.Clear(); }));
+            LogStore.Cleared += () => Dispatcher.BeginInvoke(new Action(delegate
+            {
+                log_text.Clear();
+                log_text.Tag = null;
+            }));
 
             log_clear.Click += delegate { LogStore.Clear(); };
             log_copy.Click += delegate
@@ -100,7 +105,9 @@ namespace FastbootEnhance
             int length = box.Tag is int known ? known : box.Text.Length;
             if (length > MaxLogBoxChars)
             {
-                string kept = box.Text.Substring(box.Text.Length - MaxLogBoxChars / 2);
+                // Measured again here: the box may have been cleared since the length was stored.
+                string text = box.Text;
+                string kept = text.Length > MaxLogBoxChars / 2 ? text.Substring(text.Length - MaxLogBoxChars / 2) : text;
                 box.Text = kept;
                 length = kept.Length;
             }

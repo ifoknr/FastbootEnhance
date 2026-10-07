@@ -669,4 +669,11 @@
   <data name="confirm_close_extracting" xml:space="preserve">
     <value>Images are being extracted. Closing now stops the extraction and removes the unfinished files. Close anyway?</value>
   </data>
+  <data name="flash_unverified" xml:space="preserve">
+    <value>These partitions carry no SHA-256 in the payload, so their images cannot be checked before they are written:
+
+{0}
+
+Flash them anyway?</value>
+  </data>
 </root>
