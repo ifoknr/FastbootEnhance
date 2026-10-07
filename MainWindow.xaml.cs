@@ -17,6 +17,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             THIS = this;
+            FlowDirection = Languages.Flow;
             ThemedWindow.Attach(this);
 
             clearStagingDirectories();
@@ -36,6 +37,7 @@ namespace FastbootEnhance
             }
 
             wireLogs();
+            wireLanguages();
 
             // Closing mid-flash kills the worker between partitions and can leave the phone
             // half written, so it has to be a deliberate choice.
@@ -60,6 +62,39 @@ namespace FastbootEnhance
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
             };
+        }
+
+        /// <summary>One button per language; the one in use is highlighted.</summary>
+        void wireLanguages()
+        {
+            Languages.Option current = Languages.CurrentOption;
+            foreach (Languages.Option option in Languages.All)
+            {
+                Languages.Option choice = option;
+                System.Windows.Controls.Button button = new System.Windows.Controls.Button
+                {
+                    Content = choice.NativeName,
+                    Tag = choice.Code,
+                    Padding = new Thickness(14, 5, 14, 5),
+                    Margin = new Thickness(0, 0, 8, 8),
+                    Style = (Style)FindResource(choice == current ? "AccentButton" : "GhostButton"),
+                };
+                button.Click += delegate
+                {
+                    if (choice == Languages.CurrentOption)
+                        return;
+                    if (FastbootUI.flashing || PayloadUI.extracting)
+                    {
+                        ThemedDialog.Show(Properties.Resources.language_busy);
+                        return;
+                    }
+                    Languages.Save(choice.Code);
+                    if (ThemedDialog.Show(Properties.Resources.language_restart, choice.NativeName,
+                            MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+                        App.Restart();
+                };
+                language_buttons.Children.Add(button);
+            }
         }
 
         const int MaxLogBoxChars = 400000;

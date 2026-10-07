@@ -34,6 +34,7 @@ namespace FastbootEnhance
         ThemedDialog(string text, string title, MessageBoxButton choice, Kind kind, MessageBoxResult defaultResult)
         {
             InitializeComponent();
+            FlowDirection = Languages.Flow;
 
             heading.Text = string.IsNullOrEmpty(title) ? defaultHeading(kind) : title;
             message.Text = text ?? "";

@@ -20,6 +20,8 @@ namespace FastbootEnhance
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            Languages.Apply();
+
             // Checked before any window exists. Doing it in the window's constructor, as before,
             // left WPF showing a window that had already been told to shut down.
             bool createdNew;
@@ -43,6 +45,25 @@ namespace FastbootEnhance
 
             base.OnStartup(e);
             new MainWindow().Show();
+        }
+
+        /// <summary>
+        /// Starts a fresh copy of the app and closes this one, for a language change. The
+        /// single-instance lock is let go first, or the new copy would refuse to start.
+        /// </summary>
+        public static void Restart()
+        {
+            Mutex held = singleInstance;
+            singleInstance = null;
+            if (held != null)
+                held.Dispose();
+
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Environment.ProcessPath)
+            {
+                UseShellExecute = false,
+                WorkingDirectory = AppContext.BaseDirectory,
+            });
+            Current.Shutdown();
         }
 
         void onDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs e)

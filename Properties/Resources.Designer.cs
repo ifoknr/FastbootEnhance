@@ -2352,5 +2352,158 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("files_partial", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Container.
+        /// </summary>
+        public static string payload_container {
+            get {
+                return ResourceManager.GetString("payload_container", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA zip (read in place).
+        /// </summary>
+        public static string payload_container_inplace {
+            get {
+                return ResourceManager.GetString("payload_container_inplace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA zip (unpacked to temp).
+        /// </summary>
+        public static string payload_container_unpacked {
+            get {
+                return ResourceManager.GetString("payload_container_unpacked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Security patch.
+        /// </summary>
+        public static string payload_security_patch {
+            get {
+                return ResourceManager.GetString("payload_security_patch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partial update.
+        /// </summary>
+        public static string payload_partial_update {
+            get {
+                return ResourceManager.GetString("payload_partial_update", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to APEX packages.
+        /// </summary>
+        public static string payload_apex {
+            get {
+                return ResourceManager.GetString("payload_apex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Operations.
+        /// </summary>
+        public static string payload_operations {
+            get {
+                return ResourceManager.GetString("payload_operations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions  ·  {1}  ·  {2}.
+        /// </summary>
+        public static string flash_file_detail {
+            get {
+                return ResourceManager.GetString("flash_file_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} partitions were written.
+        /// </summary>
+        public static string flash_written_count {
+            get {
+                return ResourceManager.GetString("flash_written_count", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} in {1} s.
+        /// </summary>
+        public static string extract_done_detail {
+            get {
+                return ResourceManager.GetString("extract_done_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Minimize.
+        /// </summary>
+        public static string chrome_minimize {
+            get {
+                return ResourceManager.GetString("chrome_minimize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Maximize.
+        /// </summary>
+        public static string chrome_maximize {
+            get {
+                return ResourceManager.GetString("chrome_maximize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        public static string chrome_restore {
+            get {
+                return ResourceManager.GetString("chrome_restore", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string chrome_close {
+            get {
+                return ResourceManager.GetString("chrome_close", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to LANGUAGE.
+        /// </summary>
+        public static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The new language applies after a restart. Restart Fastboot Studio now?.
+        /// </summary>
+        public static string language_restart {
+            get {
+                return ResourceManager.GetString("language_restart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for the current flash or extraction to finish before changing the language..
+        /// </summary>
+        public static string language_busy {
+            get {
+                return ResourceManager.GetString("language_busy", resourceCulture);
+            }
+        }
     }
 }

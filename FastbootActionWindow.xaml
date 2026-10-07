@@ -7,13 +7,13 @@
         mc:Ignorable="d"
         ResizeMode="NoResize" SizeToContent="Height" Width="420"
         Background="{StaticResource Surface}" Foreground="{StaticResource Text}"
-        FontFamily="Segoe UI" FontSize="13" UseLayoutRounding="True"
+        FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True"
         Title="Fastboot_create_resize" WindowStartupLocation="CenterOwner">
     <StackPanel Margin="24,20,24,22">
         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.fastboot_partition_name}"/>
-        <TextBox x:Name="name" Margin="0,0,0,16" FontFamily="{StaticResource Mono}"/>
+        <TextBox FlowDirection="LeftToRight" x:Name="name" Margin="0,0,0,16" FontFamily="{StaticResource Mono}"/>
         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.fastboot_partition_size_b}"/>
-        <TextBox x:Name="size" Margin="0,0,0,20" FontFamily="{StaticResource Mono}"/>
+        <TextBox FlowDirection="LeftToRight" x:Name="size" Margin="0,0,0,20" FontFamily="{StaticResource Mono}"/>
         <Button x:Name="ok" Style="{StaticResource AccentButton}" HorizontalAlignment="Right" MinWidth="120"
                 IsDefault="True" Content="{x:Static props:Resources.ok}"/>
     </StackPanel>

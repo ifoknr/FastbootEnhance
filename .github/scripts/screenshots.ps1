@@ -9,7 +9,8 @@ param(
     [Parameter(Mandatory)] [string] $Payload,
     [Parameter(Mandatory)] [string] $Out,
     [int] $ExpectedFlashes = 0,
-    [int] $ExpectedBackups = 0
+    [int] $ExpectedBackups = 0,
+    [switch] $Arabic
 )
 
 $ErrorActionPreference = 'Stop'
@@ -155,22 +156,25 @@ function Send([string] $keys) {
 }
 
 # ---------------------------------------------------------------- launch
-Write-Host "launching $App `"$Payload`""
-$script:proc = Start-Process -FilePath $App -ArgumentList "`"$Payload`"" -WorkingDirectory $appDir -PassThru
+function Launch-App {
+    Write-Host "launching $App `"$Payload`""
+    $script:proc = Start-Process -FilePath $App -ArgumentList "`"$Payload`"" -WorkingDirectory $appDir -PassThru
 
-$byProcess = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $proc.Id)
-$script:root = Wait-For { $UIA::RootElement.FindFirst($Scope::Children, $byProcess) } 60 "the main window"
-$script:hwnd = [IntPtr]$root.Current.NativeWindowHandle
-Write-Host "window: '$($root.Current.Name)' hwnd=$hwnd"
-# Fit the window on the runner's screen (often 1024x768) so a screen capture holds all of it.
-$work = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
-$fitW = [Math]::Min(1220, $work.Width); $fitH = [Math]::Min(780, $work.Height)
-# SWP_NOZORDER | SWP_NOACTIVATE
-[Win32]::SetWindowPos($hwnd, [IntPtr]::Zero, $work.Left, $work.Top, $fitW, $fitH, 0x0014) | Out-Null
-Write-Host "work area $($work.Width)x$($work.Height), window set to ${fitW}x${fitH}"
-[Win32]::SetForegroundWindow($hwnd) | Out-Null
+    $byProcess = New-Object System.Windows.Automation.PropertyCondition($UIA::ProcessIdProperty, $script:proc.Id)
+    $script:root = Wait-For { $UIA::RootElement.FindFirst($Scope::Children, $byProcess) } 60 "the main window"
+    $script:hwnd = [IntPtr]$script:root.Current.NativeWindowHandle
+    Write-Host "window: '$($script:root.Current.Name)' hwnd=$($script:hwnd)"
+    # Fit the window on the runner's screen (often 1024x768) so a screen capture holds all of it.
+    $work = [System.Windows.Forms.Screen]::PrimaryScreen.WorkingArea
+    $fitW = [Math]::Min(1220, $work.Width); $fitH = [Math]::Min(780, $work.Height)
+    # SWP_NOZORDER | SWP_NOACTIVATE
+    [Win32]::SetWindowPos($script:hwnd, [IntPtr]::Zero, $work.Left, $work.Top, $fitW, $fitH, 0x0014) | Out-Null
+    Write-Host "work area $($work.Width)x$($work.Height), window set to ${fitW}x${fitH}"
+    [Win32]::SetForegroundWindow($script:hwnd) | Out-Null
+    $script:mainTabs = Wait-For { By-Id $script:root 'main_tabs' } 20 "main_tabs"
+}
 
-$mainTabs = Wait-For { By-Id $root 'main_tabs' } 20 "main_tabs"
+Launch-App
 function Go([string] $tabId) {
     $tab = Wait-For { By-Id $mainTabs $tabId } 10 $tabId
     Select-Item $tab
@@ -338,3 +342,60 @@ if (Test-Path $crashLog) { Fail "the app recorded an unhandled exception" }
 if ($proc.HasExited) { Fail "app exited while being captured, code $($proc.ExitCode)" }
 Stop-Process -Id $proc.Id -Force
 Write-Host "captured $($i - 1) screens"
+
+# ---------------------------------------------------------------- the same app in Arabic
+# Right-to-left layout, Arabic strings and the Noto Kufi Arabic font, on the main pages.
+if ($Arabic) {
+    Start-Sleep -Seconds 2
+    $env:FASTBOOT_STUDIO_LANG = 'ar'
+    Launch-App
+
+    Go 'payload_tab' | Out-Null
+    Wait-For { Shown $root 'payload_info' } 60 "the payload to open (Arabic)" | Out-Null
+    Save-Window 'ar-01-payload'
+
+    Go 'device_tab' | Out-Null
+    $devices = Wait-For { By-Id $root 'fastboot_devices_list' } 10 "the device list (Arabic)"
+    $row = Wait-For { $devices.FindFirst($Scope::Descendants, $rowCond) } 20 "a device (Arabic)"
+    Select-Item $row
+    $row.SetFocus()
+    Send '{ENTER}'
+    Wait-For { Shown $root 'fastboot_info_list' } 20 "the device page (Arabic)" | Out-Null
+    Start-Sleep -Seconds 3
+    Save-Window 'ar-02-device'
+
+    Go 'flash_tab' | Out-Null
+    Save-Window 'ar-03-flash'
+
+    Go 'backup_tab' | Out-Null
+    $adbList = Wait-For { By-Id $root 'backup_devices' } 10 "the adb device list (Arabic)"
+    Wait-For { (Rows $adbList).Count -gt 0 } 30 "a device over adb (Arabic)" | Out-Null
+    Select-Item (Wait-For { By-Id $root 'backup_files_tab' } 10 "the Files tab (Arabic)")
+    $files = Wait-For { By-Id $root 'files_list' } 10 "the file list (Arabic)"
+    Wait-For { (Rows $files).Count -ge 5 } 30 "the /sdcard listing (Arabic)" | Out-Null
+    Save-Window 'ar-04-backup-files'
+    Select-Item (Wait-For { By-Id $root 'backup_partitions_tab' } 10 "the Partitions tab (Arabic)")
+    Press 'backup_read'
+    $parts = Wait-For { By-Id $root 'backup_partition_list' } 10 "the partition list (Arabic)"
+    Wait-For { (Rows $parts).Count -ge 3 } 60 "the partition table (Arabic)" | Out-Null
+    Start-Sleep -Milliseconds 600
+    Save-Window 'ar-05-backup-partitions'
+
+    # A dialog: switching back to English asks to restart. Answer "No" (the first button).
+    Go 'about_tab' | Out-Null
+    Save-Window 'ar-06-about'
+    # The language buttons sit in a panel UI Automation does not see; find "English" by name.
+    $byName = New-Object System.Windows.Automation.PropertyCondition($UIA::NameProperty, 'English')
+    $english = Wait-For { $root.FindFirst($Scope::Descendants, $byName) } 10 "the English button"
+    $english.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    $ask = Wait-For { Find-Dialog } 10 "the restart question"
+    Start-Sleep -Milliseconds 600
+    Save-Window 'ar-07-dialog'
+    Close-Dialog $ask
+
+    if (Test-Path $crashLog) { Fail "the app recorded an unhandled exception in Arabic" }
+    if ($proc.HasExited) { Fail "the Arabic app exited while being captured, code $($proc.ExitCode)" }
+    Stop-Process -Id $proc.Id -Force
+    Remove-Item Env:FASTBOOT_STUDIO_LANG
+    Write-Host "captured 7 Arabic screens"
+}

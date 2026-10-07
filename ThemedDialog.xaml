@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="None" ResizeMode="NoResize" AllowsTransparency="True" Background="Transparent"
         SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Foreground="{StaticResource Text}" FontFamily="Segoe UI" FontSize="13" UseLayoutRounding="True">
+        Foreground="{StaticResource Text}" FontFamily="{StaticResource UiFont}" FontSize="13" UseLayoutRounding="True">
     <!-- The outer margin leaves room for the shadow. -->
     <Border Margin="18" Background="{StaticResource Surface}" BorderBrush="{StaticResource Line}"
             BorderThickness="1" CornerRadius="12">
@@ -23,7 +23,7 @@
             <DockPanel x:Name="header" Margin="22,22,22,0" Background="Transparent">
                 <Border x:Name="badge" DockPanel.Dock="Left" Width="34" Height="34" CornerRadius="10"
                         BorderThickness="1" Margin="0,0,14,0" VerticalAlignment="Top">
-                    <Path x:Name="glyph" Width="18" Height="18" Stretch="Uniform" StrokeThickness="2"
+                    <Path FlowDirection="LeftToRight" x:Name="glyph" Width="18" Height="18" Stretch="Uniform" StrokeThickness="2"
                           StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"/>
                 </Border>
                 <TextBlock x:Name="heading" Style="{StaticResource CardTitle}" FontSize="15"

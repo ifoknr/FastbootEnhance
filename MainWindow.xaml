@@ -10,7 +10,7 @@
         Height="780" Width="1220" MinHeight="640" MinWidth="1000"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Bg}" Foreground="{StaticResource Text}"
-        FontFamily="Segoe UI" FontSize="13"
+        FontFamily="{StaticResource UiFont}" FontSize="13"
         TextOptions.TextFormattingMode="Display" UseLayoutRounding="True">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo x:Name="taskbariteminfo"/>
@@ -152,7 +152,7 @@
                                                            Text="{x:Static props:Resources.fastboot_partition_table}"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                                     <TextBlock Text="{x:Static props:Resources.fastboot_filter_by_partition_name}" Foreground="{StaticResource Dim}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                    <TextBox x:Name="fastboot_partition_name_textbox" Width="240"/>
+                                                    <TextBox FlowDirection="LeftToRight" x:Name="fastboot_partition_name_textbox" Width="240"/>
                                                 </StackPanel>
                                             </DockPanel>
                                             <ListView x:Name="fastboot_partition_list" local:ColumnFill.Column="0" local:ColumnFill.MinWidth="120">
@@ -292,7 +292,7 @@
                     <Border Grid.Row="4" Style="{StaticResource Card}" Background="{StaticResource Rail}" Padding="16,12">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.live_log}"/>
-                            <TextBox x:Name="flash_log" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                            <TextBox FlowDirection="LeftToRight" x:Name="flash_log" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
                                      FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
                                      TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                         </DockPanel>
@@ -378,7 +378,7 @@
                                                            Text="{x:Static props:Resources.payload_partitions}"/>
                                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                                                     <TextBlock Text="{x:Static props:Resources.payload_partitions_filter_by_name}" Foreground="{StaticResource Dim}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                    <TextBox x:Name="payload_partition_name_textbox" Width="240"/>
+                                                    <TextBox FlowDirection="LeftToRight" x:Name="payload_partition_name_textbox" Width="240"/>
                                                 </StackPanel>
                                             </DockPanel>
                                             <ListView x:Name="payload_partition_info" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="70" local:ColumnFill.HideWhenNarrow="True">
@@ -508,7 +508,7 @@
                                                     Content="{x:Static props:Resources.backup_select_critical}"/>
                                             <Button x:Name="backup_select_none" DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Margin="0,0,12,0"
                                                     Content="{x:Static props:Resources.backup_select_none}"/>
-                                            <TextBox x:Name="backup_filter" MinWidth="80" ToolTip="{x:Static props:Resources.backup_filter_hint}"/>
+                                            <TextBox FlowDirection="LeftToRight" x:Name="backup_filter" MinWidth="80" ToolTip="{x:Static props:Resources.backup_filter_hint}"/>
                                         </DockPanel>
                                         <ListView x:Name="backup_partition_list" SelectionMode="Single"
                                                   local:ColumnFill.Column="3" local:ColumnFill.MinWidth="70">
@@ -549,7 +549,7 @@
                                         <DockPanel Margin="0,0,0,14">
                                             <Button x:Name="backup_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
                                                     Content="{x:Static props:Resources.backup_change}"/>
-                                            <TextBlock x:Name="backup_save_root" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
+                                            <TextBlock x:Name="backup_save_root" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
                                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         </DockPanel>
                                         <Button x:Name="backup_start" Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.backup_start}"/>
@@ -581,7 +581,7 @@
                                             <Button x:Name="files_up" DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Margin="0,0,8,0" Padding="12,6"
                                                     Content="{x:Static props:Resources.files_up}"/>
                                             <Button x:Name="files_go" DockPanel.Dock="Right" Margin="8,0,0,0" Content="{x:Static props:Resources.files_go}"/>
-                                            <TextBox x:Name="files_path" FontFamily="{StaticResource Mono}" Text="/sdcard"/>
+                                            <TextBox FlowDirection="LeftToRight" x:Name="files_path" FontFamily="{StaticResource Mono}" Text="/sdcard"/>
                                         </DockPanel>
                                         <WrapPanel x:Name="files_quick_bar" DockPanel.Dock="Top" Margin="0,0,0,10">
                                             <Button x:Name="files_quick_storage" Style="{StaticResource GhostButton}" Padding="10,4" Margin="0,0,6,0" FontSize="12"
@@ -629,7 +629,7 @@
                                         <DockPanel Margin="0,0,0,14">
                                             <Button x:Name="files_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
                                                     Content="{x:Static props:Resources.backup_change}"/>
-                                            <TextBlock x:Name="files_save_root" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
+                                            <TextBlock x:Name="files_save_root" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
                                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                         </DockPanel>
                                         <Button x:Name="files_pull" Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.files_pull}"/>
@@ -669,7 +669,7 @@
                 </Border>
 
                 <Border Grid.Row="1" Margin="28,20,28,20" Style="{StaticResource Card}" Background="{StaticResource Rail}">
-                    <TextBox x:Name="log_text" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                    <TextBox FlowDirection="LeftToRight" x:Name="log_text" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
                              FontFamily="{StaticResource Mono}" FontSize="12" Foreground="{StaticResource Dim}"
                              TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
                 </Border>
@@ -686,7 +686,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Border Width="112" Height="112" CornerRadius="22" ClipToBounds="True" VerticalAlignment="Top">
-                            <Image Source="big_icon.png" Stretch="UniformToFill"/>
+                            <Image FlowDirection="LeftToRight" Source="big_icon.png" Stretch="UniformToFill"/>
                         </Border>
                         <StackPanel Grid.Column="1" Margin="26,4,0,0">
                             <TextBlock Text="Fastboot Studio" FontSize="22" FontWeight="SemiBold"/>
@@ -698,14 +698,14 @@
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,22">
                                 <Button x:Name="about_telegram" Style="{StaticResource AccentButton}" Margin="0,0,10,0" Click="Telegram_Click">
                                     <StackPanel Orientation="Horizontal">
-                                        <Path Data="M21.5,3.5 L2.5,11 L9,13.2 L18,7 L11,14.5 L11,20 L14.5,16.2 L18.5,19.5 Z" Fill="{StaticResource AccentInk}"
+                                        <Path FlowDirection="LeftToRight" Data="M21.5,3.5 L2.5,11 L9,13.2 L18,7 L11,14.5 L11,20 L14.5,16.2 L18.5,19.5 Z" Fill="{StaticResource AccentInk}"
                                               Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
                                         <TextBlock Text="@IFOKNR1" FontFamily="{StaticResource Mono}"/>
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="about_github" Click="GitHub_Click">
                                     <StackPanel Orientation="Horizontal">
-                                        <Path Data="{StaticResource IconGitHub}" Fill="{StaticResource Text}"
+                                        <Path FlowDirection="LeftToRight" Data="{StaticResource IconGitHub}" Fill="{StaticResource Text}"
                                               Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
                                         <TextBlock Text="github.com/ifoknr" FontFamily="{StaticResource Mono}"/>
                                     </StackPanel>
@@ -722,6 +722,13 @@
                                         <Button Style="{StaticResource GhostButton}" Margin="0,0,10,0" Content="{x:Static props:Resources.visit_thread}" Click="Thread_Click"/>
                                         <Button x:Name="about_license" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.about_license}" Click="License_Click"/>
                                     </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,16,0,0" Margin="0,18,0,0">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.language}"/>
+                                    <WrapPanel x:Name="language_buttons"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>

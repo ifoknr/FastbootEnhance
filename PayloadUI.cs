@@ -324,9 +324,9 @@ namespace FastbootEnhance
 
                     if (report.AllSucceeded && incomplete.Length == 0)
                     {
-                        ThemedDialog.Done(Properties.Resources.operation_completed
-                            + "\n\n" + Helper.byte2AUnit(report.TotalBytes)
-                            + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
+                        ThemedDialog.Done(Properties.Resources.operation_completed + "\n\n"
+                            + string.Format(Properties.Resources.extract_done_detail,
+                                Helper.byte2AUnit(report.TotalBytes), report.Elapsed.TotalSeconds.ToString("F1")));
                         return;
                     }
 
@@ -380,8 +380,8 @@ namespace FastbootEnhance
 
             payloadInfoListAppend(Properties.Resources.payload_blocksize, Helper.byte2AUnit(payload.BlockSize));
 
-            payloadInfoListAppend("container", payload.Source.FromZip
-                ? (payload.Source.ReadInPlace ? "OTA zip (read in place)" : "OTA zip (unpacked to temp)")
+            payloadInfoListAppend(Properties.Resources.payload_container, payload.Source.FromZip
+                ? (payload.Source.ReadInPlace ? Properties.Resources.payload_container_inplace : Properties.Resources.payload_container_unpacked)
                 : "payload.bin");
 
             appendOperationBreakdown();
@@ -389,14 +389,14 @@ namespace FastbootEnhance
             // The ChromeOS-era image info fields are reserved in Android's manifest; these are
             // what Android payloads actually carry.
             if (manifest.HasSecurityPatchLevel)
-                payloadInfoListAppend("security patch", manifest.SecurityPatchLevel);
+                payloadInfoListAppend(Properties.Resources.payload_security_patch, manifest.SecurityPatchLevel);
 
             if (manifest.HasPartialUpdate)
-                payloadInfoListAppend("partial update",
+                payloadInfoListAppend(Properties.Resources.payload_partial_update,
                     manifest.PartialUpdate ? Properties.Resources.yes : Properties.Resources.no);
 
             if (manifest.ApexInfo.Count > 0)
-                payloadInfoListAppend("apex packages", manifest.ApexInfo.Count.ToString());
+                payloadInfoListAppend(Properties.Resources.payload_apex, manifest.ApexInfo.Count.ToString());
 
             foreach (PayloadPartitionInfo part in payload.Partitions)
             {
@@ -437,7 +437,7 @@ namespace FastbootEnhance
             IReadOnlyList<KeyValuePair<string, int>> counts = payload.OperationCounts();
             int total = counts.Sum(pair => pair.Value);
 
-            payloadInfoListAppend("operations", total.ToString());
+            payloadInfoListAppend(Properties.Resources.payload_operations, total.ToString());
 
             foreach (KeyValuePair<string, int> pair in counts)
             {

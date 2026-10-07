@@ -21,6 +21,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             Owner = MainWindow.THIS;
+            FlowDirection = Languages.Flow;
             ThemedWindow.Attach(this);
 
             this.name.Text = partition_name;

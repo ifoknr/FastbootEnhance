@@ -22,6 +22,7 @@ Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR
 - Unpack Payload.bin
 - **Extract specific image from Payload.bin**
 - **Back up partitions** (boot, vbmeta, persist, modem/IMEI data and more) over adb with root or a custom recovery, each image recorded with its SHA-256, and check a backup later
+- Interface in **Arabic** (right to left), English, Chinese, Japanese and Korean
 - **Copy any file or folder from the phone** to the computer over adb, no root needed
 - Show Payload vars
 - Show dynamic partition metadata
@@ -122,6 +123,7 @@ fbe-payload verify  <payload.bin|ota.zip> [-p name ...] [-j N]
 - Developed and maintained by **IFOKNR** — Telegram [@IFOKNR1](https://t.me/IFOKNR1), GitHub [ifoknr](https://github.com/ifoknr)
 - Based on the original [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by **LibXZR**, released under the MIT License (Copyright (c) 2021 LibXZR)
 
+- Fonts: [Roboto](https://fonts.google.com/specimen/Roboto) and [Noto Kufi Arabic](https://fonts.google.com/noto/specimen/Noto+Kufi+Arabic), SIL Open Font License 1.1 (see `licenses/`)
 - [Android Platform Tools](https://developer.android.com/studio/releases/platform-tools) 37.0.1 (adb and fastboot; Apache License 2.0, see `platform-tools-NOTICE.txt`)
 - [Protobuf](https://github.com/protocolbuffers/protobuf)
 - [ZstdSharp](https://github.com/oleg-st/ZstdSharp)

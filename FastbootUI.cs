@@ -772,8 +772,8 @@ namespace FastbootEnhance
 
             MainWindow.THIS.flash_queue.ItemsSource = rows;
             MainWindow.THIS.flash_file_name.Text = Path.GetFileName(payload.Source.ContainerPath);
-            MainWindow.THIS.flash_file_detail.Text = parts.Count + " partitions  ·  " + Helper.byte2AUnit(totalBytes)
-                + "  ·  " + (payload.Source.FromZip ? "OTA zip" : "payload.bin");
+            MainWindow.THIS.flash_file_detail.Text = string.Format(Properties.Resources.flash_file_detail,
+                parts.Count, Helper.byte2AUnit(totalBytes), payload.Source.FromZip ? "OTA zip" : "payload.bin");
             MainWindow.THIS.flash_count.Text = "0 / " + parts.Count;
             MainWindow.THIS.flash_overall_progress.Value = 0;
             MainWindow.THIS.flash_log.Clear();
@@ -995,7 +995,7 @@ namespace FastbootEnhance
                     Helper.TaskbarItemHelper.error();
                     ThemedDialog.Show(Properties.Resources.payload_error_occur
                         + "\n\n" + summary
-                        + "\n\n" + flashedCount + " of " + parts.Count + " partitions were written");
+                        + "\n\n" + string.Format(Properties.Resources.flash_written_count, flashedCount, parts.Count));
                 }));
             }));
 
