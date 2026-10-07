@@ -117,7 +117,7 @@ namespace FastbootEnhance
             LogStore.Cleared += () => Dispatcher.BeginInvoke(new Action(delegate
             {
                 log_text.Clear();
-                log_text.Tag = null;
+                forgetLength(log_text);
             }));
 
             log_clear.Click += delegate { LogStore.Clear(); };
@@ -135,12 +135,23 @@ namespace FastbootEnhance
         }
 
         /// <summary>
-        /// Appends a line, keeping the box bounded. Reading TextBox.Text copies the whole
-        /// document, so the length is tracked in Tag instead of being read on every line.
+        /// The length of each log box's text. Reading TextBox.Text copies the whole document,
+        /// so the length is tracked here instead of being read on every line.
         /// </summary>
+        static readonly System.Collections.Generic.Dictionary<System.Windows.Controls.TextBox, int> logLengths =
+            new System.Collections.Generic.Dictionary<System.Windows.Controls.TextBox, int>();
+
+        /// <summary>Call after clearing a log box.</summary>
+        public static void forgetLength(System.Windows.Controls.TextBox box)
+        {
+            logLengths.Remove(box);
+        }
+
+        /// <summary>Appends a line, keeping the box bounded.</summary>
         static void appendTo(System.Windows.Controls.TextBox box, string line)
         {
-            int length = box.Tag is int known ? known : box.Text.Length;
+            int known;
+            int length = logLengths.TryGetValue(box, out known) ? known : box.Text.Length;
             if (length > MaxLogBoxChars)
             {
                 // Measured again here: the box may have been cleared since the length was stored.
@@ -150,7 +161,7 @@ namespace FastbootEnhance
                 length = kept.Length;
             }
             box.AppendText(line + "\n");
-            box.Tag = length + line.Length + 1;
+            logLengths[box] = length + line.Length + 1;
             box.ScrollToEnd();
         }
 

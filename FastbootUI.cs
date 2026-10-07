@@ -777,7 +777,7 @@ namespace FastbootEnhance
             MainWindow.THIS.flash_count.Text = "0 / " + parts.Count;
             MainWindow.THIS.flash_overall_progress.Value = 0;
             MainWindow.THIS.flash_log.Clear();
-            MainWindow.THIS.flash_log.Tag = null;
+            MainWindow.forgetLength(MainWindow.THIS.flash_log);
             setPhase(Properties.Resources.flash_phase_extract, "Accent");
             MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.flash_tab;
 

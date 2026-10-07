@@ -470,12 +470,12 @@
                                 <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_adb_devices}"/>
                                 <Grid>
                                     <ListView x:Name="backup_devices" SelectionMode="Single" MaxHeight="104"
-                                              local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
+                                              local:ColumnFill.Column="1" local:ColumnFill.MinWidth="90">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="200" DisplayMemberBinding="{Binding Serial}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="170" DisplayMemberBinding="{Binding Serial}"/>
                                                 <GridViewColumn Header="{x:Static props:Resources.backup_column_model}" Width="160" DisplayMemberBinding="{Binding Model}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.backup_column_mode}" Width="110" DisplayMemberBinding="{Binding State}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.backup_column_mode}" Width="100" DisplayMemberBinding="{Binding State}"/>
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
@@ -495,8 +495,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="260"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="240"/>
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource Card}">
@@ -508,10 +508,10 @@
                                                     Content="{x:Static props:Resources.backup_select_critical}"/>
                                             <Button x:Name="backup_select_none" DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Margin="0,0,12,0"
                                                     Content="{x:Static props:Resources.backup_select_none}"/>
-                                            <TextBox FlowDirection="LeftToRight" x:Name="backup_filter" MinWidth="80" ToolTip="{x:Static props:Resources.backup_filter_hint}"/>
+                                            <TextBox x:Name="backup_filter" MinWidth="80" Tag="{x:Static props:Resources.backup_filter_hint}"/>
                                         </DockPanel>
                                         <ListView x:Name="backup_partition_list" SelectionMode="Single"
-                                                  local:ColumnFill.Column="3" local:ColumnFill.MinWidth="70">
+                                                  local:ColumnFill.Column="3" local:ColumnFill.MinWidth="50">
                                             <ListView.View>
                                                 <GridView>
                                                     <GridViewColumn Width="38">
@@ -521,8 +521,8 @@
                                                             </DataTemplate>
                                                         </GridViewColumn.CellTemplate>
                                                     </GridViewColumn>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="150" DisplayMemberBinding="{Binding Name}"/>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="90" DisplayMemberBinding="{Binding Size}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="130" DisplayMemberBinding="{Binding Name}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
                                                     <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="100">
                                                         <GridViewColumn.CellTemplate>
                                                             <DataTemplate>
@@ -530,7 +530,7 @@
                                                             </DataTemplate>
                                                         </GridViewColumn.CellTemplate>
                                                     </GridViewColumn>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="90">
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="80">
                                                         <GridViewColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding State}" Foreground="{Binding StateBrush}" FontWeight="SemiBold"/>
@@ -571,8 +571,8 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="20"/>
-                                    <ColumnDefinition Width="260"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="240"/>
                                 </Grid.ColumnDefinitions>
 
                                 <Border Style="{StaticResource Card}">
