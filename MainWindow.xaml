@@ -703,25 +703,25 @@
                                 </WrapPanel>
                                 <Grid>
                                     <ListView x:Name="super_partitions" SelectionMode="Extended" AllowDrop="True"
-                                              local:ColumnFill.Column="3" local:ColumnFill.MinWidth="120">
+                                              local:ColumnFill.Column="3" local:ColumnFill.MinWidth="90">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="140">
+                                                <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="115">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Name}" Foreground="{Binding NameBrush}" FontFamily="{StaticResource Mono}" FontSize="12.5"/>
                                                         </DataTemplate>
                                                     </GridViewColumn.CellTemplate>
                                                 </GridViewColumn>
-                                                <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="150">
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="100">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Group}" Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis"/>
                                                         </DataTemplate>
                                                     </GridViewColumn.CellTemplate>
                                                 </GridViewColumn>
-                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="90" DisplayMemberBinding="{Binding Size}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.super_column_image}" Width="200">
+                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="80" DisplayMemberBinding="{Binding Size}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.super_column_image}" Width="150">
                                                     <GridViewColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Image}" ToolTip="{Binding ImagePath}" Foreground="{Binding ImageBrush}"

@@ -406,7 +406,7 @@ namespace FastbootEnhance
                 string source = string.Format(Properties.Resources.super_import_source, Helper.ltr(Path.GetFileName(parts[0])),
                     modeLabel(fresh), fresh.MetadataSlots, Helper.ltr(groups));
                 if (found > 0)
-                    source += "\n" + string.Format(Properties.Resources.super_found_images, found, Helper.ltr(folder));
+                    source += "\n" + string.Format(Properties.Resources.super_found_images, found, Helper.ltr(Path.GetFileName(folder)));
                 importedSource = source;
                 log("build super: imported the layout of " + parts[0] + " (" + fresh.Partitions.Count + " partitions, "
                     + fresh.DeviceSize + " bytes" + (found > 0 ? ", " + found + " images from " + folder : "") + ")");
