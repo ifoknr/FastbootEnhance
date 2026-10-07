@@ -58,6 +58,9 @@ Other things worth knowing:
 
 The published build is self-contained, so nothing has to be installed first.
 
+A payload can also be opened directly: `FastbootEnhance.exe ota.zip`, or drop the
+package onto the executable.
+
 ## Project layout
 
 | Path | What it is |
@@ -83,6 +86,10 @@ To produce a single self-contained executable:
 ```
 dotnet publish FastbootEnhance.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
 ```
+
+The `screenshots` workflow runs the published app on Windows against a sample OTA
+from `tools/FastbootEnhance.SampleGen`, captures every tab into `docs/screenshots`,
+and fails if the app does not start.
 
 The app itself needs Windows to build because of WPF. The core library, its
 tests and the command line tool build and run on Windows, Linux and macOS.
