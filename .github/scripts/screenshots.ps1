@@ -333,7 +333,7 @@ if ($ExpectedBackups -gt 0) {
     Save-Window ('{0:D2}-backup-fastbootd-question' -f $i); $i++
     Answer-Dialog $ask 'Yes'
     Wait-For { (Fastboot-Log 'reboot bootloader') -gt 0 } 20 "fastboot reboot bootloader" | Out-Null
-    if ((Fastboot-Log ' boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
+    if ((Fastboot-Log '-s \S+ boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
 
     Press 'backup_fb_boot_image'
     Choose-File $twrp "the recovery image dialog"
@@ -341,7 +341,7 @@ if ($ExpectedBackups -gt 0) {
     Start-Sleep -Milliseconds 600
     Save-Window ('{0:D2}-backup-recovery-booted' -f $i); $i++
     Close-Dialog $booted
-    if ((Fastboot-Log ' boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the recovery image was not issued once" }
+    if ((Fastboot-Log '-s \S+ boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the recovery image was not issued once" }
     Write-Host "fastboot panel: recovery image booted"
 
     # The "recovery" comes up on adb: the panel gives way to the backup tabs.
