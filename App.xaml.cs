@@ -34,7 +34,7 @@ namespace FastbootEnhance
             writeCrashLog("ui thread", e.Exception);
             MessageBox.Show(
                 e.Exception.Message + "\n\n" + CrashLogPath,
-                Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                global::FastbootEnhance.Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
 
             // Keep the app alive: one failed action should not take the open session down.
             e.Handled = true;
