@@ -973,7 +973,7 @@
     <value>تحديد الكل</value>
   </data>
   <data name="images_column_group" xml:space="preserve">
-    <value>المجموعة / الحالة</value>
+    <value>المجموعة</value>
   </data>
   <data name="images_column_type" xml:space="preserve">
     <value>النوع</value>
@@ -1060,7 +1060,7 @@
     <value>الكتل</value>
   </data>
   <data name="images_blocks_detail" xml:space="preserve">
-    <value>{0} إجمالي · {1} بيانات · {2} تعبئة · {3} متجاهلة</value>
+    <value>{1} / {2} / {3}</value>
   </data>
   <data name="images_row_chunks" xml:space="preserve">
     <value>المقاطع</value>
@@ -1144,5 +1144,8 @@
   <data name="images_extract_done" xml:space="preserve">
     <value>تم استخراج {0} قسم إلى:
 {1}</value>
+  </data>
+  <data name="images_row_block_kinds" xml:space="preserve">
+    <value>بيانات / تعبئة / متجاهلة</value>
   </data>
 </root>

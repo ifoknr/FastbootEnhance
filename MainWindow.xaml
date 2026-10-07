@@ -508,7 +508,7 @@
                                     <ListView x:Name="images_details" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="190" DisplayMemberBinding="{Binding Name}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="140" DisplayMemberBinding="{Binding Name}"/>
                                                 <GridViewColumn Header="{x:Static props:Resources.payload_property_value}" Width="300" DisplayMemberBinding="{Binding Value}"/>
                                             </GridView>
                                         </ListView.View>
@@ -532,9 +532,9 @@
                                                             </DataTemplate>
                                                         </GridViewColumn.CellTemplate>
                                                     </GridViewColumn>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="130" DisplayMemberBinding="{Binding Name}"/>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
-                                                    <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="80">
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="120" DisplayMemberBinding="{Binding Name}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="80" DisplayMemberBinding="{Binding Size}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="64">
                                                         <GridViewColumn.CellTemplate>
                                                             <DataTemplate>
                                                                 <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>

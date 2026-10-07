@@ -973,7 +973,7 @@ Back them up anyway?</value>
     <value>Select all</value>
   </data>
   <data name="images_column_group" xml:space="preserve">
-    <value>Group / state</value>
+    <value>Group</value>
   </data>
   <data name="images_column_type" xml:space="preserve">
     <value>Type</value>
@@ -1060,7 +1060,7 @@ Back them up anyway?</value>
     <value>Blocks</value>
   </data>
   <data name="images_blocks_detail" xml:space="preserve">
-    <value>{0} total · {1} data · {2} fill · {3} don't care</value>
+    <value>{1} / {2} / {3}</value>
   </data>
   <data name="images_row_chunks" xml:space="preserve">
     <value>Chunks</value>
@@ -1144,5 +1144,8 @@ Continue?</value>
   <data name="images_extract_done" xml:space="preserve">
     <value>{0} partitions extracted to:
 {1}</value>
+  </data>
+  <data name="images_row_block_kinds" xml:space="preserve">
+    <value>Data / fill / don't care</value>
   </data>
 </root>

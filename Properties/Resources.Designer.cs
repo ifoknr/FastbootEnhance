@@ -2588,7 +2588,7 @@ namespace FastbootEnhance.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Group / state.
+        ///   Looks up a localized string similar to Group.
         /// </summary>
         public static string images_column_group {
             get {
@@ -2849,7 +2849,7 @@ namespace FastbootEnhance.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to {0} total · {1} data · {2} fill · {3} don't care.
+        ///   Looks up a localized string similar to {1} / {2} / {3}.
         /// </summary>
         public static string images_blocks_detail {
             get {
@@ -3079,6 +3079,15 @@ namespace FastbootEnhance.Properties {
         public static string images_extract_done {
             get {
                 return ResourceManager.GetString("images_extract_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Data / fill / don't care.
+        /// </summary>
+        public static string images_row_block_kinds {
+            get {
+                return ResourceManager.GetString("images_row_block_kinds", resourceCulture);
             }
         }
     }

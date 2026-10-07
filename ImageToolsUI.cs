@@ -255,7 +255,8 @@ namespace FastbootEnhance
                 long fill = sparse.Sum(s => s.CountBlocks(SparseChunkType.Fill));
                 long total = sparse[0].TotalBlocks;
                 rows.Add(new InfoRow(Properties.Resources.images_row_block_size, Helper.byte2AUnit(blockSize)));
-                rows.Add(new InfoRow(Properties.Resources.images_row_blocks, string.Format(Properties.Resources.images_blocks_detail,
+                rows.Add(new InfoRow(Properties.Resources.images_row_blocks, total.ToString()));
+                rows.Add(new InfoRow(Properties.Resources.images_row_block_kinds, string.Format(Properties.Resources.images_blocks_detail,
                     total, raw, fill, Math.Max(0, total - raw - fill))));
                 rows.Add(new InfoRow(Properties.Resources.images_row_chunks, sparse.Sum(s => s.Chunks.Count).ToString()));
                 uint checksum = sparse.Count == 1 ? sparse[0].ImageChecksum : 0;
