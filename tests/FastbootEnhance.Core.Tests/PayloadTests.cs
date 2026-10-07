@@ -158,6 +158,24 @@ namespace FastbootEnhance.Core.Tests
             Assert.True(image.SequenceEqual(produced), type + " did not round-trip");
         }
 
+        [Theory]
+        [InlineData(InstallOperation.Types.Type.Replace, "REPLACE")]
+        [InlineData(InstallOperation.Types.Type.ReplaceXz, "REPLACE_XZ")]
+        [InlineData(InstallOperation.Types.Type.ReplaceBz, "REPLACE_BZ")]
+        [InlineData(InstallOperation.Types.Type.Zstd, "ZSTD")]
+        [InlineData(InstallOperation.Types.Type.SourceCopy, "SOURCE_COPY")]
+        [InlineData(InstallOperation.Types.Type.Lz4DiffPuffdiff, "LZ4DIFF_PUFFDIFF")]
+        public void Operation_names_match_aosp_spelling(InstallOperation.Types.Type type, string expected)
+        {
+            Assert.Equal(expected, OperationSupport.Name(type));
+        }
+
+        [Fact]
+        public void An_operation_number_this_build_does_not_know_still_gets_a_name()
+        {
+            Assert.Equal("TYPE_99", OperationSupport.Name((InstallOperation.Types.Type)99));
+        }
+
         [Fact]
         public void Zstd_is_recognised_as_operation_type_fourteen()
         {

@@ -188,7 +188,7 @@ namespace FastbootEnhance.PayloadTool
             {
                 foreach (ChromeosUpdateEngine.InstallOperation operation in update.Operations)
                 {
-                    string label = operation.Type.ToString().ToUpperInvariant();
+                    string label = OperationSupport.Name(operation.Type);
                     counts.TryGetValue(label, out int seen);
                     counts[label] = seen + 1;
                     total++;

@@ -412,7 +412,7 @@
     <value>이름으로 검색:</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>체크섬 (Base64)</value>
+    <value>체크섬 (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>이름</value>

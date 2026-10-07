@@ -412,7 +412,7 @@
     <value>Filter by name:</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>Checksum (Base64)</value>
+    <value>Checksum (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>Name</value>

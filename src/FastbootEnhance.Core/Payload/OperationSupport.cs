@@ -35,6 +35,19 @@ namespace FastbootEnhance.Core.Payload
 
     public static class OperationSupport
     {
+        static readonly Google.Protobuf.Reflection.EnumDescriptor TypeDescriptor =
+            InstallOperation.Descriptor.EnumTypes[0];
+
+        /// <summary>
+        /// The operation's name as AOSP spells it ("REPLACE_XZ"), taken from the proto
+        /// itself rather than from the C# enum member ("ReplaceXz").
+        /// </summary>
+        public static string Name(InstallOperation.Types.Type type)
+        {
+            Google.Protobuf.Reflection.EnumValueDescriptor value = TypeDescriptor.FindValueByNumber((int)type);
+            return value != null ? value.Name : "TYPE_" + (int)type;
+        }
+
         public static OperationSupportInfo Describe(InstallOperation.Types.Type type)
         {
             switch (type)

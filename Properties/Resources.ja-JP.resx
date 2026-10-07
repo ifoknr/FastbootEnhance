@@ -412,7 +412,7 @@
     <value>名前で絞り込む:</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>チェックサム (Base64)</value>
+    <value>チェックサム (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>名前</value>
