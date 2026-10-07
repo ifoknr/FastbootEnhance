@@ -26,6 +26,7 @@ namespace FastbootEnhance
             FastbootUI.init();
             BackupUI.init();
             ImageToolsUI.init();
+            SuperUI.init();
 
             Title += " v" + version;
 
@@ -57,7 +58,7 @@ namespace FastbootEnhance
             Closing += delegate (object sender, System.ComponentModel.CancelEventArgs e)
             {
                 string question = FastbootUI.flashing ? Properties.Resources.confirm_close_flashing
-                    : PayloadUI.extracting || ImageToolsUI.busy ? Properties.Resources.confirm_close_extracting
+                    : PayloadUI.extracting || ImageToolsUI.busy || SuperUI.busy ? Properties.Resources.confirm_close_extracting
                     : null;
                 if (question == null)
                     return;
@@ -72,6 +73,7 @@ namespace FastbootEnhance
                 FastbootUI.abortFlash();
                 BackupUI.shutdown();
                 ImageToolsUI.shutdown();
+                SuperUI.shutdown();
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();

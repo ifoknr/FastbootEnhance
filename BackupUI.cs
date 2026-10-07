@@ -245,17 +245,9 @@ namespace FastbootEnhance
 
         static List<string> listFastboot()
         {
-            List<string> serials = new List<string>();
             try
             {
-                string output;
-                runFastboot(null, "devices", Fastboot.ShortCommand, out output);
-                foreach (string line in output.Split('\n'))
-                {
-                    string[] parts = line.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length >= 2 && parts[1].StartsWith("fastboot", StringComparison.Ordinal))
-                        serials.Add(parts[0].Trim());
-                }
+                return Fastboot.ListSerials();
             }
             catch (FileNotFoundException)
             {
@@ -264,24 +256,12 @@ namespace FastbootEnhance
             {
                 log("fastboot poll failed: " + e.Message);
             }
-            return serials;
+            return new List<string>();
         }
 
-        /// <summary>
-        /// Runs fastboot to the end and returns its exit code (null when it timed out), with
-        /// stdout and stderr together in <paramref name="output"/>.
-        /// </summary>
         static int? runFastboot(string serial, string action, TimeSpan timeout, out string output)
         {
-            using (Fastboot fastboot = new Fastboot(serial, action, timeout))
-            {
-                // Both pipes at once: fastboot writes its progress to stderr, and reading one
-                // pipe to the end while the other fills up would hang both processes.
-                System.Threading.Tasks.Task<string> errors = fastboot.stderr.ReadToEndAsync();
-                string standard = fastboot.stdout.ReadToEnd();
-                output = standard + errors.Result;
-                return fastboot.WaitForExit();
-            }
+            return Fastboot.Run(serial, action, timeout, out output);
         }
 
         /// <summary>

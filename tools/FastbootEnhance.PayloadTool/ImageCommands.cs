@@ -18,7 +18,8 @@ namespace FastbootEnhance.PayloadTool
             Console.WriteLine("  simg2img <output.img> <sparse.img> [more parts...]");
             Console.WriteLine("  img2simg <input.img> <output.img> [--block N] [--split BYTES]");
             Console.WriteLine("  lpunpack <super.img> <dir> [-p name ...] [--slot N]");
-            Console.WriteLine("  mksuper  <output.img> <size> <name=image> [...]   (test images)");
+            Console.WriteLine("  mksuper  <output.img> --size N [--mode vab|ab|single] [--group main] [--sparse]");
+            Console.WriteLine("           [--from super.img] [--folder dir] [image | name=image ...]");
         }
 
         public static int ImgInfo(string[] args)
@@ -144,30 +145,69 @@ namespace FastbootEnhance.PayloadTool
 
         public static int MkSuper(string[] args)
         {
-            if (args.Length < 3)
-                return Fail("mksuper needs an output, a size and name=image pairs");
-            SuperBuilder builder = new SuperBuilder();
-            builder.AddGroup("main", 0);
-            List<Stream> opened = new List<Stream>();
-            try
+            if (args.Length < 2)
+                return Fail("mksuper needs an output and images");
+
+            string output = args[0];
+            long size = 0;
+            SuperSlotMode mode = SuperSlotMode.VirtualAB;
+            string group = "main";
+            bool sparse = false;
+            string from = null;
+            List<string> folders = new List<string>();
+            List<string> images = new List<string>();
+            for (int i = 1; i < args.Length; i++)
             {
-                foreach (string pair in args.Skip(2))
+                if (args[i] == "--size" && i + 1 < args.Length) size = long.Parse(args[++i]);
+                else if (args[i] == "--mode" && i + 1 < args.Length)
                 {
-                    string[] kv = pair.Split(new[] { '=' }, 2);
-                    Stream data = kv.Length == 2 && kv[1].Length > 0 ? File.OpenRead(kv[1]) : null;
-                    if (data != null)
-                        opened.Add(data);
-                    builder.AddPartition(kv[0], "main", data);
+                    string m = args[++i];
+                    mode = m == "ab" ? SuperSlotMode.AB : m == "single" ? SuperSlotMode.Single : SuperSlotMode.VirtualAB;
                 }
-                using (FileStream output = new FileStream(args[0], FileMode.Create, FileAccess.ReadWrite))
-                    builder.Write(output, long.Parse(args[1]));
+                else if (args[i] == "--group" && i + 1 < args.Length) group = args[++i];
+                else if (args[i] == "--sparse") sparse = true;
+                else if (args[i] == "--from" && i + 1 < args.Length) from = args[++i];
+                else if (args[i] == "--folder" && i + 1 < args.Length) folders.Add(args[++i]);
+                else if (args[i].StartsWith("--")) return Fail("unknown option " + args[i]);
+                else images.Add(args[i]);
             }
-            finally
+
+            SuperPlan plan;
+            if (from != null)
             {
-                foreach (Stream s in opened)
-                    s.Dispose();
+                using (Stream stream = Open(SparseConverter.FindParts(from)))
+                    plan = SuperPlan.FromImage(SuperImage.Read(stream));
+                if (size > 0)
+                    plan.DeviceSize = size;
             }
-            Console.WriteLine("wrote " + args[0]);
+            else
+            {
+                plan = SuperPlan.Create(mode, size, group);
+            }
+            foreach (string folder in folders)
+                Console.WriteLine("found " + plan.AttachFolder(folder) + " images in " + folder);
+            foreach (string image in images)
+            {
+                string[] kv = image.Split(new[] { '=' }, 2);
+                SuperPlanPartition added = kv.Length == 2 ? plan.AddImage(kv[1], kv[0]) : plan.AddImage(kv[0]);
+                Console.WriteLine("added " + added.Name + " (" + added.Group + ")");
+            }
+
+            SuperPlanCheck check = plan.Check();
+            Console.WriteLine("super " + plan.DeviceSize + " bytes, slots " + plan.MetadataSlots + ", flags " + plan.HeaderFlags
+                              + ", uses " + check.UsedEnd + " bytes");
+            if (!check.CanBuild)
+                return Fail("cannot build: " + string.Join("; ", check.Problems));
+
+            SuperLayout layout = plan.Build(output, sparse, null, CancellationToken.None);
+            foreach (SuperPlacement place in layout.Placements)
+                Console.WriteLine(place.Name.PadRight(22) + " at " + place.Offset + ", " + place.Allocated + " bytes");
+            SuperVerifyResult verify = plan.Verify(output, null, CancellationToken.None);
+            foreach (KeyValuePair<string, string> hash in verify.Sha256)
+                Console.WriteLine(hash.Value + "  " + hash.Key);
+            if (!verify.Ok)
+                return Fail("verification failed: " + string.Join("; ", verify.Problems));
+            Console.WriteLine("wrote " + output + (sparse ? " (sparse)" : "") + ", verified");
             return 0;
         }
 

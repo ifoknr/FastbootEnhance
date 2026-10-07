@@ -1200,4 +1200,207 @@ Check that the bootloader is unlocked and that the image was made for this phone
   <data name="backup_fb_failed" xml:space="preserve">
     <value>fastboot did not finish: {0}</value>
   </data>
+  <data name="nav_super" xml:space="preserve">
+    <value>Build Super</value>
+  </data>
+  <data name="super_subtitle" xml:space="preserve">
+    <value>Combine partition images into one super.img that fastboot can flash</value>
+  </data>
+  <data name="super_import" xml:space="preserve">
+    <value>Import from super.img…</value>
+  </data>
+  <data name="super_read_phone" xml:space="preserve">
+    <value>Read size from phone</value>
+  </data>
+  <data name="super_layout" xml:space="preserve">
+    <value>LAYOUT</value>
+  </data>
+  <data name="super_mode_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="super_mode_ab" xml:space="preserve">
+    <value>A/B</value>
+  </data>
+  <data name="super_mode_single" xml:space="preserve">
+    <value>Single slot</value>
+  </data>
+  <data name="super_mode_imported" xml:space="preserve">
+    <value>As in the imported super</value>
+  </data>
+  <data name="super_mode_note_vab" xml:space="preserve">
+    <value>Most phones from Android 11 on. Partitions get _a and _b; slot b is left empty, as in factory images.</value>
+  </data>
+  <data name="super_mode_note_ab" xml:space="preserve">
+    <value>A/B phones without Virtual A/B (mostly Android 10). Each slot gets half of super.</value>
+  </data>
+  <data name="super_mode_note_single" xml:space="preserve">
+    <value>Phones without A/B slots: partitions keep their plain names.</value>
+  </data>
+  <data name="super_mode_note_imported" xml:space="preserve">
+    <value>Groups, slots and partition order are copied from {0}. Images replace the partitions of the same name.</value>
+  </data>
+  <data name="super_size" xml:space="preserve">
+    <value>SUPER SIZE (BYTES)</value>
+  </data>
+  <data name="super_size_hint" xml:space="preserve">
+    <value>e.g. 9126805504</value>
+  </data>
+  <data name="super_group_size" xml:space="preserve">
+    <value>GROUP SIZE (BYTES)</value>
+  </data>
+  <data name="super_group_name" xml:space="preserve">
+    <value>GROUP NAME</value>
+  </data>
+  <data name="super_auto" xml:space="preserve">
+    <value>auto</value>
+  </data>
+  <data name="super_auto_value" xml:space="preserve">
+    <value>auto: {0}</value>
+  </data>
+  <data name="super_usage" xml:space="preserve">
+    <value>{0} of {1} used · {2} free</value>
+  </data>
+  <data name="super_usage_none" xml:space="preserve">
+    <value>Enter the size of super to see how much the partitions use.</value>
+  </data>
+  <data name="super_add" xml:space="preserve">
+    <value>Add images…</value>
+  </data>
+  <data name="super_add_folder" xml:space="preserve">
+    <value>Add folder…</value>
+  </data>
+  <data name="super_remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="super_clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="super_empty_hint" xml:space="preserve">
+    <value>Add partition images (system.img, vendor.img, product.img…) or import the layout of an existing super.img. Images unpacked by Image Tools are found by themselves.</value>
+  </data>
+  <data name="super_column_image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="super_empty_partition" xml:space="preserve">
+    <value>empty</value>
+  </data>
+  <data name="super_output" xml:space="preserve">
+    <value>OUTPUT</value>
+  </data>
+  <data name="super_format_sparse" xml:space="preserve">
+    <value>Sparse</value>
+  </data>
+  <data name="super_format_raw" xml:space="preserve">
+    <value>Raw</value>
+  </data>
+  <data name="super_format_note" xml:space="preserve">
+    <value>Sparse is smaller and is what factory images ship; raw is the full size of super.</value>
+  </data>
+  <data name="super_verify" xml:space="preserve">
+    <value>Check the image after building</value>
+  </data>
+  <data name="super_build" xml:space="preserve">
+    <value>Build super.img…</value>
+  </data>
+  <data name="super_building" xml:space="preserve">
+    <value>Building super.img</value>
+  </data>
+  <data name="super_verifying" xml:space="preserve">
+    <value>Checking super.img</value>
+  </data>
+  <data name="super_flash_note" xml:space="preserve">
+    <value>Flash it with: fastboot flash super super.img. Keep a backup of the phone's current super first.</value>
+  </data>
+  <data name="super_done" xml:space="preserve">
+    <value>super.img is ready and checked: every partition was read back and matches its image.
+
+{0}
+{1} · {2} partitions</value>
+  </data>
+  <data name="super_done_unchecked" xml:space="preserve">
+    <value>super.img is ready.
+
+{0}
+{1} · {2} partitions</value>
+  </data>
+  <data name="super_verify_failed" xml:space="preserve">
+    <value>super.img was written but did not pass the check, so do not flash it:
+
+{0}</value>
+  </data>
+  <data name="super_problem_no_size" xml:space="preserve">
+    <value>Enter the size of super: read it from the phone or import a super.img.</value>
+  </data>
+  <data name="super_problem_size_aligned" xml:space="preserve">
+    <value>The size of super must be a multiple of 4096 bytes.</value>
+  </data>
+  <data name="super_problem_metadata" xml:space="preserve">
+    <value>The metadata settings of this layout cannot be used.</value>
+  </data>
+  <data name="super_problem_metadata_large" xml:space="preserve">
+    <value>Too many partitions for the metadata area.</value>
+  </data>
+  <data name="super_problem_no_images" xml:space="preserve">
+    <value>Add at least one partition image.</value>
+  </data>
+  <data name="super_problem_bad_name" xml:space="preserve">
+    <value>"{0}" is not a valid name (letters, digits, _ . - and at most 36 characters).</value>
+  </data>
+  <data name="super_problem_duplicate" xml:space="preserve">
+    <value>"{0}" appears twice.</value>
+  </data>
+  <data name="super_problem_unknown_group" xml:space="preserve">
+    <value>Group "{0}" does not exist.</value>
+  </data>
+  <data name="super_problem_group_full" xml:space="preserve">
+    <value>Group {0} is too small: its partitions need {1}, it allows {2}.</value>
+  </data>
+  <data name="super_problem_does_not_fit" xml:space="preserve">
+    <value>The partitions need {0}, but super is {1}.</value>
+  </data>
+  <data name="super_import_source" xml:space="preserve">
+    <value>Layout of {0} · {1} · {2} metadata slots · groups {3}</value>
+  </data>
+  <data name="super_found_images" xml:space="preserve">
+    <value>Found {0} partition images in {1}.</value>
+  </data>
+  <data name="super_not_super" xml:space="preserve">
+    <value>This file is not a super image.</value>
+  </data>
+  <data name="super_not_filesystem" xml:space="preserve">
+    <value>These files are not file-system images, so they probably do not belong in super (boot, vbmeta and the like are flashed on their own):
+
+{0}
+
+Add them anyway?</value>
+  </data>
+  <data name="super_folder_skipped" xml:space="preserve">
+    <value>Skipped {0} files that are not file-system images: {1}</value>
+  </data>
+  <data name="super_folder_none" xml:space="preserve">
+    <value>No partition images were found in this folder.</value>
+  </data>
+  <data name="super_clear_confirm" xml:space="preserve">
+    <value>Remove all partition images from the list?</value>
+  </data>
+  <data name="super_phone_none" xml:space="preserve">
+    <value>No phone in fastboot mode. Connect it in the bootloader or fastbootd and try again.</value>
+  </data>
+  <data name="super_phone_read" xml:space="preserve">
+    <value>Read from {0}: super is {1} ({2} bytes). Layout: {3}.</value>
+  </data>
+  <data name="super_phone_failed" xml:space="preserve">
+    <value>Could not read the size of super from the phone:
+
+{0}</value>
+  </data>
+  <data name="super_reading_phone" xml:space="preserve">
+    <value>Reading from the phone…</value>
+  </data>
+  <data name="super_pick_image" xml:space="preserve">
+    <value>Choose the image for {0}</value>
+  </data>
+  <data name="super_output_is_input" xml:space="preserve">
+    <value>The output file is one of the images going into super. Choose another name.</value>
+  </data>
 </root>

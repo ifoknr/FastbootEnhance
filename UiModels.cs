@@ -366,4 +366,29 @@ namespace FastbootEnhance
                 handler(this, new PropertyChangedEventArgs(property));
         }
     }
+
+    /// <summary>One partition of the super image being built.</summary>
+    sealed class SuperBuildRow
+    {
+        public SuperBuildRow(FastbootEnhance.Core.Images.SuperPlanPartition partition)
+        {
+            Partition = partition;
+        }
+
+        public FastbootEnhance.Core.Images.SuperPlanPartition Partition { get; }
+        public string Name => Partition.Name;
+        public string Group => Partition.Group;
+        public string Size => Partition.HasImage ? Helper.byte2AUnit(Partition.Allocated) : "—";
+
+        public string Image => Partition.HasImage
+            ? System.IO.Path.GetFileName(Partition.ImagePath) + (Partition.ImageIsSparse ? "  · sparse" : "")
+            : Properties.Resources.super_empty_partition;
+
+        public string ImagePath => Partition.ImagePath;
+        public Brush NameBrush => Palette.Get(Partition.HasImage ? "Text" : "Faint");
+        public Brush ImageBrush => Palette.Get(Partition.HasImage ? "Dim" : "Faint");
+
+        /// <summary>File names read left to right; the "empty" label follows the page.</summary>
+        public FlowDirection ImageFlow => Partition.HasImage ? FlowDirection.LeftToRight : Languages.Flow;
+    }
 }

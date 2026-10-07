@@ -28,6 +28,10 @@ Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR
   - sparse to raw (`simg2img`), including images split into `*_sparsechunk.N` parts, with CRC-32 checks
   - raw to sparse (`img2simg`) and splitting into parts (`simg2simg`), byte-identical to the AOSP tools
   - unpack `super.img` (`lpunpack`) straight from a sparse or split image, every metadata checksum verified
+- **Build Super** (`lpmake`): put partition images back together into a `super.img`, raw or sparse
+  - Virtual A/B, A/B or single-slot layouts, or the exact layout of an existing `super.img`; the size can be read from the phone in fastboot
+  - images unpacked by Image Tools are found by themselves, so unpack, modify and rebuild is a few clicks
+  - the output is byte-identical to AOSP liblp's, and every partition is read back and checked after building
 - Interface in **Arabic** (right to left), English, Chinese, Japanese and Korean
 - **Copy any file or folder from the phone** to the computer over adb, no root needed
 - Show Payload vars

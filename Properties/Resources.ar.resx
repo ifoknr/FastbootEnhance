@@ -1200,4 +1200,207 @@
   <data name="backup_fb_failed" xml:space="preserve">
     <value>لم يكتمل أمر fastboot: {0}</value>
   </data>
+  <data name="nav_super" xml:space="preserve">
+    <value>بناء Super</value>
+  </data>
+  <data name="super_subtitle" xml:space="preserve">
+    <value>اجمع صور الأقسام في ملف super.img واحد جاهز للتفليش بالفاست بوت</value>
+  </data>
+  <data name="super_import" xml:space="preserve">
+    <value>استيراد من super.img…</value>
+  </data>
+  <data name="super_read_phone" xml:space="preserve">
+    <value>قراءة الحجم من الجوال</value>
+  </data>
+  <data name="super_layout" xml:space="preserve">
+    <value>التقسيم</value>
+  </data>
+  <data name="super_mode_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="super_mode_ab" xml:space="preserve">
+    <value>A/B</value>
+  </data>
+  <data name="super_mode_single" xml:space="preserve">
+    <value>خانة واحدة</value>
+  </data>
+  <data name="super_mode_imported" xml:space="preserve">
+    <value>مثل super المستورد</value>
+  </data>
+  <data name="super_mode_note_vab" xml:space="preserve">
+    <value>أغلب الجوالات من أندرويد 11 وما بعده. الأقسام تأخذ _a و _b، وتبقى خانة b فارغة كما في صور المصنع.</value>
+  </data>
+  <data name="super_mode_note_ab" xml:space="preserve">
+    <value>جوالات A/B بدون Virtual A/B (غالباً أندرويد 10). كل خانة تأخذ نصف super.</value>
+  </data>
+  <data name="super_mode_note_single" xml:space="preserve">
+    <value>جوالات بدون خانات A/B: الأقسام تبقى بأسمائها العادية.</value>
+  </data>
+  <data name="super_mode_note_imported" xml:space="preserve">
+    <value>المجموعات والخانات وترتيب الأقسام منسوخة من {0}. كل صورة تحل محل القسم الذي يحمل اسمها.</value>
+  </data>
+  <data name="super_size" xml:space="preserve">
+    <value>حجم SUPER (بايت)</value>
+  </data>
+  <data name="super_size_hint" xml:space="preserve">
+    <value>مثال 9126805504</value>
+  </data>
+  <data name="super_group_size" xml:space="preserve">
+    <value>حجم المجموعة (بايت)</value>
+  </data>
+  <data name="super_group_name" xml:space="preserve">
+    <value>اسم المجموعة</value>
+  </data>
+  <data name="super_auto" xml:space="preserve">
+    <value>تلقائي</value>
+  </data>
+  <data name="super_auto_value" xml:space="preserve">
+    <value>تلقائي: {0}</value>
+  </data>
+  <data name="super_usage" xml:space="preserve">
+    <value>المستخدم {0} من {1} · المتبقي {2}</value>
+  </data>
+  <data name="super_usage_none" xml:space="preserve">
+    <value>أدخل حجم super لترى كم تستهلك الأقسام.</value>
+  </data>
+  <data name="super_add" xml:space="preserve">
+    <value>إضافة صور…</value>
+  </data>
+  <data name="super_add_folder" xml:space="preserve">
+    <value>إضافة مجلد…</value>
+  </data>
+  <data name="super_remove" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="super_clear" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="super_empty_hint" xml:space="preserve">
+    <value>أضف صور الأقسام (system.img و vendor.img و product.img…) أو استورد تقسيم ملف super.img موجود. الصور المفكوكة من أدوات الصور يتم العثور عليها تلقائياً.</value>
+  </data>
+  <data name="super_column_image" xml:space="preserve">
+    <value>الصورة</value>
+  </data>
+  <data name="super_empty_partition" xml:space="preserve">
+    <value>فارغ</value>
+  </data>
+  <data name="super_output" xml:space="preserve">
+    <value>الإخراج</value>
+  </data>
+  <data name="super_format_sparse" xml:space="preserve">
+    <value>Sparse</value>
+  </data>
+  <data name="super_format_raw" xml:space="preserve">
+    <value>Raw</value>
+  </data>
+  <data name="super_format_note" xml:space="preserve">
+    <value>Sparse أصغر حجماً وهو المستخدم في صور المصنع؛ Raw بحجم super الكامل.</value>
+  </data>
+  <data name="super_verify" xml:space="preserve">
+    <value>التحقق من الصورة بعد البناء</value>
+  </data>
+  <data name="super_build" xml:space="preserve">
+    <value>بناء super.img…</value>
+  </data>
+  <data name="super_building" xml:space="preserve">
+    <value>جارٍ بناء super.img</value>
+  </data>
+  <data name="super_verifying" xml:space="preserve">
+    <value>جارٍ التحقق من super.img</value>
+  </data>
+  <data name="super_flash_note" xml:space="preserve">
+    <value>للتفليش: fastboot flash super super.img. احتفظ بنسخة من super الحالي في جوالك قبل ذلك.</value>
+  </data>
+  <data name="super_done" xml:space="preserve">
+    <value>ملف super.img جاهز وتم التحقق منه: قُرئ كل قسم من جديد وطابق صورته.
+
+{0}
+{1} · {2} أقسام</value>
+  </data>
+  <data name="super_done_unchecked" xml:space="preserve">
+    <value>ملف super.img جاهز.
+
+{0}
+{1} · {2} أقسام</value>
+  </data>
+  <data name="super_verify_failed" xml:space="preserve">
+    <value>تمت كتابة super.img لكنه لم يجتز التحقق، فلا تفلشه:
+
+{0}</value>
+  </data>
+  <data name="super_problem_no_size" xml:space="preserve">
+    <value>أدخل حجم super: اقرأه من الجوال أو استورد ملف super.img.</value>
+  </data>
+  <data name="super_problem_size_aligned" xml:space="preserve">
+    <value>حجم super يجب أن يكون من مضاعفات 4096 بايت.</value>
+  </data>
+  <data name="super_problem_metadata" xml:space="preserve">
+    <value>إعدادات البيانات الوصفية لهذا التقسيم غير صالحة.</value>
+  </data>
+  <data name="super_problem_metadata_large" xml:space="preserve">
+    <value>عدد الأقسام أكبر من مساحة البيانات الوصفية.</value>
+  </data>
+  <data name="super_problem_no_images" xml:space="preserve">
+    <value>أضف صورة قسم واحدة على الأقل.</value>
+  </data>
+  <data name="super_problem_bad_name" xml:space="preserve">
+    <value>الاسم "{0}" غير صالح (حروف وأرقام و _ . - وبحد أقصى 36 حرفاً).</value>
+  </data>
+  <data name="super_problem_duplicate" xml:space="preserve">
+    <value>الاسم "{0}" مكرر.</value>
+  </data>
+  <data name="super_problem_unknown_group" xml:space="preserve">
+    <value>المجموعة "{0}" غير موجودة.</value>
+  </data>
+  <data name="super_problem_group_full" xml:space="preserve">
+    <value>المجموعة {0} صغيرة: أقسامها تحتاج {1} والمسموح {2}.</value>
+  </data>
+  <data name="super_problem_does_not_fit" xml:space="preserve">
+    <value>الأقسام تحتاج {0} لكن حجم super هو {1}.</value>
+  </data>
+  <data name="super_import_source" xml:space="preserve">
+    <value>تقسيم {0} · {1} · {2} خانات بيانات وصفية · المجموعات {3}</value>
+  </data>
+  <data name="super_found_images" xml:space="preserve">
+    <value>تم العثور على {0} صور أقسام في {1}.</value>
+  </data>
+  <data name="super_not_super" xml:space="preserve">
+    <value>هذا الملف ليس صورة super.</value>
+  </data>
+  <data name="super_not_filesystem" xml:space="preserve">
+    <value>هذه الملفات ليست صور أنظمة ملفات، وغالباً لا تنتمي إلى super (مثل boot و vbmeta تُفلَّش وحدها):
+
+{0}
+
+إضافتها على أي حال؟</value>
+  </data>
+  <data name="super_folder_skipped" xml:space="preserve">
+    <value>تم تخطي {0} ملفات ليست صور أنظمة ملفات: {1}</value>
+  </data>
+  <data name="super_folder_none" xml:space="preserve">
+    <value>لم يتم العثور على صور أقسام في هذا المجلد.</value>
+  </data>
+  <data name="super_clear_confirm" xml:space="preserve">
+    <value>إزالة جميع صور الأقسام من القائمة؟</value>
+  </data>
+  <data name="super_phone_none" xml:space="preserve">
+    <value>لا يوجد جوال في وضع الفاست بوت. وصّله في البوت لودر أو fastbootd وحاول مرة أخرى.</value>
+  </data>
+  <data name="super_phone_read" xml:space="preserve">
+    <value>تمت القراءة من {0}: حجم super هو {1} ({2} بايت). التقسيم: {3}.</value>
+  </data>
+  <data name="super_phone_failed" xml:space="preserve">
+    <value>تعذّرت قراءة حجم super من الجوال:
+
+{0}</value>
+  </data>
+  <data name="super_reading_phone" xml:space="preserve">
+    <value>جارٍ القراءة من الجوال…</value>
+  </data>
+  <data name="super_pick_image" xml:space="preserve">
+    <value>اختر صورة {0}</value>
+  </data>
+  <data name="super_output_is_input" xml:space="preserve">
+    <value>ملف الإخراج هو إحدى الصور الداخلة في super. اختر اسماً آخر.</value>
+  </data>
 </root>

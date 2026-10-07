@@ -3234,5 +3234,572 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("backup_fb_failed", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Build Super.
+        /// </summary>
+        public static string nav_super {
+            get {
+                return ResourceManager.GetString("nav_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine partition images into one super.img that fastboot can flash.
+        /// </summary>
+        public static string super_subtitle {
+            get {
+                return ResourceManager.GetString("super_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import from super.img….
+        /// </summary>
+        public static string super_import {
+            get {
+                return ResourceManager.GetString("super_import", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read size from phone.
+        /// </summary>
+        public static string super_read_phone {
+            get {
+                return ResourceManager.GetString("super_read_phone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to LAYOUT.
+        /// </summary>
+        public static string super_layout {
+            get {
+                return ResourceManager.GetString("super_layout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual A/B.
+        /// </summary>
+        public static string super_mode_vab {
+            get {
+                return ResourceManager.GetString("super_mode_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A/B.
+        /// </summary>
+        public static string super_mode_ab {
+            get {
+                return ResourceManager.GetString("super_mode_ab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Single slot.
+        /// </summary>
+        public static string super_mode_single {
+            get {
+                return ResourceManager.GetString("super_mode_single", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to As in the imported super.
+        /// </summary>
+        public static string super_mode_imported {
+            get {
+                return ResourceManager.GetString("super_mode_imported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Most phones from Android 11 on. Partitions get _a and _b; slot b is left empty, as in factory images..
+        /// </summary>
+        public static string super_mode_note_vab {
+            get {
+                return ResourceManager.GetString("super_mode_note_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A/B phones without Virtual A/B (mostly Android 10). Each slot gets half of super..
+        /// </summary>
+        public static string super_mode_note_ab {
+            get {
+                return ResourceManager.GetString("super_mode_note_ab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phones without A/B slots: partitions keep their plain names..
+        /// </summary>
+        public static string super_mode_note_single {
+            get {
+                return ResourceManager.GetString("super_mode_note_single", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Groups, slots and partition order are copied from {0}. Images replace the partitions of the same name..
+        /// </summary>
+        public static string super_mode_note_imported {
+            get {
+                return ResourceManager.GetString("super_mode_note_imported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SUPER SIZE (BYTES).
+        /// </summary>
+        public static string super_size {
+            get {
+                return ResourceManager.GetString("super_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. 9126805504.
+        /// </summary>
+        public static string super_size_hint {
+            get {
+                return ResourceManager.GetString("super_size_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GROUP SIZE (BYTES).
+        /// </summary>
+        public static string super_group_size {
+            get {
+                return ResourceManager.GetString("super_group_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GROUP NAME.
+        /// </summary>
+        public static string super_group_name {
+            get {
+                return ResourceManager.GetString("super_group_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to auto.
+        /// </summary>
+        public static string super_auto {
+            get {
+                return ResourceManager.GetString("super_auto", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to auto: {0}.
+        /// </summary>
+        public static string super_auto_value {
+            get {
+                return ResourceManager.GetString("super_auto_value", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} used · {2} free.
+        /// </summary>
+        public static string super_usage {
+            get {
+                return ResourceManager.GetString("super_usage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the size of super to see how much the partitions use..
+        /// </summary>
+        public static string super_usage_none {
+            get {
+                return ResourceManager.GetString("super_usage_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add images….
+        /// </summary>
+        public static string super_add {
+            get {
+                return ResourceManager.GetString("super_add", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add folder….
+        /// </summary>
+        public static string super_add_folder {
+            get {
+                return ResourceManager.GetString("super_add_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string super_remove {
+            get {
+                return ResourceManager.GetString("super_remove", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string super_clear {
+            get {
+                return ResourceManager.GetString("super_clear", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add partition images (system.img, vendor.img, product.img…) or import the layout of an existing super.img. Images unpacked by Image Tools are found by themselves..
+        /// </summary>
+        public static string super_empty_hint {
+            get {
+                return ResourceManager.GetString("super_empty_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string super_column_image {
+            get {
+                return ResourceManager.GetString("super_column_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to empty.
+        /// </summary>
+        public static string super_empty_partition {
+            get {
+                return ResourceManager.GetString("super_empty_partition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OUTPUT.
+        /// </summary>
+        public static string super_output {
+            get {
+                return ResourceManager.GetString("super_output", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse.
+        /// </summary>
+        public static string super_format_sparse {
+            get {
+                return ResourceManager.GetString("super_format_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw.
+        /// </summary>
+        public static string super_format_raw {
+            get {
+                return ResourceManager.GetString("super_format_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse is smaller and is what factory images ship; raw is the full size of super..
+        /// </summary>
+        public static string super_format_note {
+            get {
+                return ResourceManager.GetString("super_format_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check the image after building.
+        /// </summary>
+        public static string super_verify {
+            get {
+                return ResourceManager.GetString("super_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Build super.img….
+        /// </summary>
+        public static string super_build {
+            get {
+                return ResourceManager.GetString("super_build", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Building super.img.
+        /// </summary>
+        public static string super_building {
+            get {
+                return ResourceManager.GetString("super_building", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Checking super.img.
+        /// </summary>
+        public static string super_verifying {
+            get {
+                return ResourceManager.GetString("super_verifying", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash it with: fastboot flash super super.img. Keep a backup of the phone's current super first..
+        /// </summary>
+        public static string super_flash_note {
+            get {
+                return ResourceManager.GetString("super_flash_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img is ready and checked: every partition was read back and matches its image.  {0} {1} · {2} partitions.
+        /// </summary>
+        public static string super_done {
+            get {
+                return ResourceManager.GetString("super_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img is ready.  {0} {1} · {2} partitions.
+        /// </summary>
+        public static string super_done_unchecked {
+            get {
+                return ResourceManager.GetString("super_done_unchecked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img was written but did not pass the check, so do not flash it:  {0}.
+        /// </summary>
+        public static string super_verify_failed {
+            get {
+                return ResourceManager.GetString("super_verify_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the size of super: read it from the phone or import a super.img..
+        /// </summary>
+        public static string super_problem_no_size {
+            get {
+                return ResourceManager.GetString("super_problem_no_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The size of super must be a multiple of 4096 bytes..
+        /// </summary>
+        public static string super_problem_size_aligned {
+            get {
+                return ResourceManager.GetString("super_problem_size_aligned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The metadata settings of this layout cannot be used..
+        /// </summary>
+        public static string super_problem_metadata {
+            get {
+                return ResourceManager.GetString("super_problem_metadata", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Too many partitions for the metadata area..
+        /// </summary>
+        public static string super_problem_metadata_large {
+            get {
+                return ResourceManager.GetString("super_problem_metadata_large", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add at least one partition image..
+        /// </summary>
+        public static string super_problem_no_images {
+            get {
+                return ResourceManager.GetString("super_problem_no_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" is not a valid name (letters, digits, _ . - and at most 36 characters)..
+        /// </summary>
+        public static string super_problem_bad_name {
+            get {
+                return ResourceManager.GetString("super_problem_bad_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" appears twice..
+        /// </summary>
+        public static string super_problem_duplicate {
+            get {
+                return ResourceManager.GetString("super_problem_duplicate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group "{0}" does not exist..
+        /// </summary>
+        public static string super_problem_unknown_group {
+            get {
+                return ResourceManager.GetString("super_problem_unknown_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group {0} is too small: its partitions need {1}, it allows {2}..
+        /// </summary>
+        public static string super_problem_group_full {
+            get {
+                return ResourceManager.GetString("super_problem_group_full", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The partitions need {0}, but super is {1}..
+        /// </summary>
+        public static string super_problem_does_not_fit {
+            get {
+                return ResourceManager.GetString("super_problem_does_not_fit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Layout of {0} · {1} · {2} metadata slots · groups {3}.
+        /// </summary>
+        public static string super_import_source {
+            get {
+                return ResourceManager.GetString("super_import_source", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} partition images in {1}..
+        /// </summary>
+        public static string super_found_images {
+            get {
+                return ResourceManager.GetString("super_found_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a super image..
+        /// </summary>
+        public static string super_not_super {
+            get {
+                return ResourceManager.GetString("super_not_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These files are not file-system images, so they probably do not belong in super (boot, vbmeta and the like are flashed on their own):  {0}  Add them anyway?.
+        /// </summary>
+        public static string super_not_filesystem {
+            get {
+                return ResourceManager.GetString("super_not_filesystem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped {0} files that are not file-system images: {1}.
+        /// </summary>
+        public static string super_folder_skipped {
+            get {
+                return ResourceManager.GetString("super_folder_skipped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No partition images were found in this folder..
+        /// </summary>
+        public static string super_folder_none {
+            get {
+                return ResourceManager.GetString("super_folder_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all partition images from the list?.
+        /// </summary>
+        public static string super_clear_confirm {
+            get {
+                return ResourceManager.GetString("super_clear_confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No phone in fastboot mode. Connect it in the bootloader or fastbootd and try again..
+        /// </summary>
+        public static string super_phone_none {
+            get {
+                return ResourceManager.GetString("super_phone_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read from {0}: super is {1} ({2} bytes). Layout: {3}..
+        /// </summary>
+        public static string super_phone_read {
+            get {
+                return ResourceManager.GetString("super_phone_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not read the size of super from the phone:  {0}.
+        /// </summary>
+        public static string super_phone_failed {
+            get {
+                return ResourceManager.GetString("super_phone_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading from the phone….
+        /// </summary>
+        public static string super_reading_phone {
+            get {
+                return ResourceManager.GetString("super_reading_phone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose the image for {0}.
+        /// </summary>
+        public static string super_pick_image {
+            get {
+                return ResourceManager.GetString("super_pick_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The output file is one of the images going into super. Choose another name..
+        /// </summary>
+        public static string super_output_is_input {
+            get {
+                return ResourceManager.GetString("super_output_is_input", resourceCulture);
+            }
+        }
     }
 }

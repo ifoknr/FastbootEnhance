@@ -457,6 +457,46 @@ if (Test-Path $superPart) {
     Write-Host "super: 3 sparse parts expanded to raw, SHA-256 matches"
 }
 
+# ---------------------------------------------------------------- build super
+# The size comes from the phone in fastboot; the layout from the sample super, whose
+# partitions Image Tools unpacked above and the page finds by itself. Rebuilt raw, the
+# result has to be the original image byte for byte.
+if (Test-Path $superPart) {
+    Go 'super_tab' | Out-Null
+    Save-Window ('{0:D2}-super-empty' -f $i); $i++
+
+    Press 'super_read_phone'
+    $read = Wait-For { Find-Dialog } 30 "the size read from the phone"
+    Start-Sleep -Milliseconds 600
+    Close-Dialog $read
+    $size = (By-Id $root 'super_size').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+    Write-Host "super size read from the phone: $size"
+    if ($size -ne '9663676416') { Fail "the super size read from the phone is '$size'" }
+    if ((Fastboot-Log 'getvar partition-size:super') -lt 1) { Fail "the size of super was not asked for" }
+
+    Press 'super_import'
+    Choose-File $superPart "the super import dialog"
+    $superRows = Wait-For { By-Id $root 'super_partitions' } 10 "the super partition list"
+    Wait-For { (Rows $superRows).Count -ge 3 } 20 "the imported partitions" | Out-Null
+    $size = (By-Id $root 'super_size').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+    if ($size -ne '268435456') { Fail "importing the sample super set the size to '$size'" }
+    Select-Item (Wait-For { By-Id $root 'super_format_raw' } 10 "the raw output choice")
+    Save-Window ('{0:D2}-super-imported' -f $i); $i++
+
+    $rebuilt = Join-Path $sampleDir 'super-rebuilt.img'
+    Remove-Item $rebuilt -ErrorAction SilentlyContinue
+    Press 'super_build'
+    Choose-File $rebuilt "the super save dialog"
+    $built = Wait-For { Find-Dialog } 240 "super to be built and checked"
+    Start-Sleep -Milliseconds 800
+    Save-Window ('{0:D2}-super-built' -f $i); $i++
+    Close-Dialog $built
+    if (-not (Test-Path $rebuilt)) { Fail "super-rebuilt.img was not written" }
+    $rebuiltHash = (Get-FileHash $rebuilt -Algorithm SHA256).Hash.ToLower()
+    if ($rebuiltHash -ne $expected['super.raw.img']) { Fail "the rebuilt super is not the original image byte for byte" }
+    Write-Host "build super: layout imported, 5 unpacked images found, rebuilt super matches the original byte for byte"
+}
+
 # ---------------------------------------------------------------- log and about
 Go 'logs_tab' | Out-Null
 Save-Window ('{0:D2}-logs' -f $i); $i++
@@ -536,6 +576,16 @@ if ($Arabic) {
         Wait-For { (Rows $superList).Count -ge 3 } 60 "the super partitions (Arabic)" | Out-Null
         Start-Sleep -Milliseconds 600
         Save-Window 'ar-08-images-super'
+    }
+
+    if (Test-Path $superPart) {
+        Go 'super_tab' | Out-Null
+        Press 'super_import'
+        Choose-File $superPart "the super import dialog (Arabic)"
+        $superRows = Wait-For { By-Id $root 'super_partitions' } 10 "the super partition list (Arabic)"
+        Wait-For { (Rows $superRows).Count -ge 3 } 20 "the imported partitions (Arabic)" | Out-Null
+        Start-Sleep -Milliseconds 600
+        Save-Window 'ar-10-super'
     }
 
     # A dialog: switching back to English asks to restart. Answer "No" (the first button).

@@ -609,6 +609,174 @@
             </Grid>
         </TabItem>
 
+        <!-- ============================== Build super ============================== -->
+        <TabItem x:Name="super_tab" Header="{x:Static props:Resources.nav_super}" Tag="{StaticResource IconBricks}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="super_import" Margin="0,0,10,0" Content="{x:Static props:Resources.super_import}"/>
+                            <Button x:Name="super_read_phone" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.super_read_phone}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_super}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.super_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="18"/>
+                        <ColumnDefinition Width="290"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid x:Name="super_editor">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Layout: slots, size, group -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_layout}"/>
+                                <WrapPanel>
+                                    <RadioButton x:Name="super_mode_vab" Style="{StaticResource Segment}" GroupName="super_mode" IsChecked="True"
+                                                 Content="{x:Static props:Resources.super_mode_vab}"/>
+                                    <RadioButton x:Name="super_mode_ab" Style="{StaticResource Segment}" GroupName="super_mode"
+                                                 Content="{x:Static props:Resources.super_mode_ab}"/>
+                                    <RadioButton x:Name="super_mode_single" Style="{StaticResource Segment}" GroupName="super_mode"
+                                                 Content="{x:Static props:Resources.super_mode_single}"/>
+                                    <RadioButton x:Name="super_mode_imported" Style="{StaticResource Segment}" GroupName="super_mode" Visibility="Collapsed"
+                                                 Content="{x:Static props:Resources.super_mode_imported}"/>
+                                </WrapPanel>
+                                <TextBlock x:Name="super_mode_note" Style="{StaticResource Note}" Margin="0,2,0,14"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Margin="0,0,0,12">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_size}"/>
+                                        <TextBox x:Name="super_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
+                                                 Tag="{x:Static props:Resources.super_size_hint}"/>
+                                        <TextBlock x:Name="super_size_human" Style="{StaticResource Note}" Margin="2,4,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Margin="0,0,0,12">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_size}"/>
+                                        <TextBox x:Name="super_group_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
+                                                 Tag="{x:Static props:Resources.super_auto}"/>
+                                        <TextBlock x:Name="super_group_size_human" Style="{StaticResource Note}" Margin="2,4,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_name}"/>
+                                        <TextBox x:Name="super_group" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="main"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom">
+                                        <TextBlock x:Name="super_usage_text" Style="{StaticResource Note}" Margin="0,0,0,6"/>
+                                        <ProgressBar x:Name="super_usage" Height="8" Margin="0,0,0,8"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Partitions -->
+                        <Border Grid.Row="2" Style="{StaticResource Card}">
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                    <Button x:Name="super_add" Style="{StaticResource AccentButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_add}"/>
+                                    <Button x:Name="super_add_folder" Margin="0,0,8,6" Content="{x:Static props:Resources.super_add_folder}"/>
+                                    <Button x:Name="super_remove" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_remove}"/>
+                                    <Button x:Name="super_clear" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_clear}"/>
+                                </WrapPanel>
+                                <TextBlock x:Name="super_source" DockPanel.Dock="Top" Style="{StaticResource Note}" Margin="0,0,0,8" Visibility="Collapsed"/>
+                                <Grid>
+                                    <ListView x:Name="super_partitions" SelectionMode="Extended" AllowDrop="True"
+                                              local:ColumnFill.Column="3" local:ColumnFill.MinWidth="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="140">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Name}" Foreground="{Binding NameBrush}" FontFamily="{StaticResource Mono}" FontSize="12.5"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="150">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Group}" Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="90" DisplayMemberBinding="{Binding Size}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.super_column_image}" Width="200">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Image}" ToolTip="{Binding ImagePath}" Foreground="{Binding ImageBrush}"
+                                                                       FlowDirection="{Binding ImageFlow}" TextTrimming="CharacterEllipsis"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <TextBlock x:Name="super_partitions_empty" Style="{StaticResource Note}" Margin="14,44,14,0" TextAlignment="Center"
+                                               HorizontalAlignment="Center" MaxWidth="460" IsHitTestVisible="False"
+                                               Text="{x:Static props:Resources.super_empty_hint}"/>
+                                </Grid>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Output and build -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_output}"/>
+                            <WrapPanel x:Name="super_format_panel">
+                                <RadioButton x:Name="super_format_sparse" Style="{StaticResource Segment}" GroupName="super_format" IsChecked="True"
+                                             Content="{x:Static props:Resources.super_format_sparse}"/>
+                                <RadioButton x:Name="super_format_raw" Style="{StaticResource Segment}" GroupName="super_format"
+                                             Content="{x:Static props:Resources.super_format_raw}"/>
+                            </WrapPanel>
+                            <TextBlock Style="{StaticResource Note}" Margin="0,0,0,12" Text="{x:Static props:Resources.super_format_note}"/>
+                            <CheckBox x:Name="super_verify" IsChecked="True" Margin="0,0,0,14" Content="{x:Static props:Resources.super_verify}"/>
+
+                            <Border x:Name="super_problems_box" Background="{StaticResource DangerSoft}" BorderBrush="{StaticResource DangerLine}"
+                                    BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,12" Visibility="Collapsed">
+                                <TextBlock x:Name="super_problems" Foreground="{StaticResource Danger}" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                            </Border>
+
+                            <Button x:Name="super_build" Style="{StaticResource AccentButton}" MinHeight="40" Margin="0,0,0,8"
+                                    Content="{x:Static props:Resources.super_build}"/>
+                            <Button x:Name="super_cancel" Style="{StaticResource DangerButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                    Content="{x:Static props:Resources.backup_cancel}"/>
+                            <ProgressBar x:Name="super_progress" Height="6" Margin="0,4,0,6"/>
+                            <TextBlock x:Name="super_progress_text" FontSize="11" Foreground="{StaticResource Dim}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,0,12"/>
+                            <Button x:Name="super_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14"
+                                    Content="{x:Static props:Resources.backup_open_folder}"/>
+                            <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.super_flash_note}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </TabItem>
+
         <!-- ============================== Backup ============================== -->
         <TabItem x:Name="backup_tab" Header="{x:Static props:Resources.nav_backup}" Tag="{StaticResource IconBackup}">
             <Grid>

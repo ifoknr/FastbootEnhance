@@ -73,6 +73,38 @@ namespace FastbootEnhance
             }, null, timeout, Timeout.InfiniteTimeSpan);
         }
 
+        /// <summary>
+        /// Runs fastboot to the end and returns its exit code (null when it timed out), with
+        /// stdout and stderr together in <paramref name="output"/>.
+        /// </summary>
+        public static int? Run(string serial, string action, TimeSpan timeout, out string output)
+        {
+            using (Fastboot fastboot = new Fastboot(serial, action, timeout))
+            {
+                // Both pipes at once: fastboot writes its progress to stderr, and reading one
+                // pipe to the end while the other fills up would hang both processes.
+                System.Threading.Tasks.Task<string> errors = fastboot.stderr.ReadToEndAsync();
+                string standard = fastboot.stdout.ReadToEnd();
+                output = standard + errors.Result;
+                return fastboot.WaitForExit();
+            }
+        }
+
+        /// <summary>Serials of the phones in fastboot (bootloader or fastbootd) right now.</summary>
+        public static System.Collections.Generic.List<string> ListSerials()
+        {
+            System.Collections.Generic.List<string> serials = new System.Collections.Generic.List<string>();
+            string output;
+            Run(null, "devices", ShortCommand, out output);
+            foreach (string line in output.Split('\n'))
+            {
+                string[] parts = line.Split(new[] { '\t', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length >= 2 && parts[1].StartsWith("fastboot", StringComparison.Ordinal))
+                    serials.Add(parts[0].Trim());
+            }
+            return serials;
+        }
+
         /// <summary>True when the deadline passed and the process was killed.</summary>
         public bool TimedOut => timedOut;
 
