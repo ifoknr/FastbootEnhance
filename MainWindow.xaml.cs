@@ -38,6 +38,14 @@ namespace FastbootEnhance
 
             Title += " v" + version;
 
+            // "FastbootEnhance.exe ota.zip", or a package dropped onto the exe, opens it straight away.
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1 && File.Exists(args[1]))
+            {
+                string path = args[1];
+                Loaded += delegate { PayloadUI.openFromPath(path); };
+            }
+
             Closed += delegate
             {
                 PayloadUI.cancelRunningWork();

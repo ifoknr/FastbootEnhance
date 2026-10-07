@@ -10,7 +10,7 @@
         <TaskbarItemInfo x:Name="taskbariteminfo"></TaskbarItemInfo>
     </Window.TaskbarItemInfo>
     <Grid>
-        <TabControl>
+        <TabControl x:Name="main_tabs">
             <TabItem Header="{x:Static props:Resources.fastboot_enhance}">
                 <Grid>
                     <Grid x:Name="fastboot_devices_page" Visibility="Hidden">
@@ -152,7 +152,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-            <TabItem Header="{x:Static props:Resources.payload_dumper}">
+            <TabItem x:Name="payload_tab" Header="{x:Static props:Resources.payload_dumper}">
                 <Grid>
                     <Grid x:Name="payload_before_load" Visibility="Hidden" AllowDrop="True" Background="Transparent">
                         <Grid Width="500" Height="200">

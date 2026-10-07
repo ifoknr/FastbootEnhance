@@ -83,6 +83,13 @@ namespace FastbootEnhance
             Helper.offloadAndRun(load, afterLoad);
         }
 
+        /// <summary>Opens a payload handed to the app from outside, e.g. on the command line.</summary>
+        public static void openFromPath(string filename)
+        {
+            MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.payload_tab;
+            onLoad(filename);
+        }
+
         public static void closeCurrent()
         {
             if (payload == null)

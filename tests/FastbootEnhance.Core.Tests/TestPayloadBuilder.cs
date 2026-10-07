@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -71,6 +71,9 @@ namespace FastbootEnhance.Core.Tests
         public uint BlockSize { get; set; } = 4096;
         public uint MinorVersion { get; set; } = 9;
         public ulong FormatVersion { get; set; } = 2;
+
+        /// <summary>Last chance to fill in manifest fields the builder does not set itself.</summary>
+        public Action<DeltaArchiveManifest> CustomizeManifest { get; set; }
 
         public PartSpec AddPartition(string name, byte[] expectedImage)
         {
@@ -153,6 +156,8 @@ namespace FastbootEnhance.Core.Tests
 
                     manifest.Partitions.Add(update);
                 }
+
+                CustomizeManifest?.Invoke(manifest);
 
                 byte[] blobBytes = blobs.ToArray();
 
