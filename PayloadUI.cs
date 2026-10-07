@@ -75,7 +75,7 @@ namespace FastbootEnhance
                 if (exception != null)
                 {
                     LogStore.Append("Could not open " + filename + ": " + exception.Message);
-                    MessageBox.Show(Properties.Resources.payload_unsupported_format
+                    ThemedDialog.Show(Properties.Resources.payload_unsupported_format
                         + "\n" + exception.Message);
                     return;
                 }
@@ -187,7 +187,7 @@ namespace FastbootEnhance
 
                 if (files.Length > 1)
                 {
-                    MessageBox.Show(Properties.Resources.payload_unable_drop_multifile);
+                    ThemedDialog.Show(Properties.Resources.payload_unable_drop_multifile);
                     return;
                 }
 
@@ -202,7 +202,7 @@ namespace FastbootEnhance
 
             if (MainWindow.THIS.payload_partition_info.SelectedItems.Count == 0)
             {
-                MessageBox.Show(Properties.Resources.payload_target_partition_not_selected);
+                ThemedDialog.Show(Properties.Resources.payload_target_partition_not_selected);
                 return;
             }
 
@@ -224,7 +224,7 @@ namespace FastbootEnhance
 
             if (blocked.Count > 0 && !allowIncremental && !ignoreUnsupported)
             {
-                MessageBox.Show(Properties.Resources.payload_incremental_warning
+                ThemedDialog.Show(Properties.Resources.payload_incremental_warning
                     + "\n\n" + string.Join(", ", blocked));
                 return;
             }
@@ -307,7 +307,7 @@ namespace FastbootEnhance
 
                     if (failure != null)
                     {
-                        MessageBox.Show(Properties.Resources.payload_error_occur + "\n" + failure.Message);
+                        ThemedDialog.Show(Properties.Resources.payload_error_occur + "\n" + failure.Message);
                         return;
                     }
 
@@ -324,7 +324,7 @@ namespace FastbootEnhance
 
                     if (report.AllSucceeded && incomplete.Length == 0)
                     {
-                        MessageBox.Show(Properties.Resources.operation_completed
+                        ThemedDialog.Done(Properties.Resources.operation_completed
                             + "\n\n" + Helper.byte2AUnit(report.TotalBytes)
                             + " in " + report.Elapsed.TotalSeconds.ToString("F1") + " s");
                         return;
@@ -338,7 +338,7 @@ namespace FastbootEnhance
                     if (incomplete.Length > 0)
                         message += (message.Length > 0 ? "\n\n" : "") + Properties.Resources.extract_incomplete + "\n\n" + incomplete;
 
-                    MessageBox.Show(message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ThemedDialog.Show(message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }));
             }));
 

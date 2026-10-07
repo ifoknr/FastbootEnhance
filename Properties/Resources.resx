@@ -676,4 +676,13 @@
 
 Flash them anyway?</value>
   </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="dialog_warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="dialog_done" xml:space="preserve">
+    <value>Done</value>
+  </data>
 </root>

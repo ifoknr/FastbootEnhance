@@ -67,7 +67,7 @@ namespace FastbootEnhance
                     if (param.Length > 0 && cur_serial == param[0])
                         return true;
                 }
-                MessageBox.Show(Properties.Resources.fastboot_device_not_exist);
+                ThemedDialog.Show(Properties.Resources.fastboot_device_not_exist);
                 leaveDevice();
                 return false;
             }
@@ -106,7 +106,7 @@ namespace FastbootEnhance
                     MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
                     {
                         MainWindow.THIS.main_tabs.Tag = Properties.Resources.rail_no_fastboot;
-                        MessageBox.Show(e.Message + "\n" + e.FileName, Properties.Resources.error,
+                        ThemedDialog.Show(e.Message + "\n" + e.FileName, Properties.Resources.error,
                             MessageBoxButton.OK, MessageBoxImage.Error);
                     }));
                     return;
@@ -289,7 +289,7 @@ namespace FastbootEnhance
                         action_unlock();
                         if (cur_serial != serial)
                             return;
-                        MessageBox.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                        ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
                         leaveDevice();
                     }));
                     return;
@@ -542,14 +542,14 @@ namespace FastbootEnhance
 
                 if (failure != null)
                 {
-                    MessageBox.Show(failure, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    ThemedDialog.Show(failure, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (!param.skip_var_refresh && cur_serial != null && cur_serial == param.serial)
                     load_fastboot_vars();
                 if (param.show_dialog_on_done)
-                    MessageBox.Show(Properties.Resources.operation_completed);
+                    ThemedDialog.Done(Properties.Resources.operation_completed);
             }));
         }
 
@@ -557,13 +557,13 @@ namespace FastbootEnhance
         {
             if (MainWindow.THIS.fastboot_partition_list.SelectedItems.Count == 0)
             {
-                MessageBox.Show(Properties.Resources.fastboot_target_partition_not_selected);
+                ThemedDialog.Show(Properties.Resources.fastboot_target_partition_not_selected);
                 return true;
             }
 
             if (MainWindow.THIS.fastboot_partition_list.SelectedItems.Count > 1)
             {
-                MessageBox.Show(Properties.Resources.fastboot_not_support_multiselect);
+                ThemedDialog.Show(Properties.Resources.fastboot_not_support_multiselect);
                 return true;
             }
 
@@ -578,7 +578,7 @@ namespace FastbootEnhance
                 MainWindow.THIS.fastboot_partition_list.SelectedItem).name, out ret);
             if (ret == null || ret == false)
             {
-                MessageBox.Show(Properties.Resources.fastboot_only_logical);
+                ThemedDialog.Show(Properties.Resources.fastboot_only_logical);
                 return true;
             }
 
@@ -593,7 +593,7 @@ namespace FastbootEnhance
                     Properties.Resources.fastboot_vab_staging_str1 + "\n" +
                     Properties.Resources.fastboot_vab_staging_str2 + "\n" +
                     Properties.Resources.fastboot_vab_staging_str3,
-                    Properties.Resources.fastboot_vab_staging_str0);
+                    Properties.Resources.fastboot_vab_staging_str0, true);
 
                 if (!proceed)
                 {
@@ -607,7 +607,7 @@ namespace FastbootEnhance
                     Properties.Resources.fastboot_cow_exist_str1 + "\n" +
                     Properties.Resources.fastboot_cow_exist_str2 + "\n" +
                     Properties.Resources.fastboot_cow_exist_str3,
-                    Properties.Resources.fastboot_cow_exist_str0);
+                    Properties.Resources.fastboot_cow_exist_str0, true);
 
                 if (!proceed)
                 {
@@ -648,7 +648,7 @@ namespace FastbootEnhance
                     if (failure != null)
                     {
                         action_unlock();
-                        MessageBox.Show(Properties.Resources.payload_unsupported_format
+                        ThemedDialog.Show(Properties.Resources.payload_unsupported_format
                             + "\n" + failure.Message);
                         return;
                     }
@@ -661,7 +661,7 @@ namespace FastbootEnhance
                         string hint = fastbootData.fastbootd
                             ? "\n" + Properties.Resources.fastboot_unknown_partition_str1
                             : "\n" + Properties.Resources.fastboot_unknown_partition_str2;
-                        MessageBox.Show(Properties.Resources.fastboot_unknown_partition_str0
+                        ThemedDialog.Show(Properties.Resources.fastboot_unknown_partition_str0
                             + "\n" + unknown + hint);
                         return;
                     }
@@ -675,7 +675,7 @@ namespace FastbootEnhance
                     {
                         opened.Dispose();
                         action_unlock();
-                        MessageBox.Show(Properties.Resources.payload_incremental_warning
+                        ThemedDialog.Show(Properties.Resources.payload_incremental_warning
                             + "\n\n" + string.Join(", ", blocked));
                         return;
                     }
@@ -687,7 +687,7 @@ namespace FastbootEnhance
 
                     if (unverifiable.Count > 0 && !Helper.confirm(
                             string.Format(Properties.Resources.flash_unverified, string.Join(", ", unverifiable)),
-                            Properties.Resources.confirm_title))
+                            Properties.Resources.confirm_title, true))
                     {
                         opened.Dispose();
                         action_unlock();
@@ -699,7 +699,7 @@ namespace FastbootEnhance
                     {
                         opened.Dispose();
                         action_unlock();
-                        MessageBox.Show(Properties.Resources.flash_no_device);
+                        ThemedDialog.Show(Properties.Resources.flash_no_device);
                         return;
                     }
 
@@ -987,13 +987,13 @@ namespace FastbootEnhance
                     {
                         setPhase(Properties.Resources.flash_phase_done, "Ok");
                         MainWindow.THIS.flash_overall_progress.Value = 100;
-                        MessageBox.Show(Properties.Resources.operation_completed);
+                        ThemedDialog.Done(Properties.Resources.operation_completed);
                         return;
                     }
 
                     setPhase(Properties.Resources.flash_phase_failed, "Danger");
                     Helper.TaskbarItemHelper.error();
-                    MessageBox.Show(Properties.Resources.payload_error_occur
+                    ThemedDialog.Show(Properties.Resources.payload_error_occur
                         + "\n\n" + summary
                         + "\n\n" + flashedCount + " of " + parts.Count + " partitions were written");
                 }));
@@ -1131,7 +1131,7 @@ namespace FastbootEnhance
                 }
                 else
                 {
-                    MessageBox.Show(Properties.Resources.operation_not_supported);
+                    ThemedDialog.Show(Properties.Resources.operation_not_supported);
                 }
             };
 
@@ -1184,7 +1184,7 @@ namespace FastbootEnhance
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
 
-                if (!Helper.confirm(string.Format(Properties.Resources.confirm_erase, target), Properties.Resources.confirm_title))
+                if (!Helper.confirm(string.Format(Properties.Resources.confirm_erase, target), Properties.Resources.confirm_title, true))
                     return;
 
                 runStep(new StepCmdRunnerParam("erase \"" + target + "\"", 2, false));
@@ -1244,7 +1244,7 @@ namespace FastbootEnhance
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
 
-                if (!Helper.confirm(string.Format(Properties.Resources.confirm_delete, target), Properties.Resources.confirm_title))
+                if (!Helper.confirm(string.Format(Properties.Resources.confirm_delete, target), Properties.Resources.confirm_title, true))
                     return;
 
                 runStep(new StepCmdRunnerParam("delete-logical-partition \"" + target + "\"", 2, false));
@@ -1286,7 +1286,7 @@ namespace FastbootEnhance
             {
                 if (cur_status != FastbootStatus.show_actions || cur_serial == null || fastbootData == null)
                 {
-                    MessageBox.Show(Properties.Resources.flash_no_device);
+                    ThemedDialog.Show(Properties.Resources.flash_no_device);
                     MainWindow.THIS.main_tabs.SelectedItem = MainWindow.THIS.device_tab;
                     return;
                 }

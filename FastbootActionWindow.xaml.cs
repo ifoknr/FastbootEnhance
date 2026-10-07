@@ -21,6 +21,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             Owner = MainWindow.THIS;
+            SourceInitialized += delegate { DarkTitleBar.Apply(this); };
 
             this.name.Text = partition_name;
             this.size.Text = size.ToString();
@@ -29,13 +30,13 @@ namespace FastbootEnhance
             {
                 if (this.name.Text == "")
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_name_empty);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_name_empty);
                     return;
                 }
 
                 if (this.size.Text == "")
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_empty);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_empty);
                     return;
                 }
 
@@ -46,7 +47,7 @@ namespace FastbootEnhance
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_invalid);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_invalid);
                     return;
                 }
 
@@ -58,7 +59,7 @@ namespace FastbootEnhance
 
                 if (type == StartType.RESIZE && new_size < (ulong)size)
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_unable_shrink);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_unable_shrink);
                     return;
                 }
 

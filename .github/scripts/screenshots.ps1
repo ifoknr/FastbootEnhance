@@ -199,6 +199,19 @@ foreach ($sub in (Visible-Tabs $deviceTab)) {
     Save-Window ('{0:D2}-device-{1}' -f $i, ($sub.Current.Name -replace '[^A-Za-z0-9]+', '-').Trim('-').ToLower()); $i++
 }
 
+# ---------------------------------------------------------------- a confirmation dialog
+# Erase asks first. Capture the question, answer No, and make sure nothing was erased.
+$parts = Wait-For { By-Id $root 'fastboot_partition_list' } 10 "the partition list"
+$part = Wait-For { $parts.FindFirst($Scope::Descendants, $rowCond) } 10 "a partition row"
+Select-Item $part
+$erase = Wait-For { By-Id $root 'fastboot_erase' } 10 "the erase button"
+$erase.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+$ask = Wait-For { Find-Dialog } 20 "the erase confirmation"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-confirm-erase' -f $i); $i++
+Close-Dialog $ask
+if (@(Get-Content $fakeLog | Where-Object { $_ -match ' erase ' }).Count -gt 0) { Fail "answering No still erased a partition" }
+
 # ---------------------------------------------------------------- flash the sample OTA
 if ($ExpectedFlashes -gt 0) {
     Go 'flash_tab' | Out-Null

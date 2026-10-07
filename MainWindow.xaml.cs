@@ -17,6 +17,7 @@ namespace FastbootEnhance
         {
             InitializeComponent();
             THIS = this;
+            SourceInitialized += delegate { DarkTitleBar.Apply(this); };
 
             clearStagingDirectories();
 
@@ -45,7 +46,7 @@ namespace FastbootEnhance
                 if (question == null)
                     return;
 
-                if (MessageBox.Show(question, Properties.Resources.confirm_title,
+                if (ThemedDialog.Show(question, Properties.Resources.confirm_title,
                         MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes)
                     e.Cancel = true;
             };
@@ -153,7 +154,7 @@ namespace FastbootEnhance
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                ThemedDialog.Show(e.Message);
             }
         }
 

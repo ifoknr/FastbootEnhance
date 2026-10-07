@@ -1722,5 +1722,32 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("flash_unverified", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string cancel {
+            get {
+                return ResourceManager.GetString("cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string dialog_warning {
+            get {
+                return ResourceManager.GetString("dialog_warning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string dialog_done {
+            get {
+                return ResourceManager.GetString("dialog_done", resourceCulture);
+            }
+        }
     }
 }

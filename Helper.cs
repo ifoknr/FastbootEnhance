@@ -45,10 +45,15 @@ namespace FastbootEnhance
             thread.Start();
         }
 
-        /// <summary>A yes/no prompt. Returns true only when the user picks yes.</summary>
-        public static bool confirm(string message, string title)
+        /// <summary>
+        /// A yes/no prompt. Returns true only when the user picks yes. A destructive question is
+        /// drawn as a warning, with a red "yes", and Enter answers no.
+        /// </summary>
+        public static bool confirm(string message, string title, bool destructive = false)
         {
-            return MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Question)
+            return ThemedDialog.Show(message, title, MessageBoxButton.YesNo,
+                    destructive ? MessageBoxImage.Warning : MessageBoxImage.Question,
+                    destructive ? MessageBoxResult.No : MessageBoxResult.Yes)
                 == MessageBoxResult.Yes;
         }
 

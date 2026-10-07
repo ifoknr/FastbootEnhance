@@ -26,7 +26,7 @@ namespace FastbootEnhance
             singleInstance = new Mutex(false, "FastbootEnhance", out createdNew);
             if (!createdNew)
             {
-                MessageBox.Show(global::FastbootEnhance.Properties.Resources.program_already_running,
+                ThemedDialog.Show(global::FastbootEnhance.Properties.Resources.program_already_running,
                     global::FastbootEnhance.Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
                 return;
@@ -48,9 +48,18 @@ namespace FastbootEnhance
         void onDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             writeCrashLog("ui thread", e.Exception);
-            MessageBox.Show(
-                e.Exception.Message + "\n\n" + CrashLogPath,
-                global::FastbootEnhance.Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+            string text = e.Exception.Message + "\n\n" + CrashLogPath;
+            try
+            {
+                ThemedDialog.Show(text, global::FastbootEnhance.Properties.Resources.error,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                // The themed box is itself WPF; if the failure is in WPF, fall back to the system one.
+                MessageBox.Show(text, global::FastbootEnhance.Properties.Resources.error,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             // Keep the app alive: one failed action should not take the open session down.
             e.Handled = true;
