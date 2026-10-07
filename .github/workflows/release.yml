@@ -1,0 +1,126 @@
+name: Release
+
+# INFO: Builds FastbootStudio on Windows and publishes a GitHub Release.
+#         - Actions > Release > Run workflow (tick "test" for a test release), or
+#         - push a tag named v* that matches AssemblyVersion in Properties/AssemblyInfo.cs
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: "Test release (does not count as the latest version)"
+        type: boolean
+        default: true
+  push:
+    tags: [ "v*" ]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore packages
+        run: nuget restore FastbootEnhance.sln
+
+      # INFO: Current runners ship no .NET Framework 4.5.2 targeting pack; the
+      #         reference assemblies package provides it.
+      - name: Get .NET Framework 4.5.2 reference assemblies
+        run: nuget install Microsoft.NETFramework.ReferenceAssemblies.net452 -Version 1.0.3 -OutputDirectory refs
+
+      - name: Build
+        run: |
+          $root = "$pwd\refs\Microsoft.NETFramework.ReferenceAssemblies.net452.1.0.3\build"
+          msbuild FastbootEnhance.sln /m /p:Configuration=Release "/p:Platform=Any CPU" "/p:TargetFrameworkRootPath=$root" "/p:FrameworkPathOverride=$root\.NETFramework\v4.5.2"
+
+      - name: Package
+        run: |
+          New-Item -ItemType Directory -Force out | Out-Null
+          Get-ChildItem bin\Release -Recurse -Include *.pdb, *.xml | Remove-Item
+          Compress-Archive -Path bin\Release\* -DestinationPath out\FastbootStudio.zip
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: FastbootStudio
+          path: out/FastbootStudio.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check version
+        run: |
+          ver="v$(sed -n 's/^\[assembly: AssemblyVersion("\([0-9.]*\)")\]/\1/p' Properties/AssemblyInfo.cs | tr -d '\r')"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$ver" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match AssemblyVersion $ver" >&2
+            exit 1
+          fi
+          # INFO: A test build gets its own tag, so it never clashes with the real release.
+          if [ "${{ inputs.prerelease }}" = "true" ]; then
+            echo "TAG=$ver-test.$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+            echo "PRE=true" >> "$GITHUB_ENV"
+          else
+            echo "TAG=$ver" >> "$GITHUB_ENV"
+            echo "PRE=false" >> "$GITHUB_ENV"
+          fi
+          echo "VERSION=$ver" >> "$GITHUB_ENV"
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: FastbootStudio
+          path: out
+
+      - name: Name the zip
+        run: cp out/FastbootStudio.zip "out/FastbootStudio-$TAG.zip"
+
+      - name: Write release notes
+        run: |
+          {
+            echo '> [!WARNING]'
+            echo '> **Personal project, use at your own risk.**'
+            echo
+            awk -v v="## $VERSION" '$0 == v {f = 1; next} /^## / {f = 0} f' CHANGELOG.md
+            echo
+            echo '## Install'
+            echo 'Unzip `FastbootStudio.zip` and run `FastbootEnhance.exe`. Needs Windows with .NET Framework 4.5.2 or newer.'
+          } > notes.md
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$TAG" out/FastbootStudio.zip "out/FastbootStudio-$TAG.zip" \
+            --target "$GITHUB_SHA" --title "FastbootStudio $TAG$([ "$PRE" = true ] && echo ' (test)')" --notes-file notes.md \
+            $([ "$PRE" = true ] && echo --prerelease)
+
+      - name: Notify Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+          # Optional: the topic (message_thread_id) inside a group with topics.
+          TELEGRAM_TOPIC: ${{ secrets.TELEGRAM_TOPIC }}
+          TOOL: FastbootStudio
+          ICON: "🧰"
+          LAYER: "أداة ويندوز للفاستبوت و Payload"
+          REQUIRES: "Windows + .NET Framework 4.5.2"
+          AUTO_UPDATE: "false"
+          FILE: out/FastbootStudio-${{ env.TAG }}.zip
+        run: bash .github/scripts/telegram-release.sh
