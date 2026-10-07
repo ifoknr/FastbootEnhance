@@ -1,4 +1,7 @@
-# Fastboot Enhance
+# Fastboot Studio
+
+A Windows toolbox for Android: fastboot, payload dumper, and backups over adb.
+Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR.
 
 ![A user-friendly **Fastboot ToolBox** & **Payload Dumper** for Windows](screenshots/Banner.png)
 
@@ -56,11 +59,11 @@ Other things worth knowing:
 
 - Download `Release.zip` from [GitHub Releases](https://github.com/ifoknr/FastbootEnhance/releases)
 - Unzip
-- Click `FastbootEnhance.exe`
+- Click `FastbootStudio.exe`
 
 The published build is self-contained, so nothing has to be installed first.
 
-A payload can also be opened directly: `FastbootEnhance.exe ota.zip`, or drop the
+A payload can also be opened directly: `FastbootStudio.exe ota.zip`, or drop the
 package onto the executable.
 
 ## Project layout

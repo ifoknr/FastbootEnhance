@@ -17,7 +17,7 @@ namespace FastbootEnhance
         /// directory rather than next to the executable, which may sit somewhere unwritable.
         /// </summary>
         public static readonly string PAYLOAD_TMP =
-            Path.Combine(Path.GetTempPath(), "FastbootEnhance", "flash");
+            Path.Combine(Path.GetTempPath(), "FastbootStudio", "flash");
 
         static List<fastboot_devices_row> devices;
         static string cur_serial;

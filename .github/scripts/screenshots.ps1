@@ -41,10 +41,10 @@ Get-ChildItem $Out -Filter *.png -ErrorAction SilentlyContinue | Remove-Item -Fo
 $App = (Resolve-Path $App).Path
 $Payload = (Resolve-Path $Payload).Path
 $appDir = Split-Path $App
-$crashLog = Join-Path $env:TEMP 'FastbootEnhance\crash.log'
+$crashLog = Join-Path $env:TEMP 'FastbootStudio\crash.log'
 $fakeLog = Join-Path $appDir 'fake-fastboot.log'
 $fakeAdbLog = Join-Path $appDir 'fake-adb.log'
-$saveRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'FastbootEnhance'
+$saveRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Fastboot Studio'
 Remove-Item $crashLog, $fakeLog, $fakeAdbLog -ErrorAction SilentlyContinue
 Remove-Item $saveRoot -Recurse -Force -ErrorAction SilentlyContinue
 

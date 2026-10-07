@@ -58,7 +58,7 @@ jobs:
       # The stand-in phone has 20 critical partitions; each must be backed up intact.
       - name: Capture
         shell: pwsh
-        run: ./.github/scripts/screenshots.ps1 -App publish/FastbootEnhance.exe -Payload sample/sample-ota.zip -Out docs/screenshots -ExpectedFlashes 12 -ExpectedBackups 20
+        run: ./.github/scripts/screenshots.ps1 -App publish/FastbootStudio.exe -Payload sample/sample-ota.zip -Out docs/screenshots -ExpectedFlashes 12 -ExpectedBackups 20
 
       - uses: actions/upload-artifact@v4
         if: always()

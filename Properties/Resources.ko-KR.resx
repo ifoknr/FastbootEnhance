@@ -121,7 +121,7 @@
     <value>버전 정보</value>
   </data>
   <data name="app_name" xml:space="preserve">
-    <value>고급 Fastboot</value>
+    <value>Fastboot Studio</value>
   </data>
   <data name="author" xml:space="preserve">
     <value>제작자: LibXZR @ akr-developers.com</value>

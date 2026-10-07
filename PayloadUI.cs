@@ -13,7 +13,7 @@ namespace FastbootEnhance
     {
         /// <summary>Only used when a package stores payload.bin deflated and it must be unpacked.</summary>
         public static readonly string PAYLOAD_TMP =
-            Path.Combine(Path.GetTempPath(), "FastbootEnhance", "dumper");
+            Path.Combine(Path.GetTempPath(), "FastbootStudio", "dumper");
 
         enum page_status
         {

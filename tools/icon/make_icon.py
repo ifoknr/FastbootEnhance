@@ -1,4 +1,4 @@
-"""Draws the Fastboot Enhance icon: a teal tile holding a phone with a lightning bolt.
+"""Draws the Fastboot Studio icon: a teal tile holding a phone with a lightning bolt.
 
 Run from the repository root:  python tools/icon/make_icon.py
 Writes icon.ico (16 to 256 px) and big_icon.png (512 px). Each size is drawn on its own,

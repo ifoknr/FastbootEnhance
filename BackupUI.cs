@@ -32,9 +32,9 @@ namespace FastbootEnhance
         static readonly ObservableCollection<FileRow> fileRows = new ObservableCollection<FileRow>();
         static string currentFolder = "/sdcard";
 
-        /// <summary>Where backups and copied files go: Documents\FastbootEnhance by default.</summary>
+        /// <summary>Where backups and copied files go: Documents\Fastboot Studio by default.</summary>
         static string saveRoot = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "FastbootEnhance");
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Fastboot Studio");
 
         static string lastOutputFolder;
 
@@ -537,7 +537,7 @@ namespace FastbootEnhance
                 {
                     File.WriteAllText(Path.Combine(folder, Sha256Sums.FileName), Sha256Sums.Format(hashes));
                     File.WriteAllText(Path.Combine(folder, "backup-info.txt"),
-                        "Fastboot Enhance backup\n" +
+                        "Fastboot Studio backup\n" +
                         "date\t" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss zzz") + "\n" +
                         "serial\t" + device.Serial + "\n" +
                         "model\t" + (device.Model ?? "") + "\n" +

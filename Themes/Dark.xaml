@@ -506,7 +506,7 @@
                                     <Image Source="/big_icon.png" Width="34" Height="34"
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
-                                        <TextBlock Text="Fastboot Enhance" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
+                                        <TextBlock Text="Fastboot Studio" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
                                         <TextBlock Text="v2.0.0" FontSize="11" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}"/>
                                     </StackPanel>
                                 </StackPanel>

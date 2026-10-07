@@ -70,7 +70,7 @@ namespace FastbootEnhance.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Fastboot Enhance 的本地化字符串。
+        ///   Looks up a localized string similar to Fastboot Studio.
         /// </summary>
         public static string app_name {
             get {

@@ -14,7 +14,7 @@ namespace FastbootEnhance
     {
         /// <summary>Where unexpected errors are written, so a crash leaves something to report.</summary>
         public static readonly string CrashLogPath =
-            Path.Combine(Path.GetTempPath(), "FastbootEnhance", "crash.log");
+            Path.Combine(Path.GetTempPath(), "FastbootStudio", "crash.log");
 
         static Mutex singleInstance;
 
@@ -23,7 +23,7 @@ namespace FastbootEnhance
             // Checked before any window exists. Doing it in the window's constructor, as before,
             // left WPF showing a window that had already been told to shut down.
             bool createdNew;
-            singleInstance = new Mutex(false, "FastbootEnhance", out createdNew);
+            singleInstance = new Mutex(false, "FastbootStudio", out createdNew);
             if (!createdNew)
             {
                 ThemedDialog.Show(global::FastbootEnhance.Properties.Resources.program_already_running,
