@@ -29,6 +29,9 @@ namespace FastbootEnhance
         static string importedFrom;
         static string importedFolder;
 
+        /// <summary>What the import found, shown under the layout choice while it is in use.</summary>
+        static string importedSource;
+
         static readonly ObservableCollection<SuperBuildRow> rows = new ObservableCollection<SuperBuildRow>();
 
         public static volatile bool busy;
@@ -262,11 +265,9 @@ namespace FastbootEnhance
                 W.super_mode_note.Text = plan.Mode == SuperSlotMode.VirtualAB ? Properties.Resources.super_mode_note_vab
                     : plan.Mode == SuperSlotMode.AB ? Properties.Resources.super_mode_note_ab
                     : plan.Mode == SuperSlotMode.Single ? Properties.Resources.super_mode_note_single
-                    : string.Format(Properties.Resources.super_mode_note_imported, Helper.ltr(Path.GetFileName(importedFrom ?? "")));
+                    : importedSource ?? string.Format(Properties.Resources.super_mode_note_imported, Helper.ltr(Path.GetFileName(importedFrom ?? "")));
 
                 W.super_group.IsEnabled = plan.Mode != SuperSlotMode.Imported;
-                W.super_source.Visibility = plan.Mode == SuperSlotMode.Imported && W.super_source.Text.Length > 0
-                    ? Visibility.Visible : Visibility.Collapsed;
                 if (fields)
                 {
                     W.super_size.Text = plan.DeviceSize > 0 ? plan.DeviceSize.ToString() : "";
@@ -406,8 +407,7 @@ namespace FastbootEnhance
                     modeLabel(fresh), fresh.MetadataSlots, Helper.ltr(groups));
                 if (found > 0)
                     source += "\n" + string.Format(Properties.Resources.super_found_images, found, Helper.ltr(folder));
-                W.super_source.Text = source;
-                W.super_source.Visibility = Visibility.Visible;
+                importedSource = source;
                 log("build super: imported the layout of " + parts[0] + " (" + fresh.Partitions.Count + " partitions, "
                     + fresh.DeviceSize + " bytes" + (found > 0 ? ", " + found + " images from " + folder : "") + ")");
 

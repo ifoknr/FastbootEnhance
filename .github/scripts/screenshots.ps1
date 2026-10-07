@@ -476,7 +476,16 @@ if (Test-Path $superPart) {
 
     Press 'super_import'
     Choose-File $superPart "the super import dialog"
+    Start-Sleep -Seconds 2
+    $unexpected = Find-Dialog
+    if ($null -ne $unexpected) {
+        $text = ($unexpected.FindAll($Scope::Descendants, [System.Windows.Automation.Condition]::TrueCondition) |
+            ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | '
+        Save-Window ('{0:D2}-super-import-dialog' -f $i); $i++
+        Fail "importing the sample super showed a dialog: $text"
+    }
     $superRows = Wait-For { By-Id $root 'super_partitions' } 10 "the super partition list"
+    Write-Host "super rows on screen after import: $((Rows $superRows).Count)"
     Wait-For { (Rows $superRows).Count -ge 3 } 20 "the imported partitions" | Out-Null
     $size = (By-Id $root 'super_size').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
     if ($size -ne '268435456') { Fail "importing the sample super set the size to '$size'" }

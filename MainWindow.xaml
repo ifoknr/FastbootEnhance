@@ -658,39 +658,37 @@
                                     <RadioButton x:Name="super_mode_imported" Style="{StaticResource Segment}" GroupName="super_mode" Visibility="Collapsed"
                                                  Content="{x:Static props:Resources.super_mode_imported}"/>
                                 </WrapPanel>
-                                <TextBlock x:Name="super_mode_note" Style="{StaticResource Note}" Margin="0,2,0,14"/>
+                                <TextBlock x:Name="super_mode_note" Style="{StaticResource Note}" Margin="0,0,0,12"/>
 
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="16"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <StackPanel Margin="0,0,0,12">
+                                    <StackPanel>
                                         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_size}"/>
                                         <TextBox x:Name="super_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
                                                  Tag="{x:Static props:Resources.super_size_hint}"/>
-                                        <TextBlock x:Name="super_size_human" Style="{StaticResource Note}" Margin="2,4,0,0"/>
+                                        <TextBlock x:Name="super_size_human" Style="{StaticResource Note}" Margin="2,3,0,0"/>
                                     </StackPanel>
-                                    <StackPanel Grid.Column="2" Margin="0,0,0,12">
-                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_size}"/>
-                                        <TextBox x:Name="super_group_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
-                                                 Tag="{x:Static props:Resources.super_auto}"/>
-                                        <TextBlock x:Name="super_group_size_human" Style="{StaticResource Note}" Margin="2,4,0,0"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Row="1">
+                                    <StackPanel Grid.Column="2">
                                         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_name}"/>
                                         <TextBox x:Name="super_group" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="main"/>
                                     </StackPanel>
-                                    <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom">
-                                        <TextBlock x:Name="super_usage_text" Style="{StaticResource Note}" Margin="0,0,0,6"/>
-                                        <ProgressBar x:Name="super_usage" Height="8" Margin="0,0,0,8"/>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_size}"/>
+                                        <TextBox x:Name="super_group_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
+                                                 Tag="{x:Static props:Resources.super_auto}"/>
+                                        <TextBlock x:Name="super_group_size_human" Style="{StaticResource Note}" Margin="2,3,0,0"/>
                                     </StackPanel>
                                 </Grid>
+                                <DockPanel Margin="0,8,0,0">
+                                    <TextBlock x:Name="super_usage_text" DockPanel.Dock="Top" Style="{StaticResource Note}" Margin="0,0,0,6"/>
+                                    <ProgressBar x:Name="super_usage" Height="8"/>
+                                </DockPanel>
                             </StackPanel>
                         </Border>
 
@@ -703,7 +701,6 @@
                                     <Button x:Name="super_remove" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_remove}"/>
                                     <Button x:Name="super_clear" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_clear}"/>
                                 </WrapPanel>
-                                <TextBlock x:Name="super_source" DockPanel.Dock="Top" Style="{StaticResource Note}" Margin="0,0,0,8" Visibility="Collapsed"/>
                                 <Grid>
                                     <ListView x:Name="super_partitions" SelectionMode="Extended" AllowDrop="True"
                                               local:ColumnFill.Column="3" local:ColumnFill.MinWidth="120">
