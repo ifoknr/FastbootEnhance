@@ -215,14 +215,13 @@ if ($ExpectedFlashes -gt 0) {
     # The file dialog takes a moment to go away; it must not be mistaken for the result.
     Wait-For { $null -eq (Find-Dialog) } 20 "the file dialog to close" | Out-Null
 
-    # The app shows "operation completed" (or an error) when it is done: a box with a message.
-    $textCond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Text)
-    $done = Wait-For {
-        $d = Find-Dialog
-        if ($null -ne $d -and @($d.FindAll($Scope::Descendants, $textCond) | Where-Object { $_.Current.Name }).Count -gt 0) { $d }
-    } 240 "flashing to finish"
+    # The app shows "operation completed" (or an error) when it is done. With the file dialog
+    # gone, the next window to appear is that box. A message box does not expose its text to
+    # UI Automation, so the fastboot log below is what proves the flash.
+    $done = Wait-For { Find-Dialog } 240 "flashing to finish"
     Start-Sleep -Milliseconds 800
-    $message = ($done.FindAll($Scope::Descendants, $textCond) | ForEach-Object { $_.Current.Name }) -join ' | '
+    $message = ($done.FindAll($Scope::Descendants, [System.Windows.Automation.Condition]::TrueCondition) |
+        ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | '
     Write-Host "dialog after flashing: $message"
     Save-Window ('{0:D2}-flash' -f $i); $i++
     Close-Dialog $done
