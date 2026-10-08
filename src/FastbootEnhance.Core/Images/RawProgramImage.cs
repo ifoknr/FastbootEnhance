@@ -68,7 +68,7 @@ namespace FastbootEnhance.Core.Images
 
         public long DataBytes => Pieces.Sum(p => p.Length);
 
-        public IReadOnlyList<string> Files => Pieces.Select(p => p.Path).ToList();
+        public IList<string> Files => Pieces.Select(p => p.Path).ToList();
 
         sealed class Entry
         {
