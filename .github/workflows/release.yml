@@ -27,8 +27,22 @@ env:
   VERSION: ${{ inputs.version }}
 
 jobs:
+  test:
+    name: core tests (linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test the core library
+        run: dotnet test tests/FastbootEnhance.Core.Tests/FastbootEnhance.Core.Tests.csproj -c Release
+
   build:
     name: build (windows)
+    needs: test
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,9 +66,6 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-
-      - name: Test the core library
-        run: dotnet test tests/FastbootEnhance.Core.Tests/FastbootEnhance.Core.Tests.csproj -c Release
 
       - name: Publish single file
         run: >
