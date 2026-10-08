@@ -1,0 +1,131 @@
+name: Release
+
+# Builds Fastboot Studio on Windows, publishes a GitHub release with the zip and the
+# CHANGELOG section of that version, then posts it to Telegram.
+#
+# Run it from the Actions tab: Release -> Run workflow -> version (e.g. v2.0.0).
+# CHANGELOG.md needs a "## <version>" section first; it becomes the release notes and
+# the Telegram caption. A release made here uses GITHUB_TOKEN, which does not start
+# other workflows, so the Telegram post is sent from this workflow, not telegram.yml.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag, e.g. v2.0.0"
+        required: true
+      prerelease:
+        description: "Test build (pre-release, silent Telegram post)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  VERSION: ${{ inputs.version }}
+
+jobs:
+  build:
+    name: build (windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the version
+        shell: bash
+        run: |
+          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::The version must look like v2.0.0, got '$VERSION'."
+            exit 1
+          fi
+          if ! grep -qx "## $VERSION" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## $VERSION' section; add one first."
+            exit 1
+          fi
+          project=$(grep -o '<Version>[^<]*' FastbootEnhance.csproj | head -1 | cut -d'>' -f2)
+          if [ "v$project" != "$VERSION" ]; then
+            echo "::warning::FastbootEnhance.csproj says version $project, the release is $VERSION."
+          fi
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test the core library
+        run: dotnet test tests/FastbootEnhance.Core.Tests/FastbootEnhance.Core.Tests.csproj -c Release
+
+      - name: Publish single file
+        run: >
+          dotnet publish FastbootEnhance.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -o publish
+
+      - name: Package
+        shell: pwsh
+        run: |
+          foreach ($f in 'FastbootStudio.exe', 'fastboot.exe', 'adb.exe', 'AdbWinApi.dll', 'AdbWinUsbApi.dll', 'platform-tools-NOTICE.txt') {
+            if (-not (Test-Path (Join-Path publish $f))) { throw "$f missing from publish output" }
+          }
+          Get-ChildItem publish -Filter *.pdb | Remove-Item
+          Copy-Item LICENSE publish/LICENSE.txt
+          $zip = "FastbootStudio-$env:VERSION-win-x64.zip"
+          Compress-Archive -Path publish/* -DestinationPath $zip
+          Get-Item $zip | Select-Object Name, Length
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-zip
+          path: FastbootStudio-*-win-x64.zip
+          if-no-files-found: error
+
+  release:
+    name: publish and announce
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-zip
+          path: out
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRE: ${{ inputs.prerelease }}
+        run: |
+          if gh release view "$VERSION" -R "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "::error::Release $VERSION already exists."
+            exit 1
+          fi
+          zip=$(ls out/FastbootStudio-*-win-x64.zip)
+          {
+            awk -v v="## $VERSION" '$0 == v { f = 1; next } /^## / { f = 0 } f' CHANGELOG.md
+            echo
+            echo "---"
+            echo "**Download** \`$(basename "$zip")\`, unzip it anywhere and run \`FastbootStudio.exe\`. Nothing to install: .NET, adb and fastboot are included."
+            echo
+            echo "Full changelog: [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/CHANGELOG.md) · [README](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/README.md) · [العربية](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/README.ar.md)"
+          } > notes.md
+          cat notes.md
+          flags=()
+          [ "$PRE" = true ] && flags+=(--prerelease)
+          gh release create "$VERSION" "$zip" -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Fastboot Studio $VERSION" --notes-file notes.md "${flags[@]}"
+          echo "FILE=$zip" >> "$GITHUB_ENV"
+          echo "TAG=$VERSION" >> "$GITHUB_ENV"
+          echo "PRE=$PRE" >> "$GITHUB_ENV"
+
+      - name: Notify Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+          TELEGRAM_TOPIC: ${{ secrets.TELEGRAM_TOPIC }}
+          TOOL: FastbootStudio
+          ICON: "🧰"
+          LAYER: "أداة ويندوز للفاستبوت والتفليش وصور super والنسخ الاحتياطي"
+          REQUIRES: "Windows 10/11 64-bit (بدون تثبيت)"
+          AUTO_UPDATE: "false"
+        run: bash .github/scripts/telegram-release.sh
