@@ -24,7 +24,9 @@ permissions:
 env:
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  VERSION: ${{ inputs.version }}
+  # Not VERSION: MSBuild reads environment variables as properties, and a $(Version)
+  # of "v2.0.0" breaks NuGet restore and the assembly version.
+  RELEASE_VERSION: ${{ inputs.version }}
 
 jobs:
   test:
@@ -50,17 +52,17 @@ jobs:
       - name: Check the version
         shell: bash
         run: |
-          if ! [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::The version must look like v2.0.0, got '$VERSION'."
+          if ! [[ "$RELEASE_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::The version must look like v2.0.0, got '$RELEASE_VERSION'."
             exit 1
           fi
-          if ! grep -qx "## $VERSION" CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no '## $VERSION' section; add one first."
+          if ! grep -qx "## $RELEASE_VERSION" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## $RELEASE_VERSION' section; add one first."
             exit 1
           fi
           project=$(grep -o '<Version>[^<]*' FastbootEnhance.csproj | head -1 | cut -d'>' -f2)
-          if [ "v$project" != "$VERSION" ]; then
-            echo "::warning::FastbootEnhance.csproj says version $project, the release is $VERSION."
+          if [ "v$project" != "$RELEASE_VERSION" ]; then
+            echo "::warning::FastbootEnhance.csproj says version $project, the release is $RELEASE_VERSION."
           fi
 
       - uses: actions/setup-dotnet@v4
@@ -80,7 +82,7 @@ jobs:
           }
           Get-ChildItem publish -Filter *.pdb | Remove-Item
           Copy-Item LICENSE publish/LICENSE.txt
-          $zip = "FastbootStudio-$env:VERSION-win-x64.zip"
+          $zip = "FastbootStudio-$env:RELEASE_VERSION-win-x64.zip"
           Compress-Archive -Path publish/* -DestinationPath $zip
           Get-Item $zip | Select-Object Name, Length
 
@@ -107,26 +109,26 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PRE: ${{ inputs.prerelease }}
         run: |
-          if gh release view "$VERSION" -R "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-            echo "::error::Release $VERSION already exists."
+          if gh release view "$RELEASE_VERSION" -R "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "::error::Release $RELEASE_VERSION already exists."
             exit 1
           fi
           zip=$(ls out/FastbootStudio-*-win-x64.zip)
           {
-            awk -v v="## $VERSION" '$0 == v { f = 1; next } /^## / { f = 0 } f' CHANGELOG.md
+            awk -v v="## $RELEASE_VERSION" '$0 == v { f = 1; next } /^## / { f = 0 } f' CHANGELOG.md
             echo
             echo "---"
             echo "**Download** \`$(basename "$zip")\`, unzip it anywhere and run \`FastbootStudio.exe\`. Nothing to install: .NET, adb and fastboot are included."
             echo
-            echo "Full changelog: [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/CHANGELOG.md) · [README](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/README.md) · [العربية](https://github.com/$GITHUB_REPOSITORY/blob/$VERSION/README.ar.md)"
+            echo "Full changelog: [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/blob/$RELEASE_VERSION/CHANGELOG.md) · [README](https://github.com/$GITHUB_REPOSITORY/blob/$RELEASE_VERSION/README.md) · [العربية](https://github.com/$GITHUB_REPOSITORY/blob/$RELEASE_VERSION/README.ar.md)"
           } > notes.md
           cat notes.md
           flags=()
           [ "$PRE" = true ] && flags+=(--prerelease)
-          gh release create "$VERSION" "$zip" -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --title "Fastboot Studio $VERSION" --notes-file notes.md "${flags[@]}"
+          gh release create "$RELEASE_VERSION" "$zip" -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Fastboot Studio $RELEASE_VERSION" --notes-file notes.md "${flags[@]}"
           echo "FILE=$zip" >> "$GITHUB_ENV"
-          echo "TAG=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=$RELEASE_VERSION" >> "$GITHUB_ENV"
           echo "PRE=$PRE" >> "$GITHUB_ENV"
 
       - name: Notify Telegram
@@ -139,4 +141,5 @@ jobs:
           LAYER: "أداة ويندوز للفاستبوت والتفليش وصور super والنسخ الاحتياطي"
           REQUIRES: "Windows 10/11 64-bit (بدون تثبيت)"
           AUTO_UPDATE: "false"
+          VERSION: ${{ inputs.version }}
         run: bash .github/scripts/telegram-release.sh
