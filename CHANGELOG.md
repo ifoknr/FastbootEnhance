@@ -2,10 +2,19 @@
 
 [العربية](#عربي) · [English](#english)
 
+<!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
+
+## v2.0.0
+- واجهة داكنة جديدة باللغة العربية وأيقونة جديدة
+- تفليش التحديثات مع التحقق من كل صورة قبل الكتابة
+- أدوات الصور: simg2img و lpunpack وجمع أجزاء كوالكوم
+- بناء Super مطابق لأداة أندرويد الرسمية
+- نسخ احتياطي للأقسام والملفات
+- لا يحتاج تثبيت: adb و fastboot مدمجة
+
+## تفاصيل الإصدار 2.0
 <a id="عربي"></a>
 <div dir="rtl">
-
-## الإصدار 2.0 — Fastboot Studio
 
 كل ما تغيّر مقارنة ببرنامج Fastboot Enhance الأصلي (1.x) للمطوّر LibXZR.
 
@@ -93,7 +102,7 @@
 ---
 
 <a id="english"></a>
-## Version 2.0 — Fastboot Studio
+## Version 2.0 in detail
 
 Everything that changed compared with the original Fastboot Enhance 1.x by LibXZR.
 
@@ -163,3 +172,11 @@ Everything that changed compared with the original Fastboot Enhance 1.x by LibXZ
 - 137 automated tests, including byte-for-byte comparisons with AOSP's own tools.
 - A Windows CI run drives the real app against fake devices through every page, in English and
   Arabic, checks each result by hash and saves the screenshots.
+
+## v1.4.0
+- First FastbootStudio release, based on FastbootEnhance by xzr467706992.
+- Fastboot toolbox and Payload.bin dumper for Windows: fastboot vars, reboot to
+  fastbootd, bootloader, recovery or system, switch A/B slots, flash and erase
+  partitions, manage logical partitions, flash Payload.bin in fastbootd and extract
+  single images from it.
+- English, Chinese, Japanese and Korean.

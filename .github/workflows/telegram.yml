@@ -1,0 +1,50 @@
+name: Telegram
+
+# INFO: When a release is published on GitHub, posts it to the Telegram topic
+#         in TELEGRAM_TOPIC with its first .zip (or .exe) attached.
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to post again"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          pre=$(gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json isPrerelease --jq .isPrerelease)
+          asset=$(gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json assets \
+            --jq '[.assets[].name | select(test("\\.(zip|exe)$"))][0] // empty')
+          if [ -n "$asset" ]; then
+            gh release download "$TAG" -R "$GITHUB_REPOSITORY" -p "$asset" -D out
+            echo "FILE=out/$asset" >> "$GITHUB_ENV"
+          fi
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "VERSION=$TAG" >> "$GITHUB_ENV"
+          echo "PRE=$pre" >> "$GITHUB_ENV"
+
+      - name: Notify Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
+          TELEGRAM_TOPIC: ${{ secrets.TELEGRAM_TOPIC }}
+          TOOL: FastbootStudio
+          ICON: "🧰"
+          LAYER: "أداة ويندوز للفاستبوت والتفليش وصور super والنسخ الاحتياطي"
+          REQUIRES: "Windows 10/11 64-bit (بدون تثبيت)"
+          AUTO_UPDATE: "false"
+        run: bash .github/scripts/telegram-release.sh
