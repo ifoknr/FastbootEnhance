@@ -1403,4 +1403,30 @@
   <data name="super_output_is_input" xml:space="preserve">
     <value>ملف الإخراج هو إحدى الصور الداخلة في super. اختر اسماً آخر.</value>
   </data>
+  <data name="images_format_pieces" xml:space="preserve">
+    <value>أجزاء من حزمة تفليش كوالكوم ({0})</value>
+  </data>
+  <data name="images_note_pieces" xml:space="preserve">
+    <value>هذه الملفات ({0}) أجزاء من صورة {1} واحدة، ومواضعها محددة في {2}. اجمعها في صورة واحدة، أو استخرج الأقسام منها مباشرة.</value>
+  </data>
+  <data name="images_combine_sparse" xml:space="preserve">
+    <value>جمعها في صورة واحدة (sparse)</value>
+  </data>
+  <data name="images_combine_raw" xml:space="preserve">
+    <value>جمعها في صورة واحدة (raw)</value>
+  </data>
+  <data name="images_combine_done" xml:space="preserve">
+    <value>تم جمع {0} أجزاء في صورة واحدة:
+
+{1}
+{2}
+
+{3}</value>
+  </data>
+  <data name="images_combine_sparse_note" xml:space="preserve">
+    <value>للتفليش: fastboot flash super super.img</value>
+  </data>
+  <data name="images_combine_raw_note" xml:space="preserve">
+    <value>صورة raw بحجم القسم الكامل؛ للتفليش بالفاست بوت صورة sparse أصغر.</value>
+  </data>
 </root>

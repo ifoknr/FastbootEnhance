@@ -1403,4 +1403,30 @@ Add them anyway?</value>
   <data name="super_output_is_input" xml:space="preserve">
     <value>The output file is one of the images going into super. Choose another name.</value>
   </data>
+  <data name="images_format_pieces" xml:space="preserve">
+    <value>Pieces of a Qualcomm flash package ({0})</value>
+  </data>
+  <data name="images_note_pieces" xml:space="preserve">
+    <value>These {0} files are pieces of one {1} image, placed by {2}. Combine them into one image, or extract the partitions straight from the pieces.</value>
+  </data>
+  <data name="images_combine_sparse" xml:space="preserve">
+    <value>Combine into one image (sparse)</value>
+  </data>
+  <data name="images_combine_raw" xml:space="preserve">
+    <value>Combine into one image (raw)</value>
+  </data>
+  <data name="images_combine_done" xml:space="preserve">
+    <value>{0} pieces combined into one image:
+
+{1}
+{2}
+
+{3}</value>
+  </data>
+  <data name="images_combine_sparse_note" xml:space="preserve">
+    <value>Flash it with: fastboot flash super super.img</value>
+  </data>
+  <data name="images_combine_raw_note" xml:space="preserve">
+    <value>The raw image has the full size of the partition; for fastboot the sparse one is smaller.</value>
+  </data>
 </root>

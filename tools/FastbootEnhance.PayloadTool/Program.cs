@@ -44,6 +44,8 @@ namespace FastbootEnhance.PayloadTool
                         return ImageCommands.Img2Simg(rest);
                     case "lpunpack":
                         return ImageCommands.LpUnpack(rest);
+                    case "combine":
+                        return ImageCommands.Combine(rest);
                     case "mksuper":
                         return ImageCommands.MkSuper(rest);
                     case "-h":

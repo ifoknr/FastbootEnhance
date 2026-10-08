@@ -455,6 +455,30 @@ if (Test-Path $superPart) {
     $rawHash = (Get-FileHash (Join-Path $sampleDir 'super.raw.img') -Algorithm SHA256).Hash.ToLower()
     if ($rawHash -ne $expected['super.raw.img']) { Fail "super.raw.img does not match the image SampleGen built" }
     Write-Host "super: 3 sparse parts expanded to raw, SHA-256 matches"
+
+    # The same super cut into pieces the way a Qualcomm flash package ships it
+    # (super_1.img ... with their sectors in rawprogram_unsparse0.xml): opening one piece
+    # finds the others, and combining them gives the original image byte for byte.
+    $qcPart = Join-Path $sampleDir 'qualcomm\super_1.img'
+    if (Test-Path $qcPart) {
+        Press 'images_close'
+        Open-Image $qcPart
+        $superList = Wait-For { By-Id $root 'images_partitions' } 30 "the super partition list (pieces)"
+        Wait-For { (Rows $superList).Count -ge 3 } 60 "the super partitions (pieces)" | Out-Null
+        Select-Item (Wait-For { By-Id $root 'images_details_tab' } 10 "the Details tab (pieces)")
+        Start-Sleep -Milliseconds 500
+        Save-Window ('{0:D2}-images-qualcomm-pieces' -f $i); $i++
+
+        Press 'images_to_raw'
+        $done = Wait-For { Find-Dialog } 120 "the pieces to be combined"
+        Start-Sleep -Milliseconds 600
+        Close-Dialog $done
+        $combined = Join-Path (Split-Path $qcPart) 'super.raw.img'
+        if (-not (Test-Path $combined)) { Fail "the combined super.raw.img was not written" }
+        $combinedHash = (Get-FileHash $combined -Algorithm SHA256).Hash.ToLower()
+        if ($combinedHash -ne $expected['super.raw.img']) { Fail "the combined pieces are not the original super" }
+        Write-Host "super: Qualcomm pieces combined into the original image byte for byte"
+    }
 }
 
 # ---------------------------------------------------------------- build super

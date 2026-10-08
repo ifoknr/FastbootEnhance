@@ -55,6 +55,12 @@ namespace FastbootEnhance.Core.Images
             return info;
         }
 
+        /// <summary>Describes an image already open as a stream (expanded, so never sparse).</summary>
+        public static ImageInfo Identify(Stream stream)
+        {
+            return new ImageInfo { IsSparse = false, ImageLength = stream.Length, Kind = Kind(stream) };
+        }
+
         /// <summary>Identifies the content of an (expanded) image stream.</summary>
         public static ImageKind Kind(Stream stream)
         {

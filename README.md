@@ -28,6 +28,7 @@ Based on [Fastboot Enhance](https://github.com/libxzr/FastbootEnhance) by LibXZR
   - sparse to raw (`simg2img`), including images split into `*_sparsechunk.N` parts, with CRC-32 checks
   - raw to sparse (`img2simg`) and splitting into parts (`simg2simg`), byte-identical to the AOSP tools
   - unpack `super.img` (`lpunpack`) straight from a sparse or split image, every metadata checksum verified
+  - open a partition shipped in pieces by a Qualcomm flash package (`super_1.img`, `super_2.img` … placed by `rawprogram*.xml`): unpack it straight away, or combine the pieces into one raw or sparse image
 - **Build Super** (`lpmake`): put partition images back together into a `super.img`, raw or sparse
   - Virtual A/B, A/B or single-slot layouts, or the exact layout of an existing `super.img`; the size can be read from the phone in fastboot
   - images unpacked by Image Tools are found by themselves, so unpack, modify and rebuild is a few clicks

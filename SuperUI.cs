@@ -380,9 +380,11 @@ namespace FastbootEnhance
 
             try
             {
-                IList<string> parts = SparseConverter.FindParts(dialog.FileName);
+                // A super cut into pieces by a Qualcomm package (super_1.img ...) is read as one.
+                RawProgramImage pieced = RawProgramImage.TryFind(dialog.FileName);
+                IList<string> parts = pieced != null ? pieced.Files : SparseConverter.FindParts(dialog.FileName);
                 SuperImage read;
-                using (Stream stream = openImage(parts))
+                using (Stream stream = pieced != null ? pieced.Open() : openImage(parts))
                 {
                     if (!SuperImage.IsSuper(stream))
                     {
@@ -394,7 +396,8 @@ namespace FastbootEnhance
                 }
 
                 SuperPlan fresh = SuperPlan.FromImage(read);
-                string folder = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(parts[0])), stem(parts[0]) + "_unpacked");
+                string folder = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(parts[0])),
+                    (pieced != null ? pieced.Label : stem(parts[0])) + "_unpacked");
                 importedFolder = Directory.Exists(folder) ? folder : null;
                 int found = importedFolder != null ? fresh.AttachFolder(importedFolder) : 0;
 

@@ -18,6 +18,7 @@ namespace FastbootEnhance.PayloadTool
             Console.WriteLine("  simg2img <output.img> <sparse.img> [more parts...]");
             Console.WriteLine("  img2simg <input.img> <output.img> [--block N] [--split BYTES]");
             Console.WriteLine("  lpunpack <super.img> <dir> [-p name ...] [--slot N]");
+            Console.WriteLine("  combine  <super_1.img> <output.img> [--sparse]   (pieces of a Qualcomm package)");
             Console.WriteLine("  mksuper  <output.img> --size N [--mode vab|ab|single] [--group main] [--sparse]");
             Console.WriteLine("           [--from super.img] [--folder dir] [image | name=image ...]");
         }
@@ -140,6 +141,24 @@ namespace FastbootEnhance.PayloadTool
                     }
                 }
             }
+            return 0;
+        }
+
+        /// <summary>Puts the pieces of a Qualcomm package (super_1.img ... + rawprogram XML) together.</summary>
+        public static int Combine(string[] args)
+        {
+            if (args.Length < 2)
+                return Fail("combine needs one of the pieces and an output");
+            RawProgramImage pieces = RawProgramImage.TryFind(args[0]);
+            if (pieces == null)
+                return Fail(args[0] + " is not listed as a piece in a rawprogram XML next to it");
+            bool sparse = args.Skip(2).Contains("--sparse");
+            Console.WriteLine(pieces.Label + ": " + pieces.Pieces.Count + " pieces from " + Path.GetFileName(pieces.Xml)
+                              + ", image " + pieces.Length + " bytes");
+            foreach (RawProgramPiece piece in pieces.Pieces)
+                Console.WriteLine("  " + Path.GetFileName(piece.Path).PadRight(20) + " at " + piece.Offset + ", " + piece.Length + " bytes");
+            long bytes = sparse ? pieces.WriteSparse(args[1], null, CancellationToken.None) : pieces.WriteRaw(args[1], null, CancellationToken.None);
+            Console.WriteLine("wrote " + args[1] + " (" + bytes + " bytes" + (sparse ? ", sparse" : "") + ")");
             return 0;
         }
 

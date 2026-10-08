@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -22,6 +22,9 @@ namespace FastbootEnhance
         static MainWindow W => MainWindow.THIS;
 
         static IList<string> parts;
+
+        /// <summary>Set when the open image is pieces of a Qualcomm flash package (super_1.img ...).</summary>
+        static RawProgramImage pieces;
         static ImageInfo info;
         static SuperImage super;
         static string outputFolder;
@@ -137,8 +140,6 @@ namespace FastbootEnhance
                 open(dialog.FileNames);
         }
 
-        static readonly Regex NumberedPart = new Regex(@"\.(\d+)$");
-
         /// <summary>Opens an image passed on the command line or dropped on the program.</summary>
         public static void openFromPath(string path)
         {
@@ -157,27 +158,43 @@ namespace FastbootEnhance
                 ImageInfo opened = null;
                 SuperImage table = null;
                 List<SparseImage> sparse = new List<SparseImage>();
+                RawProgramImage pieced = null;
                 Exception failure = null;
                 try
                 {
-                    // Several files are parts of one image, in the order of their numbers.
-                    chosen = files.Length == 1
-                        ? SparseConverter.FindParts(files[0])
-                        : files.OrderBy(f => { Match m = NumberedPart.Match(f); return m.Success ? long.Parse(m.Groups[1].Value) : 0; })
-                               .ThenBy(f => f, StringComparer.OrdinalIgnoreCase).ToList();
-
-                    opened = ImageProbe.Identify(chosen[0]);
-                    if (opened.IsSparse)
-                        sparse.AddRange(chosen.Select(SparseImage.Open));
-                    else if (chosen.Count > 1)
-                        throw new InvalidDataException(Properties.Resources.images_parts_not_sparse);
-
-                    if (opened.Kind == ImageKind.Super)
+                    // Pieces of a Qualcomm flash package, placed by its rawprogram XML.
+                    pieced = RawProgramImage.TryFind(files[0]);
+                    if (pieced != null)
                     {
-                        using (Stream stream = openImage(chosen))
-                            table = SuperImage.Read(stream);
+                        chosen = pieced.Files;
+                        using (Stream stream = pieced.Open())
+                        {
+                            opened = ImageProbe.Identify(stream);
+                            if (opened.Kind == ImageKind.Super)
+                                table = SuperImage.Read(stream);
+                        }
+                    }
+                    else
+                    {
+                        // Several files are parts of one image, in the order of their numbers.
+                        chosen = files.Length == 1
+                            ? SparseConverter.FindParts(files[0])
+                            : ImageNaming.OrderParts(files);
+
+                        opened = ImageProbe.Identify(chosen[0]);
+                        if (opened.IsSparse)
+                            sparse.AddRange(chosen.Select(SparseImage.Open));
+                        else if (chosen.Count > 1)
+                            throw new InvalidDataException(Properties.Resources.images_parts_not_sparse);
+
+                        if (opened.Kind == ImageKind.Super)
+                        {
+                            using (Stream stream = openImage(chosen, null))
+                                table = SuperImage.Read(stream);
+                        }
                     }
                     parts = chosen;
+                    pieces = pieced;
                 }
                 catch (Exception e)
                 {
@@ -200,8 +217,10 @@ namespace FastbootEnhance
             }, delegate { });
         }
 
-        static Stream openImage(IList<string> files)
+        static Stream openImage(IList<string> files, RawProgramImage pieced)
         {
+            if (pieced != null)
+                return pieced.Open();
             if (SparseImage.IsSparse(files[0]))
                 return SparseStream.Open(files);
             return new FileStream(files[0], FileMode.Open, FileAccess.Read, FileShare.Read, 1 << 20, FileOptions.RandomAccess);
@@ -241,7 +260,9 @@ namespace FastbootEnhance
             {
                 new InfoRow(Properties.Resources.images_row_file, Path.GetFileName(chosen[0])
                     + (chosen.Count > 1 ? "  (" + string.Format(Properties.Resources.images_parts, chosen.Count) + ")" : "")),
-                new InfoRow(Properties.Resources.images_row_format, opened.IsSparse
+                new InfoRow(Properties.Resources.images_row_format, pieces != null
+                    ? string.Format(Properties.Resources.images_format_pieces, Helper.ltr(Path.GetFileName(pieces.Xml)))
+                    : opened.IsSparse
                     ? "Android sparse " + sparse[0].MajorVersion + "." + sparse[0].MinorVersion
                     : Properties.Resources.images_format_raw),
                 new InfoRow(Properties.Resources.images_row_content, kindName(opened.Kind)),
@@ -309,14 +330,21 @@ namespace FastbootEnhance
 
             // Actions that make sense for this image
             W.images_extract.Visibility = table != null ? Visibility.Visible : Visibility.Collapsed;
-            W.images_to_raw.Visibility = opened.IsSparse ? Visibility.Visible : Visibility.Collapsed;
+            W.images_to_raw.Visibility = opened.IsSparse || pieces != null ? Visibility.Visible : Visibility.Collapsed;
+            W.images_to_raw.Content = pieces != null ? Properties.Resources.images_combine_raw : Properties.Resources.images_to_raw;
+            W.images_to_raw.Style = (Style)W.FindResource(pieces != null ? typeof(System.Windows.Controls.Button) : (object)"AccentButton");
             W.images_to_sparse.Visibility = Visibility.Visible;
-            W.images_to_sparse.Content = opened.IsSparse ? Properties.Resources.images_resplit : Properties.Resources.images_to_sparse;
-            W.images_to_sparse.Style = (Style)W.FindResource(opened.IsSparse || table != null ? typeof(System.Windows.Controls.Button) : (object)"AccentButton");
+            W.images_to_sparse.Content = pieces != null ? Properties.Resources.images_combine_sparse
+                : opened.IsSparse ? Properties.Resources.images_resplit : Properties.Resources.images_to_sparse;
+            W.images_to_sparse.Style = (Style)W.FindResource(pieces != null || !(opened.IsSparse || table != null)
+                ? (object)"AccentButton" : typeof(System.Windows.Controls.Button));
             // Re-splitting a sparse image always needs a size; for raw input splitting is optional.
-            W.images_split.Visibility = opened.IsSparse ? Visibility.Collapsed : Visibility.Visible;
+            // Combined pieces are written as one file.
+            W.images_split.Visibility = opened.IsSparse || pieces != null ? Visibility.Collapsed : Visibility.Visible;
             W.images_split_mb.IsEnabled = opened.IsSparse || W.images_split.IsChecked == true;
-            W.images_note.Text = table != null ? Properties.Resources.images_note_super
+            W.images_note.Text = pieces != null
+                ? string.Format(Properties.Resources.images_note_pieces, pieces.Pieces.Count, Helper.ltr(pieces.Label), Helper.ltr(Path.GetFileName(pieces.Xml)))
+                : table != null ? Properties.Resources.images_note_super
                 : opened.IsSparse ? Properties.Resources.images_note_sparse
                 : Properties.Resources.images_note_raw;
 
@@ -329,6 +357,7 @@ namespace FastbootEnhance
         static void close()
         {
             parts = null;
+            pieces = null;
             info = null;
             super = null;
             superRows.Clear();
@@ -376,6 +405,8 @@ namespace FastbootEnhance
         /// <summary>The image's name without extensions or part numbers: "super" for super.img_sparsechunk.3.</summary>
         static string stem()
         {
+            if (pieces != null)
+                return pieces.Label;
             string name = Path.GetFileName(parts[0]);
             name = Regex.Replace(name, @"([._]sparsechunk)?\.\d+$", "", RegexOptions.IgnoreCase);
             name = Regex.Replace(name, @"(\.(img|simg|raw|bin))+$", "", RegexOptions.IgnoreCase);
@@ -478,6 +509,11 @@ namespace FastbootEnhance
 
         static void toRaw()
         {
+            if (pieces != null)
+            {
+                combinePieces(false);
+                return;
+            }
             IList<string> inputs = parts;
             long total = info.ImageLength;
             string output = Path.Combine(outputFolder, stem() + ".raw.img");
@@ -491,6 +527,43 @@ namespace FastbootEnhance
                 return string.Format(Properties.Resources.images_raw_done, output, Helper.byte2AUnit(result.Bytes))
                     + "\n" + string.Format(Properties.Resources.images_crc_line, result.Crc32.ToString("x8"))
                     + (result.ChecksumsChecked > 0 ? "  ✓ " + string.Format(Properties.Resources.images_crc_checked, result.ChecksumsChecked) : "");
+            }, new[] { output });
+        }
+
+        /// <summary>
+        /// Puts the pieces of a Qualcomm package together: raw at its full size, or sparse with
+        /// the gaps left out, which is what fastboot flashes.
+        /// </summary>
+        static void combinePieces(bool sparse)
+        {
+            RawProgramImage source = pieces;
+            string output = Path.Combine(outputFolder, stem() + (sparse ? ".img" : ".raw.img"));
+            if (source.Files.Any(f => string.Equals(Path.GetFullPath(f), Path.GetFullPath(output), StringComparison.OrdinalIgnoreCase)))
+                output = Path.Combine(outputFolder, stem() + (sparse ? ".combined.img" : ".combined.raw.img"));
+            if (!confirmOverwrite(new[] { output }))
+                return;
+            long total = Math.Max(1, source.DataBytes);
+            SuperImage table = super;
+
+            run(sparse ? Properties.Resources.images_combine_sparse : Properties.Resources.images_combine_raw, (token, report) =>
+            {
+                Progress progress = new Progress(done => report(done, total));
+                long bytes = sparse ? source.WriteSparse(output, progress, token) : source.WriteRaw(output, progress, token);
+
+                // A combined super has to read back as super, with the same partitions.
+                if (table != null)
+                {
+                    using (Stream check = sparse ? (Stream)SparseStream.Open(output) : File.OpenRead(output))
+                    {
+                        SuperImage read = SuperImage.Read(check);
+                        if (!read.Partitions.Select(p => p.Name).SequenceEqual(table.Partitions.Select(p => p.Name)))
+                            throw new InvalidDataException("the combined image does not read back as the same super");
+                    }
+                }
+                lastOutput = outputFolder;
+                log("  " + source.Pieces.Count + " pieces -> " + output);
+                return string.Format(Properties.Resources.images_combine_done, source.Pieces.Count, output, Helper.byte2AUnit(bytes),
+                    sparse ? Properties.Resources.images_combine_sparse_note : Properties.Resources.images_combine_raw_note);
             }, new[] { output });
         }
 
@@ -510,6 +583,11 @@ namespace FastbootEnhance
 
         static void toSparse()
         {
+            if (pieces != null)
+            {
+                combinePieces(true);
+                return;
+            }
             bool resplit = info.IsSparse;
             long? split = splitBytes(resplit);
             if (split == -1)
@@ -551,6 +629,7 @@ namespace FastbootEnhance
             }
 
             IList<string> inputs = parts;
+            RawProgramImage pieced = pieces;
             string folder = Path.Combine(outputFolder, stem() + "_unpacked");
             List<string> outputs = chosen.Select(r => Path.Combine(folder, r.Name + ".img")).ToList();
             if (!confirmOverwrite(outputs))
@@ -567,7 +646,7 @@ namespace FastbootEnhance
                 Directory.CreateDirectory(folder);
                 long before = 0;
                 List<string> failed = new List<string>();
-                using (Stream stream = openImage(inputs))
+                using (Stream stream = openImage(inputs, pieced))
                 {
                     foreach (SuperRow row in chosen)
                     {

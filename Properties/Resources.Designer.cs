@@ -3801,5 +3801,68 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("super_output_is_input", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pieces of a Qualcomm flash package ({0}).
+        /// </summary>
+        public static string images_format_pieces {
+            get {
+                return ResourceManager.GetString("images_format_pieces", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These {0} files are pieces of one {1} image, placed by {2}. Combine them into one image, or extract the partitions straight from the pieces..
+        /// </summary>
+        public static string images_note_pieces {
+            get {
+                return ResourceManager.GetString("images_note_pieces", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine into one image (sparse).
+        /// </summary>
+        public static string images_combine_sparse {
+            get {
+                return ResourceManager.GetString("images_combine_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine into one image (raw).
+        /// </summary>
+        public static string images_combine_raw {
+            get {
+                return ResourceManager.GetString("images_combine_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} pieces combined into one image:  {1} {2}  {3}.
+        /// </summary>
+        public static string images_combine_done {
+            get {
+                return ResourceManager.GetString("images_combine_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash it with: fastboot flash super super.img.
+        /// </summary>
+        public static string images_combine_sparse_note {
+            get {
+                return ResourceManager.GetString("images_combine_sparse_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The raw image has the full size of the partition; for fastboot the sparse one is smaller..
+        /// </summary>
+        public static string images_combine_raw_note {
+            get {
+                return ResourceManager.GetString("images_combine_raw_note", resourceCulture);
+            }
+        }
     }
 }

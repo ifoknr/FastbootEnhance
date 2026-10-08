@@ -153,9 +153,64 @@ namespace FastbootEnhance.SampleGen
 
             FastbootEnhance.Core.Images.SparseWriteResult sparse = FastbootEnhance.Core.Images.SparseConverter.ToSparse(
                 raw, Path.Combine(outDir, "super.img_sparsechunk"), 4096, 40L << 20, null, System.Threading.CancellationToken.None);
+            WriteQualcommPieces(raw, Path.Combine(outDir, "qualcomm"));
             File.Delete(raw);
             File.WriteAllLines(Path.Combine(outDir, "super-expected.sha256"), expected);
             Console.WriteLine("wrote super.img_sparsechunk.0.." + (sparse.Files.Count - 1) + " (" + sparse.Bytes / 1024 / 1024 + " MB)");
+        }
+
+        /// <summary>
+        /// The same super as a Qualcomm flash package ships it: super_1.img, super_2.img ... one
+        /// per run of data, each listed with its sector in rawprogram_unsparse0.xml.
+        /// </summary>
+        static void WriteQualcommPieces(string raw, string folder)
+        {
+            const int block = 4096;
+            const long diskStart = 1572870;   // sectors before super on the disk
+            Directory.CreateDirectory(folder);
+            byte[] image = File.ReadAllBytes(raw);
+            int blocks = image.Length / block;
+            bool zero(int b)
+            {
+                for (int i = b * block; i < (b + 1) * block; i++)
+                    if (image[i] != 0) return false;
+                return true;
+            }
+
+            System.Text.StringBuilder xml = new System.Text.StringBuilder("<?xml version=\"1.0\" ?>\n<data>\n");
+            int at = 0;
+            int piece = 0;
+            while (at < blocks)
+            {
+                if (at > 0 && zero(at))
+                {
+                    at++;
+                    continue;
+                }
+                int start = at;
+                int zeros = 0;
+                while (at < blocks && zeros < 64)
+                {
+                    zeros = zero(at) ? zeros + 1 : 0;
+                    at++;
+                }
+                int end = at - zeros;
+                // Packages cap the size of a piece; 64 MB here gives a handful of them.
+                for (int first = start; first < end; first += 16384)
+                {
+                int count = Math.Min(16384, end - first);
+                string name = "super_" + (++piece) + ".img";
+                using (FileStream file = File.Create(Path.Combine(folder, name)))
+                    file.Write(image, first * block, count * block);
+                xml.Append("  <program SECTOR_SIZE_IN_BYTES=\"4096\" file_sector_offset=\"0\" filename=\"" + name
+                    + "\" label=\"super\" num_partition_sectors=\"" + count + "\" partofsingleimage=\"false\" physical_partition_number=\"0\""
+                    + " readbackverify=\"false\" size_in_KB=\"" + (count * 4) + ".0\" sparse=\"false\" start_byte_hex=\"0x"
+                    + ((diskStart + first) * block).ToString("x") + "\" start_sector=\"" + (diskStart + first) + "\"/>\n");
+                }
+            }
+            xml.Append("</data>\n");
+            File.WriteAllText(Path.Combine(folder, "rawprogram_unsparse0.xml"), xml.ToString());
+            Console.WriteLine("wrote qualcomm/super_1.img..super_" + piece + ".img and rawprogram_unsparse0.xml");
         }
 
         static string Sha256Hex(byte[] data)
