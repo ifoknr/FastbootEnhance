@@ -121,7 +121,7 @@
     <value>About</value>
   </data>
   <data name="app_name" xml:space="preserve">
-    <value>Fastboot Enhance</value>
+    <value>Fastboot Studio</value>
   </data>
   <data name="author" xml:space="preserve">
     <value>Author: LibXZR @ akr-developers.com</value>
@@ -412,7 +412,7 @@
     <value>Filter by name:</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>Checksum (Base64)</value>
+    <value>Checksum (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>Name</value>
@@ -479,5 +479,954 @@
   </data>
   <data name="yes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="nav_device" xml:space="preserve">
+    <value>Device</value>
+  </data>
+  <data name="nav_flash" xml:space="preserve">
+    <value>Flash</value>
+  </data>
+  <data name="nav_logs" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="device_subtitle" xml:space="preserve">
+    <value>Live device state, partitions and quick actions</value>
+  </data>
+  <data name="device_list_title" xml:space="preserve">
+    <value>Connected devices</value>
+  </data>
+  <data name="device_list_hint" xml:space="preserve">
+    <value>Double-click a device, or select it and press Enter.</value>
+  </data>
+  <data name="device_list_empty" xml:space="preserve">
+    <value>No device in bootloader or fastbootd yet. Connect one and it shows up here within a second.</value>
+  </data>
+  <data name="device_variables" xml:space="preserve">
+    <value>Device variables</value>
+  </data>
+  <data name="quick_actions" xml:space="preserve">
+    <value>Quick actions</value>
+  </data>
+  <data name="preflash_checks" xml:space="preserve">
+    <value>Pre-flash checks</value>
+  </data>
+  <data name="partition_actions" xml:space="preserve">
+    <value>Partition actions</value>
+  </data>
+  <data name="check_unlocked" xml:space="preserve">
+    <value>Bootloader unlocked: images can be written</value>
+  </data>
+  <data name="check_locked" xml:space="preserve">
+    <value>Bootloader locked: the device will refuse to flash</value>
+  </data>
+  <data name="check_no_update" xml:space="preserve">
+    <value>No Virtual A/B update is pending</value>
+  </data>
+  <data name="check_update_pending" xml:space="preserve">
+    <value>A Virtual A/B update is {0}: cancel it before flashing</value>
+  </data>
+  <data name="check_cow" xml:space="preserve">
+    <value>Leftover COW partitions found: remove them before flashing</value>
+  </data>
+  <data name="check_fastbootd" xml:space="preserve">
+    <value>In fastbootd: logical partitions can be written</value>
+  </data>
+  <data name="check_bootloader" xml:space="preserve">
+    <value>In the bootloader: reboot to fastbootd to write logical partitions</value>
+  </data>
+  <data name="check_slot" xml:space="preserve">
+    <value>Active slot: {0}</value>
+  </data>
+  <data name="rail_devices" xml:space="preserve">
+    <value>{0} device(s) in fastboot mode</value>
+  </data>
+  <data name="rail_no_fastboot" xml:space="preserve">
+    <value>fastboot.exe is missing</value>
+  </data>
+  <data name="flash_subtitle" xml:space="preserve">
+    <value>Every image is extracted in parallel and checked against the manifest before anything is written</value>
+  </data>
+  <data name="flash_no_payload" xml:space="preserve">
+    <value>No payload chosen</value>
+  </data>
+  <data name="flash_no_device" xml:space="preserve">
+    <value>Pick a device on the Device page first.</value>
+  </data>
+  <data name="flash_target_none" xml:space="preserve">
+    <value>No device selected</value>
+  </data>
+  <data name="flash_target" xml:space="preserve">
+    <value>Target: {0}</value>
+  </data>
+  <data name="flash_note_verify" xml:space="preserve">
+    <value>Each image is checked against its SHA-256 before it is written.</value>
+  </data>
+  <data name="flash_note_order" xml:space="preserve">
+    <value>Nothing reaches the device until every image has extracted cleanly.</value>
+  </data>
+  <data name="flash_phase_idle" xml:space="preserve">
+    <value>Idle</value>
+  </data>
+  <data name="flash_phase_extract" xml:space="preserve">
+    <value>Extracting</value>
+  </data>
+  <data name="flash_phase_flash" xml:space="preserve">
+    <value>Flashing</value>
+  </data>
+  <data name="flash_phase_done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="flash_phase_failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="flash_state_queued" xml:space="preserve">
+    <value>Queued</value>
+  </data>
+  <data name="flash_state_extracting" xml:space="preserve">
+    <value>Extracting</value>
+  </data>
+  <data name="flash_state_verified" xml:space="preserve">
+    <value>Verified</value>
+  </data>
+  <data name="flash_state_flashing" xml:space="preserve">
+    <value>Flashing</value>
+  </data>
+  <data name="flash_state_flashed" xml:space="preserve">
+    <value>Flashed</value>
+  </data>
+  <data name="flash_state_failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="flash_state_not_written" xml:space="preserve">
+    <value>Not written</value>
+  </data>
+  <data name="label_phase" xml:space="preserve">
+    <value>Phase</value>
+  </data>
+  <data name="label_elapsed" xml:space="preserve">
+    <value>Elapsed</value>
+  </data>
+  <data name="label_written" xml:space="preserve">
+    <value>Written</value>
+  </data>
+  <data name="live_log" xml:space="preserve">
+    <value>Live log</value>
+  </data>
+  <data name="logs_subtitle" xml:space="preserve">
+    <value>Every fastboot command and its output in this session</value>
+  </data>
+  <data name="logs_copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="logs_clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="payload_subtitle" xml:space="preserve">
+    <value>Open a payload.bin or an OTA zip to inspect it and extract images</value>
+  </data>
+  <data name="payload_drop_hint" xml:space="preserve">
+    <value>Drop a payload.bin or OTA zip here</value>
+  </data>
+  <data name="column_codec" xml:space="preserve">
+    <value>Codec</value>
+  </data>
+  <data name="column_extractable" xml:space="preserve">
+    <value>Extractable</value>
+  </data>
+  <data name="column_progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="column_state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="column_partition" xml:space="preserve">
+    <value>Partition</value>
+  </data>
+  <data name="column_size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="about_engine" xml:space="preserve">
+    <value>Payload engine: zstd, xz and bzip2, multi-extent operations, parallel extraction with SHA-256 checks</value>
+  </data>
+  <data name="confirm_title" xml:space="preserve">
+    <value>Are you sure?</value>
+  </data>
+  <data name="confirm_erase" xml:space="preserve">
+    <value>Erase the partition "{0}"? Everything on it will be lost.</value>
+  </data>
+  <data name="confirm_delete" xml:space="preserve">
+    <value>Delete the logical partition "{0}" from super? It cannot be undone.</value>
+  </data>
+  <data name="confirm_close_flashing" xml:space="preserve">
+    <value>A payload is being flashed. Closing now stops it part way and can leave the device unbootable. Close anyway?</value>
+  </data>
+  <data name="extract_incomplete" xml:space="preserve">
+    <value>Some images are incomplete: operations this build cannot apply were left as zeros and those images were not checked against the manifest.</value>
+  </data>
+  <data name="extract_incomplete_detail" xml:space="preserve">
+    <value>{0} operations skipped, not verified</value>
+  </data>
+  <data name="confirm_close_extracting" xml:space="preserve">
+    <value>Images are being extracted. Closing now stops the extraction and removes the unfinished files. Close anyway?</value>
+  </data>
+  <data name="flash_unverified" xml:space="preserve">
+    <value>These partitions carry no SHA-256 in the payload, so their images cannot be checked before they are written:
+
+{0}
+
+Flash them anyway?</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="dialog_warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="dialog_done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="about_developer" xml:space="preserve">
+    <value>Developer</value>
+  </data>
+  <data name="about_original" xml:space="preserve">
+    <value>Original author</value>
+  </data>
+  <data name="about_original_detail" xml:space="preserve">
+    <value>Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright © 2021 LibXZR.</value>
+  </data>
+  <data name="about_original_project" xml:space="preserve">
+    <value>Original project</value>
+  </data>
+  <data name="about_license" xml:space="preserve">
+    <value>License</value>
+  </data>
+  <data name="nav_backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="backup_subtitle" xml:space="preserve">
+    <value>Save partitions and any file from the phone to this computer, over adb</value>
+  </data>
+  <data name="backup_adb_devices" xml:space="preserve">
+    <value>DEVICES OVER ADB</value>
+  </data>
+  <data name="backup_column_model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="backup_column_mode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="backup_waiting" xml:space="preserve">
+    <value>Looking for devices… Boot Android with USB debugging on, or a custom recovery (TWRP, OrangeFox).</value>
+  </data>
+  <data name="backup_no_device" xml:space="preserve">
+    <value>No device over adb. Turn on USB debugging in Developer options and connect the phone, or boot a custom recovery.</value>
+  </data>
+  <data name="backup_unauthorized" xml:space="preserve">
+    <value>Unlock the phone and allow USB debugging for this computer.</value>
+  </data>
+  <data name="backup_not_ready" xml:space="preserve">
+    <value>The device is in "{0}" mode. Partitions and files need Android or a custom recovery.</value>
+  </data>
+  <data name="backup_root_unknown" xml:space="preserve">
+    <value>Files can be copied now. Partition backup needs root (Magisk, KernelSU) or a custom recovery; press "Read partition table" to check.</value>
+  </data>
+  <data name="backup_root_direct" xml:space="preserve">
+    <value>Root shell available (recovery or adb root): partitions can be backed up.</value>
+  </data>
+  <data name="backup_root_su" xml:space="preserve">
+    <value>Root through su: partitions can be backed up.</value>
+  </data>
+  <data name="backup_asking_root" xml:space="preserve">
+    <value>Asking for root; allow the prompt on the phone if one appears.</value>
+  </data>
+  <data name="backup_needs_root" xml:space="preserve">
+    <value>Reading partitions needs root. Root the phone with Magisk or KernelSU and allow the prompt, or boot a custom recovery such as TWRP or OrangeFox. Files can still be copied from the Files tab.</value>
+  </data>
+  <data name="backup_no_table" xml:space="preserve">
+    <value>The partition table could not be read from this device.</value>
+  </data>
+  <data name="backup_tab_partitions" xml:space="preserve">
+    <value>Partitions</value>
+  </data>
+  <data name="backup_tab_files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="backup_read" xml:space="preserve">
+    <value>Read partition table</value>
+  </data>
+  <data name="backup_select_critical" xml:space="preserve">
+    <value>Select critical</value>
+  </data>
+  <data name="backup_select_none" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="backup_filter_hint" xml:space="preserve">
+    <value>Filter by name</value>
+  </data>
+  <data name="backup_save_to" xml:space="preserve">
+    <value>SAVE TO</value>
+  </data>
+  <data name="backup_change" xml:space="preserve">
+    <value>Change…</value>
+  </data>
+  <data name="backup_start" xml:space="preserve">
+    <value>Back up selected</value>
+  </data>
+  <data name="backup_cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="backup_verify" xml:space="preserve">
+    <value>Check a backup…</value>
+  </data>
+  <data name="backup_verify_title" xml:space="preserve">
+    <value>Backup check</value>
+  </data>
+  <data name="backup_open_folder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="backup_note" xml:space="preserve">
+    <value>Each image is saved with its SHA-256 in SHA256SUMS, next to backup-info.txt. To restore one, flash it from Device › Partitions.</value>
+  </data>
+  <data name="backup_state_reading" xml:space="preserve">
+    <value>Reading</value>
+  </data>
+  <data name="backup_state_saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="backup_state_skipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="backup_state_critical" xml:space="preserve">
+    <value>Critical</value>
+  </data>
+  <data name="backup_nothing_selected" xml:space="preserve">
+    <value>Tick the partitions to back up first, or press "Select critical".</value>
+  </data>
+  <data name="backup_large_warning" xml:space="preserve">
+    <value>These partitions are large and will take a while and a lot of disk space:
+
+{0}
+
+Back them up anyway?</value>
+  </data>
+  <data name="backup_short_read" xml:space="preserve">
+    <value>read {0} of {1}; the device stopped sending (permission denied or disconnected)</value>
+  </data>
+  <data name="backup_done" xml:space="preserve">
+    <value>{0} partitions were saved and their SHA-256 recorded in:
+{1}</value>
+  </data>
+  <data name="backup_partial" xml:space="preserve">
+    <value>{0} of {1} partitions were saved in:
+{2}</value>
+  </data>
+  <data name="backup_cancelled" xml:space="preserve">
+    <value>Stopped. Unfinished files were removed.</value>
+  </data>
+  <data name="backup_verify_none" xml:space="preserve">
+    <value>This folder has no SHA256SUMS file, so there is nothing to check it against.</value>
+  </data>
+  <data name="backup_verify_ok" xml:space="preserve">
+    <value>All {0} files match their SHA-256.</value>
+  </data>
+  <data name="backup_verify_bad" xml:space="preserve">
+    <value>{0} of {1} files are missing or do not match:</value>
+  </data>
+  <data name="files_up" xml:space="preserve">
+    <value>Up</value>
+  </data>
+  <data name="files_go" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="files_quick_storage" xml:space="preserve">
+    <value>Internal storage</value>
+  </data>
+  <data name="files_quick_dcim" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="files_quick_pictures" xml:space="preserve">
+    <value>Pictures</value>
+  </data>
+  <data name="files_quick_download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="files_quick_documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="files_column_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="files_column_kind" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="files_kind_folder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="files_kind_file" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="files_kind_link" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="files_empty" xml:space="preserve">
+    <value>This folder is empty, or Android does not allow reading it without root.</value>
+  </data>
+  <data name="files_count" xml:space="preserve">
+    <value>{0} folders, {1} files</value>
+  </data>
+  <data name="files_copying" xml:space="preserve">
+    <value>Copying {0}…</value>
+  </data>
+  <data name="files_pull" xml:space="preserve">
+    <value>Copy to computer</value>
+  </data>
+  <data name="files_note" xml:space="preserve">
+    <value>Select files or folders (Ctrl or Shift for several, Ctrl+A for all) and copy them. Folders are copied with everything inside. Double-click a folder to open it.</value>
+  </data>
+  <data name="files_nothing_selected" xml:space="preserve">
+    <value>Select the files or folders to copy first.</value>
+  </data>
+  <data name="files_done" xml:space="preserve">
+    <value>{0} items copied to:
+{1}</value>
+  </data>
+  <data name="files_partial" xml:space="preserve">
+    <value>{0} of {1} items copied to:
+{2}</value>
+  </data>
+  <data name="payload_container" xml:space="preserve">
+    <value>Container</value>
+  </data>
+  <data name="payload_container_inplace" xml:space="preserve">
+    <value>OTA zip (read in place)</value>
+  </data>
+  <data name="payload_container_unpacked" xml:space="preserve">
+    <value>OTA zip (unpacked to temp)</value>
+  </data>
+  <data name="payload_security_patch" xml:space="preserve">
+    <value>Security patch</value>
+  </data>
+  <data name="payload_partial_update" xml:space="preserve">
+    <value>Partial update</value>
+  </data>
+  <data name="payload_apex" xml:space="preserve">
+    <value>APEX packages</value>
+  </data>
+  <data name="payload_operations" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="flash_file_detail" xml:space="preserve">
+    <value>{0} partitions  ·  {1}  ·  {2}</value>
+  </data>
+  <data name="flash_written_count" xml:space="preserve">
+    <value>{0} of {1} partitions were written</value>
+  </data>
+  <data name="extract_done_detail" xml:space="preserve">
+    <value>{0} in {1} s</value>
+  </data>
+  <data name="chrome_minimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="chrome_maximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="chrome_restore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="chrome_close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>LANGUAGE</value>
+  </data>
+  <data name="language_restart" xml:space="preserve">
+    <value>The new language applies after a restart. Restart Fastboot Studio now?</value>
+  </data>
+  <data name="language_busy" xml:space="preserve">
+    <value>Wait for the current flash or extraction to finish before changing the language.</value>
+  </data>
+  <data name="nav_images" xml:space="preserve">
+    <value>Image Tools</value>
+  </data>
+  <data name="images_subtitle" xml:space="preserve">
+    <value>Inspect, convert and unpack Android images: sparse, super, ext4, EROFS and more</value>
+  </data>
+  <data name="images_open" xml:space="preserve">
+    <value>Open image…</value>
+  </data>
+  <data name="images_drop_hint" xml:space="preserve">
+    <value>Drop an image here</value>
+  </data>
+  <data name="images_drop_detail" xml:space="preserve">
+    <value>system.img, super.img, vendor.img… sparse or raw. For an image split into parts (system.img_sparsechunk.0, .1…) open any one part; the others are found automatically.</value>
+  </data>
+  <data name="images_tab_details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="images_tab_partitions" xml:space="preserve">
+    <value>Partitions in super</value>
+  </data>
+  <data name="images_tab_chunks" xml:space="preserve">
+    <value>Sparse chunks</value>
+  </data>
+  <data name="images_select_all" xml:space="preserve">
+    <value>Select all</value>
+  </data>
+  <data name="images_column_group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="images_column_type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="images_column_start" xml:space="preserve">
+    <value>First block</value>
+  </data>
+  <data name="images_column_blocks" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="images_extract" xml:space="preserve">
+    <value>Extract partitions (lpunpack)</value>
+  </data>
+  <data name="images_to_raw" xml:space="preserve">
+    <value>Convert to raw (simg2img)</value>
+  </data>
+  <data name="images_to_sparse" xml:space="preserve">
+    <value>Convert to sparse (img2simg)</value>
+  </data>
+  <data name="images_resplit" xml:space="preserve">
+    <value>Split into parts (simg2simg)</value>
+  </data>
+  <data name="images_split" xml:space="preserve">
+    <value>Split into parts of at most</value>
+  </data>
+  <data name="images_empty_slot" xml:space="preserve">
+    <value>empty slot</value>
+  </data>
+  <data name="images_parts_not_sparse" xml:space="preserve">
+    <value>Several files were chosen, but they are not sparse parts of one image. Open one image at a time.</value>
+  </data>
+  <data name="images_kind_super" xml:space="preserve">
+    <value>Super (dynamic partitions)</value>
+  </data>
+  <data name="images_kind_ext4" xml:space="preserve">
+    <value>ext4 file system</value>
+  </data>
+  <data name="images_kind_erofs" xml:space="preserve">
+    <value>EROFS file system</value>
+  </data>
+  <data name="images_kind_f2fs" xml:space="preserve">
+    <value>F2FS file system</value>
+  </data>
+  <data name="images_kind_boot" xml:space="preserve">
+    <value>Boot image</value>
+  </data>
+  <data name="images_kind_vendor_boot" xml:space="preserve">
+    <value>Vendor boot image</value>
+  </data>
+  <data name="images_kind_vbmeta" xml:space="preserve">
+    <value>vbmeta (Android Verified Boot)</value>
+  </data>
+  <data name="images_kind_payload" xml:space="preserve">
+    <value>OTA payload (open it in Payload Dumper)</value>
+  </data>
+  <data name="images_kind_zip" xml:space="preserve">
+    <value>Zip archive</value>
+  </data>
+  <data name="images_row_file" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="images_parts" xml:space="preserve">
+    <value>{0} parts</value>
+  </data>
+  <data name="images_row_format" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="images_format_raw" xml:space="preserve">
+    <value>Raw image</value>
+  </data>
+  <data name="images_row_content" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="images_row_size" xml:space="preserve">
+    <value>Image size</value>
+  </data>
+  <data name="images_row_disk" xml:space="preserve">
+    <value>Size on disk</value>
+  </data>
+  <data name="images_row_block_size" xml:space="preserve">
+    <value>Block size</value>
+  </data>
+  <data name="images_row_blocks" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="images_blocks_detail" xml:space="preserve">
+    <value>{1} / {2} / {3}</value>
+  </data>
+  <data name="images_row_chunks" xml:space="preserve">
+    <value>Chunks</value>
+  </data>
+  <data name="images_row_crc" xml:space="preserve">
+    <value>CRC-32</value>
+  </data>
+  <data name="images_crc_none" xml:space="preserve">
+    <value>not recorded</value>
+  </data>
+  <data name="images_row_metadata" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="images_metadata_detail" xml:space="preserve">
+    <value>version {0}, {1} slots</value>
+  </data>
+  <data name="images_backup_copy" xml:space="preserve">
+    <value>read from the backup copy</value>
+  </data>
+  <data name="images_row_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="images_row_partitions" xml:space="preserve">
+    <value>Partitions</value>
+  </data>
+  <data name="images_partitions_detail" xml:space="preserve">
+    <value>{0} with data, {1} in total</value>
+  </data>
+  <data name="images_row_group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="images_unlimited" xml:space="preserve">
+    <value>no limit</value>
+  </data>
+  <data name="images_row_super_size" xml:space="preserve">
+    <value>Super size</value>
+  </data>
+  <data name="images_note_super" xml:space="preserve">
+    <value>Partitions are read straight from the image, sparse or not, and every metadata checksum is verified. Each one is saved as name.img in a folder next to the image.</value>
+  </data>
+  <data name="images_note_sparse" xml:space="preserve">
+    <value>Converting to raw rebuilds the full image (all parts together) and verifies any CRC-32 it carries. Splitting makes parts fastboot can flash one by one.</value>
+  </data>
+  <data name="images_note_raw" xml:space="preserve">
+    <value>Converting to sparse stores repeated blocks as one record, the format fastboot and factory images use. The output matches AOSP img2simg byte for byte.</value>
+  </data>
+  <data name="images_overwrite" xml:space="preserve">
+    <value>These already exist and will be replaced:
+
+{0}
+
+Continue?</value>
+  </data>
+  <data name="images_done_in" xml:space="preserve">
+    <value>Done in {0} s</value>
+  </data>
+  <data name="images_raw_done" xml:space="preserve">
+    <value>Raw image written:
+{0}
+{1}</value>
+  </data>
+  <data name="images_crc_line" xml:space="preserve">
+    <value>CRC-32 {0}</value>
+  </data>
+  <data name="images_crc_checked" xml:space="preserve">
+    <value>{0} recorded checksum(s) verified</value>
+  </data>
+  <data name="images_split_invalid" xml:space="preserve">
+    <value>Enter the largest part size in megabytes, for example 512.</value>
+  </data>
+  <data name="images_resplit_one" xml:space="preserve">
+    <value>Open a single sparse image to split it. To join parts, convert them to raw first.</value>
+  </data>
+  <data name="images_sparse_done" xml:space="preserve">
+    <value>{0} sparse file(s) written ({1}):
+{2}</value>
+  </data>
+  <data name="images_nothing_selected" xml:space="preserve">
+    <value>Tick the partitions to extract first.</value>
+  </data>
+  <data name="images_extract_done" xml:space="preserve">
+    <value>{0} partitions extracted to:
+{1}</value>
+  </data>
+  <data name="images_row_block_kinds" xml:space="preserve">
+    <value>Data / fill / don't care</value>
+  </data>
+  <data name="backup_fb_title" xml:space="preserve">
+    <value>{0} is in Fastboot mode</value>
+  </data>
+  <data name="backup_fb_why" xml:space="preserve">
+    <value>Fastboot can write partitions but cannot read them back: on retail phones Android does not allow it. Backup works over adb, so the phone has to leave Fastboot first, in one of these ways:</value>
+  </data>
+  <data name="backup_fb_android" xml:space="preserve">
+    <value>Start Android</value>
+  </data>
+  <data name="backup_fb_android_note" xml:space="preserve">
+    <value>Files can be copied right away. USB debugging must be on; partition backup also needs root (Magisk or KernelSU).</value>
+  </data>
+  <data name="backup_fb_recovery" xml:space="preserve">
+    <value>Start the recovery</value>
+  </data>
+  <data name="backup_fb_recovery_note" xml:space="preserve">
+    <value>For a custom recovery that is installed (TWRP, OrangeFox): partitions and files, no root needed. The stock recovery has no adb.</value>
+  </data>
+  <data name="backup_fb_boot" xml:space="preserve">
+    <value>Boot a recovery image once, without installing it</value>
+  </data>
+  <data name="backup_fb_boot_note" xml:space="preserve">
+    <value>Sends a TWRP or OrangeFox image made for this phone and starts it; nothing on the phone is changed. Needs an unlocked bootloader.</value>
+  </data>
+  <data name="backup_fb_boot_button" xml:space="preserve">
+    <value>Choose recovery image…</value>
+  </data>
+  <data name="backup_fb_rebooting" xml:space="preserve">
+    <value>Restarting {0}… This page switches over by itself when the phone answers on adb.</value>
+  </data>
+  <data name="backup_fb_sending" xml:space="preserve">
+    <value>Sending {0} to the phone…</value>
+  </data>
+  <data name="backup_fb_booted" xml:space="preserve">
+    <value>The recovery image was sent and started. Once it has loaded, the phone shows up here over adb and the backup can start.</value>
+  </data>
+  <data name="backup_fb_boot_failed" xml:space="preserve">
+    <value>The phone did not boot the image.
+
+{0}
+
+Check that the bootloader is unlocked and that the image was made for this phone. Some phones (Samsung and a few others) do not support booting an image without flashing it.</value>
+  </data>
+  <data name="backup_fb_not_boot_image" xml:space="preserve">
+    <value>This file is not a boot or recovery image. Choose the .img of TWRP or OrangeFox made for this phone.</value>
+  </data>
+  <data name="backup_fb_userspace" xml:space="preserve">
+    <value>The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Choose the image again once it is back.</value>
+  </data>
+  <data name="backup_fb_failed" xml:space="preserve">
+    <value>fastboot did not finish: {0}</value>
+  </data>
+  <data name="nav_super" xml:space="preserve">
+    <value>Build Super</value>
+  </data>
+  <data name="super_subtitle" xml:space="preserve">
+    <value>Combine partition images into one super.img that fastboot can flash</value>
+  </data>
+  <data name="super_import" xml:space="preserve">
+    <value>Import from super.img…</value>
+  </data>
+  <data name="super_read_phone" xml:space="preserve">
+    <value>Read size from phone</value>
+  </data>
+  <data name="super_layout" xml:space="preserve">
+    <value>LAYOUT</value>
+  </data>
+  <data name="super_mode_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="super_mode_ab" xml:space="preserve">
+    <value>A/B</value>
+  </data>
+  <data name="super_mode_single" xml:space="preserve">
+    <value>Single slot</value>
+  </data>
+  <data name="super_mode_imported" xml:space="preserve">
+    <value>As in the imported super</value>
+  </data>
+  <data name="super_mode_note_vab" xml:space="preserve">
+    <value>Most phones from Android 11 on. Partitions get _a and _b; slot b is left empty, as in factory images.</value>
+  </data>
+  <data name="super_mode_note_ab" xml:space="preserve">
+    <value>A/B phones without Virtual A/B (mostly Android 10). Each slot gets half of super.</value>
+  </data>
+  <data name="super_mode_note_single" xml:space="preserve">
+    <value>Phones without A/B slots: partitions keep their plain names.</value>
+  </data>
+  <data name="super_mode_note_imported" xml:space="preserve">
+    <value>Groups, slots and partition order are copied from {0}. Images replace the partitions of the same name.</value>
+  </data>
+  <data name="super_size" xml:space="preserve">
+    <value>SUPER SIZE (BYTES)</value>
+  </data>
+  <data name="super_size_hint" xml:space="preserve">
+    <value>e.g. 9126805504</value>
+  </data>
+  <data name="super_group_size" xml:space="preserve">
+    <value>GROUP SIZE (BYTES)</value>
+  </data>
+  <data name="super_group_name" xml:space="preserve">
+    <value>GROUP NAME</value>
+  </data>
+  <data name="super_auto" xml:space="preserve">
+    <value>auto</value>
+  </data>
+  <data name="super_auto_value" xml:space="preserve">
+    <value>auto: {0}</value>
+  </data>
+  <data name="super_usage" xml:space="preserve">
+    <value>{0} of {1} used · {2} free</value>
+  </data>
+  <data name="super_usage_none" xml:space="preserve">
+    <value>Enter the size of super to see how much the partitions use.</value>
+  </data>
+  <data name="super_add" xml:space="preserve">
+    <value>Add images…</value>
+  </data>
+  <data name="super_add_folder" xml:space="preserve">
+    <value>Add folder…</value>
+  </data>
+  <data name="super_remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="super_clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="super_empty_hint" xml:space="preserve">
+    <value>Add partition images (system.img, vendor.img, product.img…) or import the layout of an existing super.img. Images unpacked by Image Tools are found by themselves.</value>
+  </data>
+  <data name="super_column_image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="super_empty_partition" xml:space="preserve">
+    <value>empty</value>
+  </data>
+  <data name="super_output" xml:space="preserve">
+    <value>OUTPUT</value>
+  </data>
+  <data name="super_format_sparse" xml:space="preserve">
+    <value>Sparse</value>
+  </data>
+  <data name="super_format_raw" xml:space="preserve">
+    <value>Raw</value>
+  </data>
+  <data name="super_format_note" xml:space="preserve">
+    <value>Sparse is smaller and is what factory images ship; raw is the full size of super.</value>
+  </data>
+  <data name="super_verify" xml:space="preserve">
+    <value>Check the image after building</value>
+  </data>
+  <data name="super_build" xml:space="preserve">
+    <value>Build super.img…</value>
+  </data>
+  <data name="super_building" xml:space="preserve">
+    <value>Building super.img</value>
+  </data>
+  <data name="super_verifying" xml:space="preserve">
+    <value>Checking super.img</value>
+  </data>
+  <data name="super_flash_note" xml:space="preserve">
+    <value>Flash it with: fastboot flash super super.img. Keep a backup of the phone's current super first.</value>
+  </data>
+  <data name="super_done" xml:space="preserve">
+    <value>super.img is ready and checked: every partition was read back and matches its image.
+
+{0}
+{1} · {2} partitions</value>
+  </data>
+  <data name="super_done_unchecked" xml:space="preserve">
+    <value>super.img is ready.
+
+{0}
+{1} · {2} partitions</value>
+  </data>
+  <data name="super_verify_failed" xml:space="preserve">
+    <value>super.img was written but did not pass the check, so do not flash it:
+
+{0}</value>
+  </data>
+  <data name="super_problem_no_size" xml:space="preserve">
+    <value>Enter the size of super: read it from the phone or import a super.img.</value>
+  </data>
+  <data name="super_problem_size_aligned" xml:space="preserve">
+    <value>The size of super must be a multiple of 4096 bytes.</value>
+  </data>
+  <data name="super_problem_metadata" xml:space="preserve">
+    <value>The metadata settings of this layout cannot be used.</value>
+  </data>
+  <data name="super_problem_metadata_large" xml:space="preserve">
+    <value>Too many partitions for the metadata area.</value>
+  </data>
+  <data name="super_problem_no_images" xml:space="preserve">
+    <value>Add at least one partition image.</value>
+  </data>
+  <data name="super_problem_bad_name" xml:space="preserve">
+    <value>"{0}" is not a valid name (letters, digits, _ . - and at most 36 characters).</value>
+  </data>
+  <data name="super_problem_duplicate" xml:space="preserve">
+    <value>"{0}" appears twice.</value>
+  </data>
+  <data name="super_problem_unknown_group" xml:space="preserve">
+    <value>Group "{0}" does not exist.</value>
+  </data>
+  <data name="super_problem_group_full" xml:space="preserve">
+    <value>Group {0} is too small: its partitions need {1}, it allows {2}.</value>
+  </data>
+  <data name="super_problem_does_not_fit" xml:space="preserve">
+    <value>The partitions need {0}, but super is {1}.</value>
+  </data>
+  <data name="super_import_source" xml:space="preserve">
+    <value>Layout of {0} · {1} · {2} metadata slots · groups {3}</value>
+  </data>
+  <data name="super_found_images" xml:space="preserve">
+    <value>Found {0} partition images in {1}.</value>
+  </data>
+  <data name="super_not_super" xml:space="preserve">
+    <value>This file is not a super image.</value>
+  </data>
+  <data name="super_not_filesystem" xml:space="preserve">
+    <value>These files are not file-system images, so they probably do not belong in super (boot, vbmeta and the like are flashed on their own):
+
+{0}
+
+Add them anyway?</value>
+  </data>
+  <data name="super_folder_skipped" xml:space="preserve">
+    <value>Skipped {0} files that are not file-system images: {1}</value>
+  </data>
+  <data name="super_folder_none" xml:space="preserve">
+    <value>No partition images were found in this folder.</value>
+  </data>
+  <data name="super_clear_confirm" xml:space="preserve">
+    <value>Remove all partition images from the list?</value>
+  </data>
+  <data name="super_phone_none" xml:space="preserve">
+    <value>No phone in fastboot mode. Connect it in the bootloader or fastbootd and try again.</value>
+  </data>
+  <data name="super_phone_read" xml:space="preserve">
+    <value>Read from {0}: super is {1} ({2} bytes). Layout: {3}.</value>
+  </data>
+  <data name="super_phone_failed" xml:space="preserve">
+    <value>Could not read the size of super from the phone:
+
+{0}</value>
+  </data>
+  <data name="super_reading_phone" xml:space="preserve">
+    <value>Reading from the phone…</value>
+  </data>
+  <data name="super_pick_image" xml:space="preserve">
+    <value>Choose the image for {0}</value>
+  </data>
+  <data name="super_output_is_input" xml:space="preserve">
+    <value>The output file is one of the images going into super. Choose another name.</value>
+  </data>
+  <data name="images_format_pieces" xml:space="preserve">
+    <value>Pieces of a Qualcomm flash package ({0})</value>
+  </data>
+  <data name="images_note_pieces" xml:space="preserve">
+    <value>These {0} files are pieces of one {1} image, placed by {2}. Combine them into one image, or extract the partitions straight from the pieces.</value>
+  </data>
+  <data name="images_combine_sparse" xml:space="preserve">
+    <value>Combine as sparse</value>
+  </data>
+  <data name="images_combine_raw" xml:space="preserve">
+    <value>Combine as raw</value>
+  </data>
+  <data name="images_combine_done" xml:space="preserve">
+    <value>{0} pieces combined into one image:
+
+{1}
+{2}
+
+{3}</value>
+  </data>
+  <data name="images_combine_sparse_note" xml:space="preserve">
+    <value>Flash it with: fastboot flash super super.img</value>
+  </data>
+  <data name="images_combine_raw_note" xml:space="preserve">
+    <value>The raw image has the full size of the partition; for fastboot the sparse one is smaller.</value>
   </data>
 </root>

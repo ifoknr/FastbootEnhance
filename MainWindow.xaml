@@ -1,287 +1,1132 @@
-﻿<Window x:Class="FastbootEnhance.MainWindow"
+<Window x:Class="FastbootEnhance.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:props="clr-namespace:FastbootEnhance.Properties"
+        xmlns:local="clr-namespace:FastbootEnhance"
         mc:Ignorable="d"
-        Title="{x:Static props:Resources.app_name}" Height="450" Width="650" WindowStartupLocation="CenterScreen">
+        Title="{x:Static props:Resources.app_name}"
+        Height="780" Width="1220" MinHeight="640" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource Bg}" Foreground="{StaticResource Text}"
+        FontFamily="{StaticResource UiFont}" FontSize="13"
+        TextOptions.TextFormattingMode="Display" UseLayoutRounding="True">
     <Window.TaskbarItemInfo>
-        <TaskbarItemInfo x:Name="taskbariteminfo"></TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskbariteminfo"/>
     </Window.TaskbarItemInfo>
-    <Grid>
-        <TabControl>
-            <TabItem Header="{x:Static props:Resources.fastboot_enhance}">
-                <Grid>
-                    <Grid x:Name="fastboot_devices_page" Visibility="Hidden">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*"></RowDefinition>
-                            <RowDefinition Height="10*"></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition Width="5*"></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <ListView x:Name="fastboot_devices_list" Grid.Row="1" Grid.Column="1">
-                            <ListView.View>
-                                <GridView>
-                                    <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="150" DisplayMemberBinding="{Binding serial}"/>
-                                    <GridViewColumn Header="{x:Static props:Resources.fastboot_device_name}" Width="150" DisplayMemberBinding="{Binding name}"/>
-                                </GridView>
-                            </ListView.View>
-                        </ListView>
-                        <Label Content="{x:Static props:Resources.fastboot_choose_device}" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Grid>
-                    <Grid x:Name="fastboot_actions_page" Visibility="Visible">
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition Height="70"></RowDefinition>
-                        </Grid.RowDefinitions>
+
+    <TabControl x:Name="main_tabs" Style="{StaticResource NavRail}">
+
+        <!-- ============================== Device ============================== -->
+        <TabItem x:Name="device_tab" Header="{x:Static props:Resources.nav_device}" Tag="{StaticResource IconDevice}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="fastboot_mode_badge" Style="{StaticResource Badge}" Margin="0,0,10,0" Visibility="Collapsed">
+                                <TextBlock x:Name="fastboot_mode_text" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Accent}"/>
+                            </Border>
+                            <Border x:Name="fastboot_device_chip" Style="{StaticResource Chip}" Margin="0,0,10,0" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Width="7" Height="7" Fill="{StaticResource Ok}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <Label x:Name="fastboot_cur_device" FontFamily="{StaticResource Mono}" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <Button x:Name="fastboot_remove" Style="{StaticResource GhostButton}" Visibility="Collapsed"
+                                    Content="{x:Static props:Resources.fastboot_remove_device}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_device}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.device_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,16">
+
+                    <!-- Device picker -->
+                    <Border x:Name="fastboot_devices_page" Style="{StaticResource Card}">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <TextBlock Style="{StaticResource CardTitle}" Margin="0,0,0,4" Text="{x:Static props:Resources.device_list_title}"/>
+                                <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.device_list_hint}"/>
+                            </StackPanel>
+                            <Grid>
+                                <ListView x:Name="fastboot_devices_list" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120" SelectionMode="Single">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="300" DisplayMemberBinding="{Binding serial}"/>
+                                            <GridViewColumn Header="{x:Static props:Resources.fastboot_device_name}" Width="240" DisplayMemberBinding="{Binding name}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <TextBlock x:Name="fastboot_devices_empty" Style="{StaticResource Note}" FontSize="13"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" MaxWidth="420"
+                                           Text="{x:Static props:Resources.device_list_empty}"/>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Selected device -->
+                    <Grid x:Name="fastboot_actions_page" Visibility="Collapsed">
                         <TabControl>
                             <TabItem Header="{x:Static props:Resources.fastboot_basic_prop}">
                                 <Grid>
-                                    <ListView x:Name="fastboot_info_list" >
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_name}" Width="150" DisplayMemberBinding="{Binding name}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_value}" Width="150" DisplayMemberBinding="{Binding value}"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="380"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Style="{StaticResource Card}">
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.device_variables}"/>
+                                            <ListView x:Name="fastboot_info_list" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="90">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_name}" Width="165" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_prop_value}" Width="155" DisplayMemberBinding="{Binding value}"/>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </DockPanel>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="2">
+                                        <Border x:Name="fastboot_action_bar" Style="{StaticResource Card}" Margin="0,0,0,18">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.quick_actions}"/>
+                                                <UniformGrid Columns="2">
+                                                    <UniformGrid.Resources>
+                                                        <!-- Longer labels (Arabic) wrap instead of being cut off. -->
+                                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                            <Setter Property="ContentTemplate">
+                                                                <Setter.Value>
+                                                                    <DataTemplate>
+                                                                        <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
+                                                                    </DataTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </UniformGrid.Resources>
+                                                    <Button x:Name="fastboot_reboot_d" Margin="0,0,6,8" Content="{x:Static props:Resources.fastboot_reboot_fastbootd}"/>
+                                                    <Button x:Name="fastboot_ab_switch" Margin="6,0,0,8" Content="{x:Static props:Resources.fastboot_setactive_b}"/>
+                                                    <Button x:Name="fastboot_reboot_system" Margin="0,0,6,8" Content="{x:Static props:Resources.fastboot_reboot_system}"/>
+                                                    <Button x:Name="fastboot_reboot_recovery" Margin="6,0,0,8" Content="{x:Static props:Resources.fastboot_reboot_recovery}"/>
+                                                </UniformGrid>
+                                                <Button x:Name="fastboot_cancel_update" Style="{StaticResource WarnButton}" Visibility="Collapsed"
+                                                        Content="{x:Static props:Resources.fastboot_cancel_update}"/>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Style="{StaticResource Card}">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.preflash_checks}"/>
+                                                <ItemsControl x:Name="fastboot_checks">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid Margin="0,0,0,10">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="18"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Ellipse Width="8" Height="8" Fill="{Binding Brush}" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                                                                <TextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap" FontSize="12.5" LineHeight="18"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
                                 </Grid>
                             </TabItem>
+
                             <TabItem Header="{x:Static props:Resources.fastboot_partition_table}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                                        <ColumnDefinition Width="5*"></ColumnDefinition>
-                                        <ColumnDefinition Width="200"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="240"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition Height="6*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Label Content="{x:Static props:Resources.fastboot_filter_by_partition_name}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    <TextBox Height="20" Margin="10 0 20 0" x:Name="fastboot_partition_name_textbox" Grid.Column="1"/>
-                                    <ListView x:Name="fastboot_partition_list" Grid.Row="1" Grid.ColumnSpan="2">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_name}" Width="100" DisplayMemberBinding="{Binding name}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_size}" Width="100" DisplayMemberBinding="{Binding size}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_is_dynamic}" Width="100" DisplayMemberBinding="{Binding is_logical}"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                    <Grid Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="5*"></RowDefinition>
-                                            <RowDefinition Height="0.7*"></RowDefinition>
-                                            <RowDefinition Height="0.7*"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <GroupBox x:Name="fastboot_single_part_op" Margin="10 0 10 0" Header="{x:Static props:Resources.fastboot_partition_action}">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                </Grid.RowDefinitions>
-                                                <Button x:Name="fastboot_flash" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_partition_action_flash}" Grid.ColumnSpan="2"/>
-                                                <Button x:Name="fastboot_erase" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_partition_action_erase}" Grid.Row="1" Grid.ColumnSpan="2"/>
-                                                <Button x:Name="fastboot_logical_delete" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_partition_action_delete}" Grid.Row="2" Grid.ColumnSpan="2"/>
-                                                <Button x:Name="fastboot_logical_create" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_partition_action_create}" Grid.Row="3" Grid.ColumnSpan="2"/>
-                                                <Button x:Name="fastboot_logical_resize" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_partition_action_resize}" Grid.Row="4" Grid.ColumnSpan="2"/>
-                                            </Grid>
-                                        </GroupBox>
-                                        <CheckBox x:Name="fastboot_show_logs" Content="{x:Static props:Resources.fastboot_show_logs}" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                        <CheckBox x:Name="ignore_unknown_part" Content="{x:Static props:Resources.fastboot_ignore_unknown}" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,5,5,5"/>
-                                    </Grid>
+
+                                    <Border Style="{StaticResource Card}">
+                                        <DockPanel>
+                                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                                <TextBlock DockPanel.Dock="Left" Style="{StaticResource CardTitle}" Margin="0,0,14,0" VerticalAlignment="Center"
+                                                           Text="{x:Static props:Resources.fastboot_partition_table}"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock Text="{x:Static props:Resources.fastboot_filter_by_partition_name}" Foreground="{StaticResource Dim}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                    <TextBox FlowDirection="LeftToRight" x:Name="fastboot_partition_name_textbox" Width="240"/>
+                                                </StackPanel>
+                                            </DockPanel>
+                                            <ListView x:Name="fastboot_partition_list" local:ColumnFill.Column="0" local:ColumnFill.MinWidth="120">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_name}" Width="205" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_size}" Width="120" DisplayMemberBinding="{Binding size}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.fastboot_partition_is_dynamic}" Width="110" DisplayMemberBinding="{Binding is_logical}"/>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </DockPanel>
+                                    </Border>
+
+                                    <Border x:Name="fastboot_single_part_op" Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.partition_actions}"/>
+                                            <Button x:Name="fastboot_flash" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Content="{x:Static props:Resources.fastboot_partition_action_flash}"/>
+                                            <Button x:Name="fastboot_logical_create" Margin="0,0,0,8" Content="{x:Static props:Resources.fastboot_partition_action_create}"/>
+                                            <Button x:Name="fastboot_logical_resize" Margin="0,0,0,8" Content="{x:Static props:Resources.fastboot_partition_action_resize}"/>
+                                            <Button x:Name="fastboot_erase" Style="{StaticResource DangerButton}" Margin="0,8,0,8" Content="{x:Static props:Resources.fastboot_partition_action_erase}"/>
+                                            <Button x:Name="fastboot_logical_delete" Style="{StaticResource DangerButton}" Content="{x:Static props:Resources.fastboot_partition_action_delete}"/>
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
                             </TabItem>
                         </TabControl>
-
-                        <Grid Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="20*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <ProgressBar x:Name="fastboot_progress_bar" Visibility="Hidden" Grid.Row="1" Grid.Column="1"/>
-                        </Grid>
-
-                        <Grid x:Name="fastboot_action_bar" Grid.Row="1" Visibility="Visible">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="fastboot_reboot_d" Margin="5,5,5,5" Content="Reboot to Bootloader" Grid.Column="0"/>
-                                <Button x:Name="fastboot_ab_switch" Margin="5,5,5,5" Content="切换分区" Grid.Column="1"/>
-                                <Button x:Name="fastboot_flash_payload" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_flash_payload}" Grid.Column="2"/>
-                                <Button x:Name="fastboot_cancel_update" Margin="5,5,5,5" Content="{x:Static props:Resources.fastboot_cancel_update}" Grid.Column="3"/>
-                                
-                            </Grid>
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1.5*" ></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Label VerticalAlignment="Center" x:Name="fastboot_cur_device" Content="{x:Static props:Resources.fastboot_current_device}" Grid.Column="0"/>
-                                <Button x:Name="fastboot_remove" Margin="5 5 5 5" Content="{x:Static props:Resources.fastboot_remove_device}" Grid.Column="1"/>
-                                <Button x:Name="fastboot_reboot_system" Margin="5 5 5 5" Content="{x:Static props:Resources.fastboot_reboot_system}" Grid.Column="2"/>
-                                <Button x:Name="fastboot_reboot_recovery" Margin="5 5 5 5" Content="{x:Static props:Resources.fastboot_reboot_recovery}" Grid.Column="3"/>
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Grid>
-            </TabItem>
-            <TabItem Header="{x:Static props:Resources.payload_dumper}">
-                <Grid>
-                    <Grid x:Name="payload_before_load" Visibility="Hidden" AllowDrop="True" Background="Transparent">
-                        <Grid Width="500" Height="200">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Label Content="{x:Static props:Resources.payload_no_file_str}" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom"/>
-                            <ProgressBar x:Name="payload_opening" Height="30" VerticalAlignment="Bottom" Visibility="Hidden" IsIndeterminate="True"></ProgressBar>
-                            <Button x:Name="payload_load_btn" Content="{x:Static props:Resources.payload_browse}" Grid.Row="1" Width="100" Height="30"/>
-                        </Grid>
+
+                <ProgressBar x:Name="fastboot_progress_bar" Grid.Row="2" Margin="28,0,28,16" Visibility="Hidden"/>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Flash ============================== -->
+        <TabItem x:Name="flash_tab" Header="{x:Static props:Resources.nav_flash}" Tag="{StaticResource IconFlash}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <Border DockPanel.Dock="Right" Style="{StaticResource Chip}">
+                            <TextBlock x:Name="flash_target_device" FontFamily="{StaticResource UiFont}" FontSize="12"
+                                       Text="{x:Static props:Resources.flash_target_none}"/>
+                        </Border>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.fastboot_flash_payload}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.flash_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="170"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <DockPanel LastChildFill="False" Margin="0,0,0,14">
+                                <StackPanel DockPanel.Dock="Left">
+                                    <TextBlock x:Name="flash_file_name" FontSize="15" FontWeight="SemiBold" Text="{x:Static props:Resources.flash_no_payload}"/>
+                                    <TextBlock x:Name="flash_file_detail" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}" Margin="0,3,0,0"/>
+                                </StackPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                    <StackPanel Margin="0,0,28,0">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.label_phase}"/>
+                                        <TextBlock x:Name="flash_phase" Style="{StaticResource StatValue}" FontFamily="{StaticResource UiFont}" FontWeight="SemiBold" Foreground="{StaticResource Accent}" Text="{x:Static props:Resources.flash_phase_idle}"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,28,0">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.label_elapsed}"/>
+                                        <TextBlock x:Name="flash_elapsed" Style="{StaticResource StatValue}" Text="00:00"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.label_written}"/>
+                                        <TextBlock x:Name="flash_count" Style="{StaticResource StatValue}" Text="0 / 0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DockPanel>
+                            <ProgressBar x:Name="flash_overall_progress" Height="8"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Style="{StaticResource Card}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Top" Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.payload_partitions}"/>
+                                <ListView x:Name="flash_queue" local:ColumnFill.Column="2" local:ColumnFill.MinWidth="60">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="140" DisplayMemberBinding="{Binding Name}"/>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="115">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                            <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="100">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding State}" Foreground="{Binding StateBrush}" FontWeight="SemiBold"/>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </DockPanel>
+                        </Border>
+
+                        <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                            <StackPanel>
+                                <Button x:Name="fastboot_flash_payload" Style="{StaticResource AccentButton}" MinHeight="42" Margin="0,0,0,16"
+                                        Content="{x:Static props:Resources.fastboot_flash_payload}"/>
+                                <CheckBox x:Name="ignore_unknown_part" Margin="0,0,0,16" Content="{x:Static props:Resources.fastboot_ignore_unknown}"/>
+                                <TextBlock Style="{StaticResource Note}" Margin="0,0,0,8" Text="{x:Static props:Resources.flash_note_verify}"/>
+                                <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.flash_note_order}"/>
+                            </StackPanel>
+                        </Border>
                     </Grid>
-                    <Grid x:Name="payload_after_load" Visibility="Visible">
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition Height="70"></RowDefinition>
-                        </Grid.RowDefinitions>
+
+                    <Border Grid.Row="4" Style="{StaticResource Card}" Background="{StaticResource Rail}" Padding="16,12">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.live_log}"/>
+                            <TextBox FlowDirection="LeftToRight" x:Name="flash_log" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                                     FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
+                                     TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Payload ============================== -->
+        <TabItem x:Name="payload_tab" Header="{x:Static props:Resources.payload_dumper}" Tag="{StaticResource IconPayload}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <Grid DockPanel.Dock="Right" VerticalAlignment="Center">
+                            <StackPanel x:Name="payload_action_bar" Orientation="Horizontal">
+                                <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="320">
+                                    <Label x:Name="payload_cur_open" FontFamily="{StaticResource Mono}" FontSize="11.5"/>
+                                </Border>
+                                <Button x:Name="payload_remove" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.payload_remove_file}"/>
+                            </StackPanel>
+                            <ProgressBar x:Name="payload_progress" Width="300" Visibility="Hidden"/>
+                        </Grid>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.payload_dumper}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.payload_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <Grid x:Name="payload_before_load" AllowDrop="True" Background="Transparent">
+                        <Border Style="{StaticResource Card}" Width="560" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Padding="40,36" BorderBrush="{StaticResource AccentLine}">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="56" Height="56" CornerRadius="14" Background="{StaticResource AccentSoft}" HorizontalAlignment="Center" Margin="0,0,0,18">
+                                    <Path Data="{StaticResource IconPayload}" Stroke="{StaticResource Accent}" StrokeThickness="1.8"
+                                          StrokeLineJoin="Round" Stretch="Uniform" Margin="15"/>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{x:Static props:Resources.payload_drop_hint}"/>
+                                <TextBlock Style="{StaticResource Note}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,6,0,22"
+                                           Text="{x:Static props:Resources.payload_no_file_str}"/>
+                                <Grid HorizontalAlignment="Center">
+                                    <Button x:Name="payload_load_btn" Style="{StaticResource AccentButton}" MinWidth="180" MinHeight="40"
+                                            Content="{x:Static props:Resources.payload_browse}"/>
+                                    <ProgressBar x:Name="payload_opening" Width="260" IsIndeterminate="True" Visibility="Hidden" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Grid x:Name="payload_after_load" Visibility="Collapsed">
                         <TabControl>
                             <TabItem Header="{x:Static props:Resources.payload_basic_properties}">
-                                <Grid>
-                                    <ListView x:Name="payload_info">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="payload_info" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="200" DisplayMemberBinding="{Binding title}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_value}" Width="260" DisplayMemberBinding="{Binding value}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="240" DisplayMemberBinding="{Binding title}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_value}" Width="420" DisplayMemberBinding="{Binding value}"/>
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
-                                </Grid>
+                                </Border>
                             </TabItem>
+
                             <TabItem Header="{x:Static props:Resources.payload_partitions}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                                        <ColumnDefinition Width="4*"></ColumnDefinition>
-                                        <ColumnDefinition Width="200"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="250"/>
                                     </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition></RowDefinition>
-                                        <RowDefinition Height="6*"></RowDefinition>
-                                    </Grid.RowDefinitions>
-                                    <Label Content="{x:Static props:Resources.payload_partitions_filter_by_name}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                    <TextBox x:Name="payload_partition_name_textbox" Height="20" Margin="10 0 20 0" Grid.Column="1"/>
-                                    <ListView x:Name="payload_partition_info" Grid.Row="1" Grid.ColumnSpan="2">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="120" DisplayMemberBinding="{Binding name}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="100" DisplayMemberBinding="{Binding size}"/>
-                                                <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="120" DisplayMemberBinding="{Binding hash}"/>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                    <Grid Grid.Column="2" Grid.Row="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition Height="5*"></RowDefinition>
-                                        </Grid.RowDefinitions>
-                                        <Button x:Name="payload_extract" Content="{x:Static props:Resources.payload_extract_image}" Margin="5" />
-                                        <GroupBox x:Name="payload_extract_options" Header="{x:Static props:Resources.payload_extract_options}" Grid.Row="1" Margin="4">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                    <RowDefinition></RowDefinition>
-                                                </Grid.RowDefinitions>
-                                                <CheckBox x:Name="payload_ignore_delta" Content="{x:Static props:Resources.payload_extract_incremental}" VerticalAlignment="Center"/>
-                                                <CheckBox x:Name="payload_ignore_unknown_op" Content="{x:Static props:Resources.payload_extract_ignore_unknown}" Grid.Row="1" VerticalAlignment="Center"/>
-                                                <CheckBox x:Name="payload_ignore_check" Content="{x:Static props:Resources.payload_extract_ignore_verify}" Grid.Row="2" VerticalAlignment="Center"/>
-                                            </Grid>
-                                        </GroupBox>
-                                    </Grid>
+
+                                    <Border Style="{StaticResource Card}">
+                                        <DockPanel>
+                                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                                <TextBlock DockPanel.Dock="Left" Style="{StaticResource CardTitle}" Margin="0,0,14,0" VerticalAlignment="Center"
+                                                           Text="{x:Static props:Resources.payload_partitions}"/>
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBlock Text="{x:Static props:Resources.payload_partitions_filter_by_name}" Foreground="{StaticResource Dim}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                                    <TextBox FlowDirection="LeftToRight" x:Name="payload_partition_name_textbox" Width="240"/>
+                                                </StackPanel>
+                                            </DockPanel>
+                                            <ListView x:Name="payload_partition_info" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="70" local:ColumnFill.HideWhenNarrow="True">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_name}" Width="125" DisplayMemberBinding="{Binding name}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_size}" Width="85" DisplayMemberBinding="{Binding size}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.column_codec}" Width="90" DisplayMemberBinding="{Binding codecs}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.column_extractable}" Width="85" DisplayMemberBinding="{Binding extractable}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.payload_partitions_hash}" Width="190">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding hash}" FontFamily="{StaticResource Mono}" FontSize="11"
+                                                                               Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis" ToolTip="{Binding hash}"/>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                        </DockPanel>
+                                    </Border>
+
+                                    <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                                        <StackPanel>
+                                            <Button x:Name="payload_extract" Style="{StaticResource AccentButton}" MinHeight="40" Margin="0,0,0,18"
+                                                    Content="{x:Static props:Resources.payload_extract_image}"/>
+                                            <Border x:Name="payload_extract_options">
+                                                <StackPanel>
+                                                    <TextBlock Style="{StaticResource SectionLabel}" Margin="0,0,0,10" Text="{x:Static props:Resources.payload_extract_options}"/>
+                                                    <CheckBox x:Name="payload_ignore_delta" Margin="0,0,0,12" Content="{x:Static props:Resources.payload_extract_incremental}"/>
+                                                    <CheckBox x:Name="payload_ignore_unknown_op" Margin="0,0,0,12" Content="{x:Static props:Resources.payload_extract_ignore_unknown}"/>
+                                                    <CheckBox x:Name="payload_ignore_check" Content="{x:Static props:Resources.payload_extract_ignore_verify}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
                                 </Grid>
                             </TabItem>
+
                             <TabItem Header="{x:Static props:Resources.payload_dynamic_partition_metadata}">
-                                <Grid>
-                                    <ListView x:Name="payload_dynamic_partition_meta">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="payload_dynamic_partition_meta" local:ColumnFill.Column="0" local:ColumnFill.MinWidth="200">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Width="410" DisplayMemberBinding="{Binding line}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_dynamic_partition_metadata}" Width="640" DisplayMemberBinding="{Binding line}"/>
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
-                                </Grid>
+                                </Border>
                             </TabItem>
                         </TabControl>
-                        <Grid Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="20*"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <ProgressBar x:Name="payload_progress" Visibility="Hidden" Grid.Row="1" Grid.Column="1"/>
-                        </Grid>
-
-                        <Grid Grid.Row="1">
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition Height="2*"></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Grid x:Name="payload_action_bar" Visibility="Visible" Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-                                <Button x:Name="payload_remove" Margin="5 5 5 5" Content="{x:Static props:Resources.payload_remove_file}" Grid.Column="1"/>
-                                <Label x:Name="payload_cur_open" Content="当前打开的文件" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Grid>
                     </Grid>
                 </Grid>
-            </TabItem>
-            <TabItem Header="{x:Static props:Resources.about}">
-                <Grid>
-                    <Canvas Width="450" Height="250">
-                        <Image Height="128" Width="128" Source="big_icon.png" Canvas.Left="38" Canvas.Top="50"/>
-                        <Label Content="Fastboot Enhance" Canvas.Left="211" Canvas.Top="53" FontSize="20"/>
-                        <Label Content="{x:Static props:Resources.author}" Canvas.Left="192" Canvas.Top="94"/>
-                        <Label Content="{x:Static props:Resources.release_at}" Canvas.Left="211" Canvas.Top="118"/>
-                        <Button Content="{x:Static props:Resources.visit_thread}" Canvas.Left="211" Canvas.Top="149" Width="75" Click="Thread_Click"/>
-                        <Button Content="{x:Static props:Resources.open_source}" Canvas.Left="317" Canvas.Top="149" Width="75" Click="OSS_Click"/>
-                    </Canvas>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Image tools ============================== -->
+        <TabItem x:Name="images_tab" Header="{x:Static props:Resources.nav_images}" Tag="{StaticResource IconLayers}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel x:Name="images_header_actions" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Visibility="Collapsed">
+                            <Border Style="{StaticResource Chip}" Margin="0,0,10,0" MaxWidth="260">
+                                <TextBlock x:Name="images_file_name" FontFamily="{StaticResource Mono}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                            </Border>
+                            <Button x:Name="images_open_other" Margin="0,0,10,0" Content="{x:Static props:Resources.images_open}"/>
+                            <Button x:Name="images_close" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.payload_remove_file}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_images}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.images_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <!-- Nothing open: drop zone -->
+                    <Grid x:Name="images_empty" AllowDrop="True" Background="Transparent">
+                        <Border Style="{StaticResource Card}" Width="600" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Padding="40,34" BorderBrush="{StaticResource AccentLine}">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="56" Height="56" CornerRadius="14" Background="{StaticResource AccentSoft}" HorizontalAlignment="Center" Margin="0,0,0,18">
+                                    <Path Data="{StaticResource IconLayers}" Stroke="{StaticResource Accent}" StrokeThickness="1.8"
+                                          StrokeLineJoin="Round" Stretch="Uniform" Margin="15"/>
+                                </Border>
+                                <TextBlock HorizontalAlignment="Center" FontSize="15" FontWeight="SemiBold" Text="{x:Static props:Resources.images_drop_hint}"/>
+                                <TextBlock Style="{StaticResource Note}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,6,0,22"
+                                           Text="{x:Static props:Resources.images_drop_detail}"/>
+                                <Grid HorizontalAlignment="Center">
+                                    <Button x:Name="images_open" Style="{StaticResource AccentButton}" MinWidth="180" MinHeight="40"
+                                            Content="{x:Static props:Resources.images_open}"/>
+                                    <ProgressBar x:Name="images_opening" Width="260" IsIndeterminate="True" Visibility="Hidden" VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- An image is open -->
+                    <Grid x:Name="images_loaded" Visibility="Collapsed" AllowDrop="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="18"/>
+                            <ColumnDefinition Width="250"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TabControl x:Name="images_tabs">
+                            <TabItem x:Name="images_details_tab" Header="{x:Static props:Resources.images_tab_details}">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="images_details" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_name}" Width="140" DisplayMemberBinding="{Binding Name}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.payload_property_value}" Width="300" DisplayMemberBinding="{Binding Value}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </Border>
+                            </TabItem>
+                            <TabItem x:Name="images_partitions_tab" Header="{x:Static props:Resources.images_tab_partitions}">
+                                <Border Style="{StaticResource Card}">
+                                    <DockPanel>
+                                        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                            <Button x:Name="images_select_all" Margin="0,0,8,0" Content="{x:Static props:Resources.images_select_all}"/>
+                                            <Button x:Name="images_select_none" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.backup_select_none}"/>
+                                        </WrapPanel>
+                                        <ListView x:Name="images_partitions" SelectionMode="Single" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="70">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn Width="38">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" IsEnabled="{Binding CanExtract}" Focusable="False"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="120" DisplayMemberBinding="{Binding Name}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="80" DisplayMemberBinding="{Binding Size}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="64">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="140">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding Detail}" Foreground="{Binding StateBrush}" TextTrimming="CharacterEllipsis"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </DockPanel>
+                                </Border>
+                            </TabItem>
+                            <TabItem x:Name="images_chunks_tab" Header="{x:Static props:Resources.images_tab_chunks}">
+                                <Border Style="{StaticResource Card}">
+                                    <ListView x:Name="images_chunks" local:ColumnFill.Column="4" local:ColumnFill.MinWidth="80">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="#" Width="60" DisplayMemberBinding="{Binding Index}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_type}" Width="100" DisplayMemberBinding="{Binding Type}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_start}" Width="110" DisplayMemberBinding="{Binding Start}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_blocks}" Width="90" DisplayMemberBinding="{Binding Blocks}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="100" DisplayMemberBinding="{Binding Size}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </Border>
+                            </TabItem>
+                        </TabControl>
+
+                        <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_save_to}"/>
+                                <DockPanel Margin="0,0,0,14">
+                                    <Button x:Name="images_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
+                                            Content="{x:Static props:Resources.backup_change}"/>
+                                    <TextBlock x:Name="images_out_folder" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5"
+                                               Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                </DockPanel>
+
+                                <Button x:Name="images_extract" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_extract}"/>
+                                <Button x:Name="images_to_raw" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_to_raw}"/>
+                                <Button x:Name="images_to_sparse" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.images_to_sparse}"/>
+
+                                <CheckBox x:Name="images_split" Margin="0,4,0,6" Content="{x:Static props:Resources.images_split}"/>
+                                <DockPanel x:Name="images_split_row" Margin="26,0,0,12">
+                                    <TextBlock DockPanel.Dock="Right" Text="MB" Foreground="{StaticResource Dim}" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                    <TextBox x:Name="images_split_mb" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="512"/>
+                                </DockPanel>
+
+                                <Button x:Name="images_cancel" Style="{StaticResource DangerButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                        Content="{x:Static props:Resources.backup_cancel}"/>
+                                <ProgressBar x:Name="images_progress" Height="6" Margin="0,4,0,6"/>
+                                <TextBlock x:Name="images_progress_text" FontFamily="{StaticResource Mono}" FontSize="11" Foreground="{StaticResource Dim}"
+                                           TextTrimming="CharacterEllipsis" Margin="0,0,0,12"/>
+                                <Button x:Name="images_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.backup_open_folder}"/>
+                                <TextBlock x:Name="images_note" Style="{StaticResource Note}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
                 </Grid>
-            </TabItem>
-        </TabControl>
-    </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Build super ============================== -->
+        <TabItem x:Name="super_tab" Header="{x:Static props:Resources.nav_super}" Tag="{StaticResource IconBricks}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="super_import" Margin="0,0,10,0" Content="{x:Static props:Resources.super_import}"/>
+                            <Button x:Name="super_read_phone" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.super_read_phone}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_super}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.super_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,20,28,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="18"/>
+                        <ColumnDefinition Width="290"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid x:Name="super_editor">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Layout: slots, size, group -->
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_layout}"/>
+                                <WrapPanel>
+                                    <RadioButton x:Name="super_mode_vab" Style="{StaticResource Segment}" GroupName="super_mode" IsChecked="True"
+                                                 Content="{x:Static props:Resources.super_mode_vab}"/>
+                                    <RadioButton x:Name="super_mode_ab" Style="{StaticResource Segment}" GroupName="super_mode"
+                                                 Content="{x:Static props:Resources.super_mode_ab}"/>
+                                    <RadioButton x:Name="super_mode_single" Style="{StaticResource Segment}" GroupName="super_mode"
+                                                 Content="{x:Static props:Resources.super_mode_single}"/>
+                                    <RadioButton x:Name="super_mode_imported" Style="{StaticResource Segment}" GroupName="super_mode" Visibility="Collapsed"
+                                                 Content="{x:Static props:Resources.super_mode_imported}"/>
+                                </WrapPanel>
+                                <TextBlock x:Name="super_mode_note" Style="{StaticResource Note}" Margin="0,0,0,12"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_size}"/>
+                                        <TextBox x:Name="super_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
+                                                 Tag="{x:Static props:Resources.super_size_hint}"/>
+                                        <TextBlock x:Name="super_size_human" Style="{StaticResource Note}" Margin="2,3,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_name}"/>
+                                        <TextBox x:Name="super_group" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="main"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_group_size}"/>
+                                        <TextBox x:Name="super_group_size" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"
+                                                 Tag="{x:Static props:Resources.super_auto}"/>
+                                        <TextBlock x:Name="super_group_size_human" Style="{StaticResource Note}" Margin="2,3,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <DockPanel Margin="0,8,0,0">
+                                    <TextBlock x:Name="super_usage_text" DockPanel.Dock="Top" Style="{StaticResource Note}" Margin="0,0,0,6"/>
+                                    <ProgressBar x:Name="super_usage" Height="8"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Partitions -->
+                        <Border Grid.Row="2" Style="{StaticResource Card}">
+                            <DockPanel>
+                                <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                    <Button x:Name="super_add" Style="{StaticResource AccentButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_add}"/>
+                                    <Button x:Name="super_add_folder" Margin="0,0,8,6" Content="{x:Static props:Resources.super_add_folder}"/>
+                                    <Button x:Name="super_remove" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_remove}"/>
+                                    <Button x:Name="super_clear" Style="{StaticResource GhostButton}" Margin="0,0,8,6" Content="{x:Static props:Resources.super_clear}"/>
+                                </WrapPanel>
+                                <Grid>
+                                    <ListView x:Name="super_partitions" SelectionMode="Extended" AllowDrop="True"
+                                              local:ColumnFill.Column="3" local:ColumnFill.MinWidth="90">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="115">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Name}" Foreground="{Binding NameBrush}" FontFamily="{StaticResource Mono}" FontSize="12.5"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="{x:Static props:Resources.images_column_group}" Width="100">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Group}" Foreground="{StaticResource Dim}" TextTrimming="CharacterEllipsis"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="80" DisplayMemberBinding="{Binding Size}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.super_column_image}" Width="150">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding Image}" ToolTip="{Binding ImagePath}" Foreground="{Binding ImageBrush}"
+                                                                       FlowDirection="{Binding ImageFlow}" TextTrimming="CharacterEllipsis"/>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <TextBlock x:Name="super_partitions_empty" Style="{StaticResource Note}" Margin="14,44,14,0" TextAlignment="Center"
+                                               HorizontalAlignment="Center" MaxWidth="460" IsHitTestVisible="False"
+                                               Text="{x:Static props:Resources.super_empty_hint}"/>
+                                </Grid>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- Output and build -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.super_output}"/>
+                            <WrapPanel x:Name="super_format_panel">
+                                <RadioButton x:Name="super_format_sparse" Style="{StaticResource Segment}" GroupName="super_format" IsChecked="True"
+                                             Content="{x:Static props:Resources.super_format_sparse}"/>
+                                <RadioButton x:Name="super_format_raw" Style="{StaticResource Segment}" GroupName="super_format"
+                                             Content="{x:Static props:Resources.super_format_raw}"/>
+                            </WrapPanel>
+                            <TextBlock Style="{StaticResource Note}" Margin="0,0,0,12" Text="{x:Static props:Resources.super_format_note}"/>
+                            <CheckBox x:Name="super_verify" IsChecked="True" Margin="0,0,0,14" Content="{x:Static props:Resources.super_verify}"/>
+
+                            <Border x:Name="super_problems_box" Background="{StaticResource DangerSoft}" BorderBrush="{StaticResource DangerLine}"
+                                    BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,12" Visibility="Collapsed">
+                                <TextBlock x:Name="super_problems" Foreground="{StaticResource Danger}" FontSize="12" TextWrapping="Wrap" LineHeight="18"/>
+                            </Border>
+
+                            <Button x:Name="super_build" Style="{StaticResource AccentButton}" MinHeight="40" Margin="0,0,0,8"
+                                    Content="{x:Static props:Resources.super_build}"/>
+                            <Button x:Name="super_cancel" Style="{StaticResource DangerButton}" Margin="0,0,0,8" Visibility="Collapsed"
+                                    Content="{x:Static props:Resources.backup_cancel}"/>
+                            <ProgressBar x:Name="super_progress" Height="6" Margin="0,4,0,6"/>
+                            <TextBlock x:Name="super_progress_text" FontSize="11" Foreground="{StaticResource Dim}"
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,0,12"/>
+                            <Button x:Name="super_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14"
+                                    Content="{x:Static props:Resources.backup_open_folder}"/>
+                            <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.super_flash_note}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Backup ============================== -->
+        <TabItem x:Name="backup_tab" Header="{x:Static props:Resources.nav_backup}" Tag="{StaticResource IconBackup}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_backup}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.backup_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,16,28,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Device over adb -->
+                    <Border Style="{StaticResource Card}" Padding="20,14" Margin="0,0,0,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="300"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_adb_devices}"/>
+                                <Grid>
+                                    <ListView x:Name="backup_devices" SelectionMode="Single" MaxHeight="104"
+                                              local:ColumnFill.Column="1" local:ColumnFill.MinWidth="90">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="{x:Static props:Resources.fastboot_serial_num}" Width="170" DisplayMemberBinding="{Binding Serial}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.backup_column_model}" Width="160" DisplayMemberBinding="{Binding Model}"/>
+                                                <GridViewColumn Header="{x:Static props:Resources.backup_column_mode}" Width="100" DisplayMemberBinding="{Binding State}"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                    <TextBlock x:Name="backup_devices_empty" Style="{StaticResource Note}" Margin="10,36,10,6"
+                                               Text="{x:Static props:Resources.backup_waiting}"/>
+                                </Grid>
+                            </StackPanel>
+                            <Border Grid.Column="1" Margin="20,0,0,0" Padding="16,0,0,0" BorderBrush="{StaticResource Line}" BorderThickness="1,0,0,0">
+                                <TextBlock x:Name="backup_device_note" Style="{StaticResource Note}" VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- The phone is in fastboot: say why backup cannot work there and how to get out of it. -->
+                    <Border x:Name="backup_fastboot_panel" Grid.Row="1" Style="{StaticResource WarnCard}" VerticalAlignment="Top"
+                            Visibility="Collapsed" Panel.ZIndex="1">
+                        <StackPanel>
+                            <DockPanel Margin="0,0,0,8">
+                                <Border DockPanel.Dock="Left" Width="34" Height="34" CornerRadius="10" Background="{StaticResource WarnSoft}"
+                                        BorderBrush="{StaticResource WarnLine}" BorderThickness="1" Margin="0,0,14,0" VerticalAlignment="Top">
+                                    <Path FlowDirection="LeftToRight" Data="M12,3 L22,20.5 H2 Z M12,9.5 V14 M12,17 V17.5" Stroke="{StaticResource Warn}"
+                                          StrokeThickness="2" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          Stretch="Uniform" Width="18" Height="18"/>
+                                </Border>
+                                <StackPanel>
+                                    <TextBlock x:Name="backup_fb_title" Style="{StaticResource CardTitle}" Margin="0,0,0,4"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_why}"/>
+                                </StackPanel>
+                            </DockPanel>
+
+                            <Grid Margin="48,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Margin="0,0,16,14">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_android}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_android_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_reboot_system" Grid.Column="1" MinWidth="190" VerticalAlignment="Top" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.fastboot_reboot_system}"/>
+
+                                <StackPanel Grid.Row="1" Margin="0,0,16,14">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_recovery}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_recovery_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_reboot_recovery" Grid.Row="1" Grid.Column="1" MinWidth="190" VerticalAlignment="Top" Margin="0,0,0,14"
+                                        Content="{x:Static props:Resources.fastboot_reboot_recovery}"/>
+
+                                <StackPanel Grid.Row="2" Margin="0,0,16,0">
+                                    <TextBlock FontWeight="SemiBold" Text="{x:Static props:Resources.backup_fb_boot}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_fb_boot_note}"/>
+                                </StackPanel>
+                                <Button x:Name="backup_fb_boot_image" Grid.Row="2" Grid.Column="1" MinWidth="190" VerticalAlignment="Top"
+                                        Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.backup_fb_boot_button}"/>
+                            </Grid>
+
+                            <TextBlock x:Name="backup_fb_status" Style="{StaticResource Note}" Margin="48,14,0,0" Foreground="{StaticResource Accent}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TabControl x:Name="backup_tabs" Grid.Row="1">
+                        <!-- Partitions -->
+                        <TabItem x:Name="backup_partitions_tab" Header="{x:Static props:Resources.backup_tab_partitions}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="240"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Style="{StaticResource Card}">
+                                    <DockPanel>
+                                        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                            <Button x:Name="backup_read" Style="{StaticResource AccentButton}" Margin="0,0,8,4"
+                                                    Content="{x:Static props:Resources.backup_read}"/>
+                                            <Button x:Name="backup_select_critical" Margin="0,0,8,4"
+                                                    Content="{x:Static props:Resources.backup_select_critical}"/>
+                                            <Button x:Name="backup_select_none" Style="{StaticResource GhostButton}" Margin="0,0,0,4"
+                                                    Content="{x:Static props:Resources.backup_select_none}"/>
+                                        </WrapPanel>
+                                        <TextBox x:Name="backup_filter" DockPanel.Dock="Top" Margin="0,0,0,10" Tag="{x:Static props:Resources.backup_filter_hint}"/>
+                                        <ListView x:Name="backup_partition_list" SelectionMode="Single"
+                                                  local:ColumnFill.Column="3" local:ColumnFill.MinWidth="50">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn Width="38">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}" Focusable="False"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_partition}" Width="130" DisplayMemberBinding="{Binding Name}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="85" DisplayMemberBinding="{Binding Size}"/>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_progress}" Width="100">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <ProgressBar Margin="0,0,12,0" Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding StateBrush}"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                    <GridViewColumn Header="{x:Static props:Resources.column_state}" Width="80">
+                                                        <GridViewColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding State}" Foreground="{Binding StateBrush}" FontWeight="SemiBold"/>
+                                                            </DataTemplate>
+                                                        </GridViewColumn.CellTemplate>
+                                                    </GridViewColumn>
+                                                </GridView>
+                                            </ListView.View>
+                                        </ListView>
+                                    </DockPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_save_to}"/>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <Button x:Name="backup_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
+                                                    Content="{x:Static props:Resources.backup_change}"/>
+                                            <TextBlock x:Name="backup_save_root" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
+                                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        </DockPanel>
+                                        <Button x:Name="backup_start" Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.backup_start}"/>
+                                        <Button x:Name="backup_cancel" Style="{StaticResource DangerButton}" Margin="0,8,0,0" Visibility="Collapsed"
+                                                Content="{x:Static props:Resources.backup_cancel}"/>
+                                        <ProgressBar x:Name="backup_progress" Height="6" Margin="0,14,0,6"/>
+                                        <TextBlock x:Name="backup_progress_text" FontFamily="{StaticResource Mono}" FontSize="11" Foreground="{StaticResource Dim}"
+                                                   TextTrimming="CharacterEllipsis" Margin="0,0,0,12"/>
+                                        <Button x:Name="backup_verify" Margin="0,0,0,8" Content="{x:Static props:Resources.backup_verify}"/>
+                                        <Button x:Name="backup_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14" Content="{x:Static props:Resources.backup_open_folder}"/>
+                                        <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.backup_note}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+
+                        <!-- Files -->
+                        <TabItem x:Name="backup_files_tab" Header="{x:Static props:Resources.backup_tab_files}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="240"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Style="{StaticResource Card}">
+                                    <DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10" LastChildFill="True">
+                                            <Button x:Name="files_up" DockPanel.Dock="Left" Style="{StaticResource GhostButton}" Margin="0,0,8,0" Padding="12,6"
+                                                    Content="{x:Static props:Resources.files_up}"/>
+                                            <Button x:Name="files_go" DockPanel.Dock="Right" Margin="8,0,0,0" Content="{x:Static props:Resources.files_go}"/>
+                                            <TextBox FlowDirection="LeftToRight" x:Name="files_path" FontFamily="{StaticResource Mono}" Text="/sdcard"/>
+                                        </DockPanel>
+                                        <WrapPanel x:Name="files_quick_bar" DockPanel.Dock="Top" Margin="0,0,0,10">
+                                            <Button x:Name="files_quick_storage" Style="{StaticResource GhostButton}" Padding="10,4" Margin="0,0,6,0" FontSize="12"
+                                                    Tag="/sdcard" Content="{x:Static props:Resources.files_quick_storage}"/>
+                                            <Button x:Name="files_quick_dcim" Style="{StaticResource GhostButton}" Padding="10,4" Margin="0,0,6,0" FontSize="12"
+                                                    Tag="/sdcard/DCIM" Content="{x:Static props:Resources.files_quick_dcim}"/>
+                                            <Button x:Name="files_quick_pictures" Style="{StaticResource GhostButton}" Padding="10,4" Margin="0,0,6,0" FontSize="12"
+                                                    Tag="/sdcard/Pictures" Content="{x:Static props:Resources.files_quick_pictures}"/>
+                                            <Button x:Name="files_quick_download" Style="{StaticResource GhostButton}" Padding="10,4" Margin="0,0,6,0" FontSize="12"
+                                                    Tag="/sdcard/Download" Content="{x:Static props:Resources.files_quick_download}"/>
+                                            <Button x:Name="files_quick_documents" Style="{StaticResource GhostButton}" Padding="10,4" FontSize="12"
+                                                    Tag="/sdcard/Documents" Content="{x:Static props:Resources.files_quick_documents}"/>
+                                        </WrapPanel>
+                                        <TextBlock x:Name="files_status" DockPanel.Dock="Bottom" Style="{StaticResource Note}" Margin="2,8,0,0"/>
+                                        <Grid>
+                                            <ListView x:Name="files_list" SelectionMode="Extended"
+                                                      local:ColumnFill.Column="0" local:ColumnFill.MinWidth="160">
+                                                <ListView.View>
+                                                    <GridView>
+                                                        <GridViewColumn Header="{x:Static props:Resources.files_column_name}" Width="240">
+                                                            <GridViewColumn.CellTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Path Data="{Binding Icon}" Stroke="{Binding IconBrush}" StrokeThickness="1.6"
+                                                                              StrokeLineJoin="Round" Stretch="Uniform" Width="15" Height="15" Margin="0,0,9,0"/>
+                                                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </GridViewColumn.CellTemplate>
+                                                        </GridViewColumn>
+                                                        <GridViewColumn Header="{x:Static props:Resources.column_size}" Width="90" DisplayMemberBinding="{Binding Size}"/>
+                                                        <GridViewColumn Header="{x:Static props:Resources.files_column_kind}" Width="90" DisplayMemberBinding="{Binding Kind}"/>
+                                                    </GridView>
+                                                </ListView.View>
+                                            </ListView>
+                                            <TextBlock x:Name="files_empty" Style="{StaticResource Note}" Margin="10,44,10,0" Visibility="Collapsed"
+                                                       Text="{x:Static props:Resources.files_empty}"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.backup_save_to}"/>
+                                        <DockPanel Margin="0,0,0,14">
+                                            <Button x:Name="files_change_folder" DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Padding="10,4"
+                                                    Content="{x:Static props:Resources.backup_change}"/>
+                                            <TextBlock x:Name="files_save_root" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" FontSize="11.5" Foreground="{StaticResource Dim}"
+                                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        </DockPanel>
+                                        <Button x:Name="files_pull" Style="{StaticResource AccentButton}" Content="{x:Static props:Resources.files_pull}"/>
+                                        <Button x:Name="files_cancel" Style="{StaticResource DangerButton}" Margin="0,8,0,0" Visibility="Collapsed"
+                                                Content="{x:Static props:Resources.backup_cancel}"/>
+                                        <ProgressBar x:Name="files_progress" Height="6" Margin="0,14,0,14"/>
+                                        <Button x:Name="files_open_folder" Style="{StaticResource GhostButton}" Margin="0,0,0,14" Content="{x:Static props:Resources.backup_open_folder}"/>
+                                        <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.files_note}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== Logs ============================== -->
+        <TabItem x:Name="logs_tab" Header="{x:Static props:Resources.nav_logs}" Tag="{StaticResource IconLogs}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="log_copy" Margin="0,0,10,0" Content="{x:Static props:Resources.logs_copy}"/>
+                            <Button x:Name="log_clear" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.logs_clear}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_logs}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.logs_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Row="1" Margin="28,20,28,20" Style="{StaticResource Card}" Background="{StaticResource Rail}">
+                    <TextBox FlowDirection="LeftToRight" x:Name="log_text" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                             FontFamily="{StaticResource Mono}" FontSize="12" Foreground="{StaticResource Dim}"
+                             TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <!-- ============================== About ============================== -->
+        <TabItem x:Name="about_tab" Header="{x:Static props:Resources.about}" Tag="{StaticResource IconAbout}">
+            <Grid>
+                <Border Style="{StaticResource Card}" Width="660" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="32,28">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Width="112" Height="112" CornerRadius="22" ClipToBounds="True" VerticalAlignment="Top">
+                            <Image FlowDirection="LeftToRight" Source="big_icon.png" Stretch="UniformToFill"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="26,4,0,0">
+                            <TextBlock Text="Fastboot Studio" FontSize="22" FontWeight="SemiBold"/>
+                            <TextBlock Text="v2.0.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
+                            <TextBlock Style="{StaticResource Note}" Margin="0,0,0,20" Text="{x:Static props:Resources.about_engine}"/>
+
+                            <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.about_developer}"/>
+                            <TextBlock Text="IFOKNR" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,22">
+                                <Button x:Name="about_telegram" Style="{StaticResource AccentButton}" Margin="0,0,10,0" Click="Telegram_Click">
+                                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                        <Path FlowDirection="LeftToRight" Data="M21.5,3.5 L2.5,11 L9,13.2 L18,7 L11,14.5 L11,20 L14.5,16.2 L18.5,19.5 Z" Fill="{StaticResource AccentInk}"
+                                              Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
+                                        <TextBlock Text="@IFOKNR1" FontFamily="{StaticResource Mono}"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="about_github" Click="GitHub_Click">
+                                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                        <Path FlowDirection="LeftToRight" Data="{StaticResource IconGitHub}" Fill="{StaticResource Text}"
+                                              Stretch="Uniform" Width="15" Height="15" Margin="0,0,8,0"/>
+                                        <TextBlock Text="github.com/ifoknr" FontFamily="{StaticResource Mono}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+
+                            <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,18,0,0">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.about_original}"/>
+                                    <TextBlock Text="LibXZR" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                    <TextBlock Style="{StaticResource Note}" Margin="0,0,0,12" Text="{x:Static props:Resources.about_original_detail}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource GhostButton}" Margin="0,0,10,0" Content="{x:Static props:Resources.about_original_project}" Click="OSS_Click"/>
+                                        <Button Style="{StaticResource GhostButton}" Margin="0,0,10,0" Content="{x:Static props:Resources.visit_thread}" Click="Thread_Click"/>
+                                        <Button x:Name="about_license" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.about_license}" Click="License_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" Padding="0,16,0,0" Margin="0,18,0,0">
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.language}"/>
+                                    <WrapPanel x:Name="language_buttons"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>

@@ -1,0 +1,1432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="about" xml:space="preserve">
+    <value>حول</value>
+  </data>
+  <data name="app_name" xml:space="preserve">
+    <value>Fastboot Studio</value>
+  </data>
+  <data name="author" xml:space="preserve">
+    <value>المطوّر الأصلي: LibXZR @ akr-developers.com</value>
+  </data>
+  <data name="disabled" xml:space="preserve">
+    <value>معطّل</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>مفعّل</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="fastboot_0_size" xml:space="preserve">
+    <value>غير معروف</value>
+  </data>
+  <data name="fastboot_basic_prop" xml:space="preserve">
+    <value>الخصائص الأساسية</value>
+  </data>
+  <data name="fastboot_cancel_update" xml:space="preserve">
+    <value>إلغاء التحديث المعلّق</value>
+  </data>
+  <data name="fastboot_choose_device" xml:space="preserve">
+    <value>انقر مرتين لاختيار الجهاز:</value>
+  </data>
+  <data name="fastboot_cow_exist_str0" xml:space="preserve">
+    <value>توجد أقسام Virtual A/B مؤقتة</value>
+  </data>
+  <data name="fastboot_cow_exist_str1" xml:space="preserve">
+    <value>الأقسام المؤقتة التي أنشأها تحديث النظام (Virtual A/B) موجودة على الجهاز. المتابعة بالقوة قد تُفشل التفليش لعدم كفاية المساحة في قسم super، وقد يتعطّل الجهاز.</value>
+  </data>
+  <data name="fastboot_cow_exist_str2" xml:space="preserve">
+    <value>( إذا لم يكن هناك تحديث جارٍ، يمكنك حذف الأقسام المؤقتة المنتهية بـ "cow" يدويًا لإزالة هذا التحذير )</value>
+  </data>
+  <data name="fastboot_cow_exist_str3" xml:space="preserve">
+    <value>هل تريد المتابعة؟</value>
+  </data>
+  <data name="fastboot_create_dynamic_partition" xml:space="preserve">
+    <value>إنشاء قسم منطقي جديد</value>
+  </data>
+  <data name="fastboot_current_device" xml:space="preserve">
+    <value>الجهاز الحالي: </value>
+  </data>
+  <data name="fastboot_current_slot" xml:space="preserve">
+    <value>الشق الحالي</value>
+  </data>
+  <data name="fastboot_device" xml:space="preserve">
+    <value>الجهاز</value>
+  </data>
+  <data name="fastboot_device_name" xml:space="preserve">
+    <value>اسم الجهاز</value>
+  </data>
+  <data name="fastboot_device_not_exist" xml:space="preserve">
+    <value>الجهاز المحدد غير موجود</value>
+  </data>
+  <data name="fastboot_enhance" xml:space="preserve">
+    <value>عرض Fastboot</value>
+  </data>
+  <data name="fastboot_expand_dynamic_partition" xml:space="preserve">
+    <value>توسيع قسم منطقي</value>
+  </data>
+  <data name="fastboot_filter_by_partition_name" xml:space="preserve">
+    <value>تصفية بالاسم:</value>
+  </data>
+  <data name="fastboot_flash_payload" xml:space="preserve">
+    <value>تفليش Payload.bin</value>
+  </data>
+  <data name="fastboot_ignore_unknown" xml:space="preserve">
+    <value>تجاهل الأقسام غير المعروفة</value>
+  </data>
+  <data name="fastboot_is_userspace" xml:space="preserve">
+    <value>في Fastbootd</value>
+  </data>
+  <data name="fastboot_not_support_multiselect" xml:space="preserve">
+    <value>هذه العملية لا تسمح باختيار أكثر من قسم.</value>
+  </data>
+  <data name="fastboot_only_logical" xml:space="preserve">
+    <value>هذه العملية متاحة للأقسام المنطقية فقط.</value>
+  </data>
+  <data name="fastboot_partition_action" xml:space="preserve">
+    <value>إجراءات</value>
+  </data>
+  <data name="fastboot_partition_action_create" xml:space="preserve">
+    <value>إنشاء</value>
+  </data>
+  <data name="fastboot_partition_action_delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="fastboot_partition_action_erase" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="fastboot_partition_action_flash" xml:space="preserve">
+    <value>تفليش</value>
+  </data>
+  <data name="fastboot_partition_action_resize" xml:space="preserve">
+    <value>تغيير الحجم</value>
+  </data>
+  <data name="fastboot_partition_is_dynamic" xml:space="preserve">
+    <value>منطقي</value>
+  </data>
+  <data name="fastboot_partition_name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="fastboot_partition_name_empty" xml:space="preserve">
+    <value>اسم القسم فارغ.</value>
+  </data>
+  <data name="fastboot_partition_size" xml:space="preserve">
+    <value>الحجم</value>
+  </data>
+  <data name="fastboot_partition_size_b" xml:space="preserve">
+    <value>الحجم (بايت)</value>
+  </data>
+  <data name="fastboot_partition_size_empty" xml:space="preserve">
+    <value>حجم القسم فارغ.</value>
+  </data>
+  <data name="fastboot_partition_size_invalid" xml:space="preserve">
+    <value>حجم القسم غير صالح.</value>
+  </data>
+  <data name="fastboot_partition_size_unable_shrink" xml:space="preserve">
+    <value>لا يمكن تصغير القسم. يمكنك حذفه وإنشاؤه من جديد.</value>
+  </data>
+  <data name="fastboot_partition_table" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="fastboot_prop_name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="fastboot_prop_value" xml:space="preserve">
+    <value>القيمة</value>
+  </data>
+  <data name="fastboot_reboot_bootloader" xml:space="preserve">
+    <value>إعادة التشغيل إلى Bootloader</value>
+  </data>
+  <data name="fastboot_reboot_fastbootd" xml:space="preserve">
+    <value>إعادة التشغيل إلى Fastbootd</value>
+  </data>
+  <data name="fastboot_reboot_recovery" xml:space="preserve">
+    <value>إعادة التشغيل إلى الريكفري</value>
+  </data>
+  <data name="fastboot_reboot_system" xml:space="preserve">
+    <value>إعادة التشغيل إلى النظام</value>
+  </data>
+  <data name="fastboot_remove_device" xml:space="preserve">
+    <value>قطع الاتصال</value>
+  </data>
+  <data name="fastboot_seamless_update" xml:space="preserve">
+    <value>تحديث سلس (A/B)</value>
+  </data>
+  <data name="fastboot_secure_boot" xml:space="preserve">
+    <value>الإقلاع الآمن</value>
+  </data>
+  <data name="fastboot_serial_num" xml:space="preserve">
+    <value>الرقم التسلسلي</value>
+  </data>
+  <data name="fastboot_setactive_a" xml:space="preserve">
+    <value>تفعيل الشق A</value>
+  </data>
+  <data name="fastboot_setactive_b" xml:space="preserve">
+    <value>تفعيل الشق B</value>
+  </data>
+  <data name="fastboot_show_logs" xml:space="preserve">
+    <value>عرض السجل</value>
+  </data>
+  <data name="fastboot_target_partition_not_selected" xml:space="preserve">
+    <value>لم يتم اختيار القسم بعد.</value>
+  </data>
+  <data name="fastboot_unknown_partition_str0" xml:space="preserve">
+    <value>الأقسام التالية المراد تفليشها قد تكون غير معروفة:</value>
+  </data>
+  <data name="fastboot_unknown_partition_str1" xml:space="preserve">
+    <value>يمكنك تفعيل خيار "تجاهل الأقسام غير المعروفة" لإخفاء هذا التحذير. وجود أقسام غير معروفة لا يعني أن التفليش سيفشل أو أن الجهاز سيتعطّل.</value>
+  </data>
+  <data name="fastboot_unknown_partition_str2" xml:space="preserve">
+    <value>قد تحتاج إلى إعادة التشغيل إلى وضع fastbootd.</value>
+  </data>
+  <data name="fastboot_update_status" xml:space="preserve">
+    <value>حالة تحديث النظام</value>
+  </data>
+  <data name="fastboot_update_status_merging" xml:space="preserve">
+    <value>قيد الدمج</value>
+  </data>
+  <data name="fastboot_update_status_none" xml:space="preserve">
+    <value>لا يوجد</value>
+  </data>
+  <data name="fastboot_update_status_snapshotted" xml:space="preserve">
+    <value>لقطة محفوظة</value>
+  </data>
+  <data name="fastboot_vab_staging_str0" xml:space="preserve">
+    <value>تحديث النظام قيد التنفيذ</value>
+  </data>
+  <data name="fastboot_vab_staging_str1" xml:space="preserve">
+    <value>الجهاز في منتصف تحديث للنظام، وتنفيذ العملية الآن قد يعطّل الجهاز.</value>
+  </data>
+  <data name="fastboot_vab_staging_str2" xml:space="preserve">
+    <value>( يمكنك إعادة تشغيل الجهاز إلى النظام والانتظار قليلًا حتى يكتمل التحديث )</value>
+  </data>
+  <data name="fastboot_vab_staging_str3" xml:space="preserve">
+    <value>هل تريد المتابعة؟</value>
+  </data>
+  <data name="fastboot_vbmeta_disable_verify" xml:space="preserve">
+    <value>هل تريد تعطيل التحقق في vbmeta؟</value>
+  </data>
+  <data name="fastboot_vbmeta_disable_verify_title" xml:space="preserve">
+    <value>تعطيل التحقق</value>
+  </data>
+  <data name="logger" xml:space="preserve">
+    <value>السجل</value>
+  </data>
+  <data name="no" xml:space="preserve">
+    <value>لا</value>
+  </data>
+  <data name="ok" xml:space="preserve">
+    <value>حسنًا</value>
+  </data>
+  <data name="open_source" xml:space="preserve">
+    <value>مفتوح المصدر</value>
+  </data>
+  <data name="operation_completed" xml:space="preserve">
+    <value>تمت العملية بنجاح</value>
+  </data>
+  <data name="operation_not_supported" xml:space="preserve">
+    <value>العملية غير مدعومة.</value>
+  </data>
+  <data name="payload_basic_properties" xml:space="preserve">
+    <value>الخصائص الأساسية</value>
+  </data>
+  <data name="payload_blocksize" xml:space="preserve">
+    <value>حجم الكتلة</value>
+  </data>
+  <data name="payload_browse" xml:space="preserve">
+    <value>استعراض</value>
+  </data>
+  <data name="payload_current_file" xml:space="preserve">
+    <value>الملف الحالي: </value>
+  </data>
+  <data name="payload_data_size" xml:space="preserve">
+    <value>حجم البيانات</value>
+  </data>
+  <data name="payload_dumper" xml:space="preserve">
+    <value>مستخرج Payload</value>
+  </data>
+  <data name="payload_dynamic_partition_metadata" xml:space="preserve">
+    <value>بيانات الأقسام الديناميكية</value>
+  </data>
+  <data name="payload_error_occur" xml:space="preserve">
+    <value>حدث خطأ.</value>
+  </data>
+  <data name="payload_extract_ignore_unknown" xml:space="preserve">
+    <value>تجاهل العمليات غير المعروفة</value>
+  </data>
+  <data name="payload_extract_ignore_verify" xml:space="preserve">
+    <value>تجاهل التحقق من البصمة</value>
+  </data>
+  <data name="payload_extract_image" xml:space="preserve">
+    <value>استخراج الصور</value>
+  </data>
+  <data name="payload_extract_incremental" xml:space="preserve">
+    <value>السماح بالحزم التراكمية</value>
+  </data>
+  <data name="payload_extract_options" xml:space="preserve">
+    <value>خيارات الاستخراج</value>
+  </data>
+  <data name="payload_full_package" xml:space="preserve">
+    <value>حزمة كاملة</value>
+  </data>
+  <data name="payload_incremental_warning" xml:space="preserve">
+    <value>لا يمكن استخراج الصور من حزمة تراكمية (incremental).</value>
+  </data>
+  <data name="payload_manifest_size" xml:space="preserve">
+    <value>حجم الـ Manifest</value>
+  </data>
+  <data name="payload_metadata_signature" xml:space="preserve">
+    <value>توقيعات البيانات الوصفية (Base64)</value>
+  </data>
+  <data name="payload_metadata_signature_size" xml:space="preserve">
+    <value>حجم توقيعات البيانات الوصفية</value>
+  </data>
+  <data name="payload_no_dynamic_metadata" xml:space="preserve">
+    <value>لا توجد بيانات أقسام ديناميكية</value>
+  </data>
+  <data name="payload_no_file_str" xml:space="preserve">
+    <value>لم يتم اختيار ملف payload. اضغط زر استعراض أو اسحب ملفًا إلى هنا.</value>
+  </data>
+  <data name="payload_partitions" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="payload_partitions_filter_by_name" xml:space="preserve">
+    <value>تصفية بالاسم:</value>
+  </data>
+  <data name="payload_partitions_hash" xml:space="preserve">
+    <value>البصمة (SHA-256)</value>
+  </data>
+  <data name="payload_partitions_name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="payload_partitions_size" xml:space="preserve">
+    <value>الحجم</value>
+  </data>
+  <data name="payload_partition_group_include" xml:space="preserve">
+    <value>الأقسام المضمّنة: </value>
+  </data>
+  <data name="payload_partition_group_name" xml:space="preserve">
+    <value>اسم مجموعة الأقسام: </value>
+  </data>
+  <data name="payload_partition_group_size" xml:space="preserve">
+    <value>حجم مجموعة الأقسام: </value>
+  </data>
+  <data name="payload_property_name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="payload_property_value" xml:space="preserve">
+    <value>القيمة</value>
+  </data>
+  <data name="payload_remove_file" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="payload_signature" xml:space="preserve">
+    <value>التوقيعات (Base64)</value>
+  </data>
+  <data name="payload_signature_size" xml:space="preserve">
+    <value>حجم التوقيعات</value>
+  </data>
+  <data name="payload_snapshot_enabled" xml:space="preserve">
+    <value>اللقطات مفعّلة: </value>
+  </data>
+  <data name="payload_target_partition_not_selected" xml:space="preserve">
+    <value>لم يتم اختيار الأقسام المراد استخراجها بعد.</value>
+  </data>
+  <data name="payload_timestamp" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="payload_unable_drop_multifile" xml:space="preserve">
+    <value>لا يمكن سحب أكثر من ملف واحد.</value>
+  </data>
+  <data name="payload_unsupported_format" xml:space="preserve">
+    <value>صيغة الملف غير مدعومة.</value>
+  </data>
+  <data name="payload_version" xml:space="preserve">
+    <value>إصدار Payload</value>
+  </data>
+  <data name="program_already_running" xml:space="preserve">
+    <value>البرنامج يعمل بالفعل</value>
+  </data>
+  <data name="release_at" xml:space="preserve">
+    <value>صفحة الإصدار: www.akr-developers.com</value>
+  </data>
+  <data name="select_save_path" xml:space="preserve">
+    <value>اختر مكان الحفظ</value>
+  </data>
+  <data name="unknown" xml:space="preserve">
+    <value>غير معروف</value>
+  </data>
+  <data name="visit_thread" xml:space="preserve">
+    <value>صفحة المشروع</value>
+  </data>
+  <data name="yes" xml:space="preserve">
+    <value>نعم</value>
+  </data>
+  <data name="nav_device" xml:space="preserve">
+    <value>الجهاز</value>
+  </data>
+  <data name="nav_flash" xml:space="preserve">
+    <value>التفليش</value>
+  </data>
+  <data name="nav_logs" xml:space="preserve">
+    <value>السجل</value>
+  </data>
+  <data name="device_subtitle" xml:space="preserve">
+    <value>حالة الجهاز مباشرة، والأقسام، والإجراءات السريعة</value>
+  </data>
+  <data name="device_list_title" xml:space="preserve">
+    <value>الأجهزة المتصلة</value>
+  </data>
+  <data name="device_list_hint" xml:space="preserve">
+    <value>انقر مرتين على الجهاز، أو اختره واضغط Enter.</value>
+  </data>
+  <data name="device_list_empty" xml:space="preserve">
+    <value>لا يوجد جهاز في وضع bootloader أو fastbootd. وصّل جهازك وسيظهر هنا خلال ثانية.</value>
+  </data>
+  <data name="device_variables" xml:space="preserve">
+    <value>متغيرات الجهاز</value>
+  </data>
+  <data name="quick_actions" xml:space="preserve">
+    <value>إجراءات سريعة</value>
+  </data>
+  <data name="preflash_checks" xml:space="preserve">
+    <value>فحوصات ما قبل التفليش</value>
+  </data>
+  <data name="partition_actions" xml:space="preserve">
+    <value>إجراءات القسم</value>
+  </data>
+  <data name="check_unlocked" xml:space="preserve">
+    <value>الـ Bootloader مفتوح: يمكن كتابة الصور</value>
+  </data>
+  <data name="check_locked" xml:space="preserve">
+    <value>الـ Bootloader مقفل: الجهاز سيرفض التفليش</value>
+  </data>
+  <data name="check_no_update" xml:space="preserve">
+    <value>لا يوجد تحديث Virtual A/B معلّق</value>
+  </data>
+  <data name="check_update_pending" xml:space="preserve">
+    <value>يوجد تحديث Virtual A/B في حالة {0}: ألغِه قبل التفليش</value>
+  </data>
+  <data name="check_cow" xml:space="preserve">
+    <value>توجد أقسام COW متبقية: احذفها قبل التفليش</value>
+  </data>
+  <data name="check_fastbootd" xml:space="preserve">
+    <value>في fastbootd: يمكن كتابة الأقسام المنطقية</value>
+  </data>
+  <data name="check_bootloader" xml:space="preserve">
+    <value>في الـ bootloader: أعد التشغيل إلى fastbootd لكتابة الأقسام المنطقية</value>
+  </data>
+  <data name="check_slot" xml:space="preserve">
+    <value>الشق النشط: {0}</value>
+  </data>
+  <data name="rail_devices" xml:space="preserve">
+    <value>{0} جهاز في وضع fastboot</value>
+  </data>
+  <data name="rail_no_fastboot" xml:space="preserve">
+    <value>ملف fastboot.exe مفقود</value>
+  </data>
+  <data name="flash_subtitle" xml:space="preserve">
+    <value>تُستخرج كل الصور بالتوازي ويُتحقق منها قبل كتابة أي شيء على الجهاز</value>
+  </data>
+  <data name="flash_no_payload" xml:space="preserve">
+    <value>لم يتم اختيار payload</value>
+  </data>
+  <data name="flash_no_device" xml:space="preserve">
+    <value>اختر جهازًا من صفحة الجهاز أولًا.</value>
+  </data>
+  <data name="flash_target_none" xml:space="preserve">
+    <value>لا يوجد جهاز محدد</value>
+  </data>
+  <data name="flash_target" xml:space="preserve">
+    <value>الهدف: {0}</value>
+  </data>
+  <data name="flash_note_verify" xml:space="preserve">
+    <value>يُتحقق من بصمة SHA-256 لكل صورة قبل كتابتها.</value>
+  </data>
+  <data name="flash_note_order" xml:space="preserve">
+    <value>لا يُكتب شيء على الجهاز حتى تُستخرج كل الصور بنجاح.</value>
+  </data>
+  <data name="flash_phase_idle" xml:space="preserve">
+    <value>خامل</value>
+  </data>
+  <data name="flash_phase_extract" xml:space="preserve">
+    <value>استخراج</value>
+  </data>
+  <data name="flash_phase_flash" xml:space="preserve">
+    <value>تفليش</value>
+  </data>
+  <data name="flash_phase_done" xml:space="preserve">
+    <value>تم</value>
+  </data>
+  <data name="flash_phase_failed" xml:space="preserve">
+    <value>فشل</value>
+  </data>
+  <data name="flash_state_queued" xml:space="preserve">
+    <value>في الانتظار</value>
+  </data>
+  <data name="flash_state_extracting" xml:space="preserve">
+    <value>يُستخرج</value>
+  </data>
+  <data name="flash_state_verified" xml:space="preserve">
+    <value>تم التحقق</value>
+  </data>
+  <data name="flash_state_flashing" xml:space="preserve">
+    <value>يُفلَّش</value>
+  </data>
+  <data name="flash_state_flashed" xml:space="preserve">
+    <value>تم التفليش</value>
+  </data>
+  <data name="flash_state_failed" xml:space="preserve">
+    <value>فشل</value>
+  </data>
+  <data name="flash_state_not_written" xml:space="preserve">
+    <value>لم يُكتب</value>
+  </data>
+  <data name="label_phase" xml:space="preserve">
+    <value>المرحلة</value>
+  </data>
+  <data name="label_elapsed" xml:space="preserve">
+    <value>المدة</value>
+  </data>
+  <data name="label_written" xml:space="preserve">
+    <value>المكتوب</value>
+  </data>
+  <data name="live_log" xml:space="preserve">
+    <value>السجل المباشر</value>
+  </data>
+  <data name="logs_subtitle" xml:space="preserve">
+    <value>كل أوامر fastboot ومخرجاتها في هذه الجلسة</value>
+  </data>
+  <data name="logs_copy" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
+  <data name="logs_clear" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="payload_subtitle" xml:space="preserve">
+    <value>افتح ملف payload.bin أو حزمة OTA مضغوطة لفحصها واستخراج الصور منها</value>
+  </data>
+  <data name="payload_drop_hint" xml:space="preserve">
+    <value>اسحب ملف payload.bin أو حزمة OTA إلى هنا</value>
+  </data>
+  <data name="column_codec" xml:space="preserve">
+    <value>الضغط</value>
+  </data>
+  <data name="column_extractable" xml:space="preserve">
+    <value>قابل للاستخراج</value>
+  </data>
+  <data name="column_progress" xml:space="preserve">
+    <value>التقدم</value>
+  </data>
+  <data name="column_state" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="column_partition" xml:space="preserve">
+    <value>القسم</value>
+  </data>
+  <data name="column_size" xml:space="preserve">
+    <value>الحجم</value>
+  </data>
+  <data name="about_engine" xml:space="preserve">
+    <value>محرك Payload: يدعم zstd و xz و bzip2، والعمليات متعددة النطاقات، والاستخراج المتوازي مع التحقق بـ SHA-256</value>
+  </data>
+  <data name="confirm_title" xml:space="preserve">
+    <value>هل أنت متأكد؟</value>
+  </data>
+  <data name="confirm_erase" xml:space="preserve">
+    <value>مسح القسم "{0}"؟ سيُحذف كل ما فيه.</value>
+  </data>
+  <data name="confirm_delete" xml:space="preserve">
+    <value>حذف القسم المنطقي "{0}" من super؟ لا يمكن التراجع عن ذلك.</value>
+  </data>
+  <data name="confirm_close_flashing" xml:space="preserve">
+    <value>يجري الآن تفليش payload. الإغلاق سيوقفه في المنتصف وقد يصبح الجهاز غير قابل للإقلاع. هل تريد الإغلاق؟</value>
+  </data>
+  <data name="extract_incomplete" xml:space="preserve">
+    <value>بعض الصور غير مكتملة: العمليات التي لا يدعمها هذا الإصدار تُركت أصفارًا، ولم يُتحقق من هذه الصور.</value>
+  </data>
+  <data name="extract_incomplete_detail" xml:space="preserve">
+    <value>تم تخطي {0} عملية، دون تحقق</value>
+  </data>
+  <data name="confirm_close_extracting" xml:space="preserve">
+    <value>يجري الآن استخراج الصور. الإغلاق سيوقف الاستخراج ويحذف الملفات غير المكتملة. هل تريد الإغلاق؟</value>
+  </data>
+  <data name="flash_unverified" xml:space="preserve">
+    <value>هذه الأقسام لا تحمل بصمة SHA-256 في الـ payload، لذلك لا يمكن التحقق من صورها قبل كتابتها:
+
+{0}
+
+هل تريد تفليشها على أي حال؟</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="dialog_warning" xml:space="preserve">
+    <value>تحذير</value>
+  </data>
+  <data name="dialog_done" xml:space="preserve">
+    <value>تم</value>
+  </data>
+  <data name="about_developer" xml:space="preserve">
+    <value>المطوّر</value>
+  </data>
+  <data name="about_original" xml:space="preserve">
+    <value>المطوّر الأصلي</value>
+  </data>
+  <data name="about_original_detail" xml:space="preserve">
+    <value>مبني على Fastboot Enhance من تطوير LibXZR، والمنشور برخصة MIT. حقوق النشر © 2021 LibXZR.</value>
+  </data>
+  <data name="about_original_project" xml:space="preserve">
+    <value>المشروع الأصلي</value>
+  </data>
+  <data name="about_license" xml:space="preserve">
+    <value>الرخصة</value>
+  </data>
+  <data name="nav_backup" xml:space="preserve">
+    <value>النسخ الاحتياطي</value>
+  </data>
+  <data name="backup_subtitle" xml:space="preserve">
+    <value>احفظ الأقسام وأي ملف من الجوال إلى هذا الكمبيوتر عبر adb</value>
+  </data>
+  <data name="backup_adb_devices" xml:space="preserve">
+    <value>الأجهزة المتصلة عبر ADB</value>
+  </data>
+  <data name="backup_column_model" xml:space="preserve">
+    <value>الطراز</value>
+  </data>
+  <data name="backup_column_mode" xml:space="preserve">
+    <value>الوضع</value>
+  </data>
+  <data name="backup_waiting" xml:space="preserve">
+    <value>جارٍ البحث عن الأجهزة… شغّل أندرويد مع تفعيل تصحيح USB، أو ادخل ريكفري مخصص (TWRP أو OrangeFox).</value>
+  </data>
+  <data name="backup_no_device" xml:space="preserve">
+    <value>لا يوجد جهاز عبر adb. فعّل تصحيح USB من خيارات المطوّر ووصّل الجوال، أو ادخل ريكفري مخصص.</value>
+  </data>
+  <data name="backup_unauthorized" xml:space="preserve">
+    <value>افتح قفل الجوال واسمح بتصحيح USB لهذا الكمبيوتر.</value>
+  </data>
+  <data name="backup_not_ready" xml:space="preserve">
+    <value>الجهاز في وضع "{0}". الأقسام والملفات تحتاج نظام أندرويد أو ريكفري مخصص.</value>
+  </data>
+  <data name="backup_root_unknown" xml:space="preserve">
+    <value>يمكن نسخ الملفات الآن. نسخ الأقسام يحتاج روت (Magisk أو KernelSU) أو ريكفري مخصص؛ اضغط "قراءة جدول الأقسام" للتحقق.</value>
+  </data>
+  <data name="backup_root_direct" xml:space="preserve">
+    <value>صلاحية روت متاحة (ريكفري أو adb root): يمكن نسخ الأقسام احتياطيًا.</value>
+  </data>
+  <data name="backup_root_su" xml:space="preserve">
+    <value>صلاحية روت عبر su: يمكن نسخ الأقسام احتياطيًا.</value>
+  </data>
+  <data name="backup_asking_root" xml:space="preserve">
+    <value>طلب صلاحية الروت؛ اسمح بها على الجوال إذا ظهر طلب.</value>
+  </data>
+  <data name="backup_needs_root" xml:space="preserve">
+    <value>قراءة الأقسام تحتاج صلاحية روت. روّت الجوال بـ Magisk أو KernelSU واسمح بالطلب، أو ادخل ريكفري مخصص مثل TWRP أو OrangeFox. ما زال بإمكانك نسخ الملفات من تبويب الملفات.</value>
+  </data>
+  <data name="backup_no_table" xml:space="preserve">
+    <value>تعذّرت قراءة جدول الأقسام من هذا الجهاز.</value>
+  </data>
+  <data name="backup_tab_partitions" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="backup_tab_files" xml:space="preserve">
+    <value>الملفات</value>
+  </data>
+  <data name="backup_read" xml:space="preserve">
+    <value>قراءة جدول الأقسام</value>
+  </data>
+  <data name="backup_select_critical" xml:space="preserve">
+    <value>تحديد المهم</value>
+  </data>
+  <data name="backup_select_none" xml:space="preserve">
+    <value>إلغاء الكل</value>
+  </data>
+  <data name="backup_filter_hint" xml:space="preserve">
+    <value>تصفية بالاسم</value>
+  </data>
+  <data name="backup_save_to" xml:space="preserve">
+    <value>مكان الحفظ</value>
+  </data>
+  <data name="backup_change" xml:space="preserve">
+    <value>تغيير…</value>
+  </data>
+  <data name="backup_start" xml:space="preserve">
+    <value>نسخ المحدد احتياطيًا</value>
+  </data>
+  <data name="backup_cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="backup_verify" xml:space="preserve">
+    <value>فحص نسخة احتياطية…</value>
+  </data>
+  <data name="backup_verify_title" xml:space="preserve">
+    <value>فحص النسخة الاحتياطية</value>
+  </data>
+  <data name="backup_open_folder" xml:space="preserve">
+    <value>فتح المجلد</value>
+  </data>
+  <data name="backup_note" xml:space="preserve">
+    <value>تُحفظ كل صورة مع بصمة SHA-256 الخاصة بها في ملف SHA256SUMS بجانب backup-info.txt. لاستعادة أي صورة، فلّشها من صفحة الجهاز › الأقسام.</value>
+  </data>
+  <data name="backup_state_reading" xml:space="preserve">
+    <value>يُقرأ</value>
+  </data>
+  <data name="backup_state_saved" xml:space="preserve">
+    <value>تم الحفظ</value>
+  </data>
+  <data name="backup_state_skipped" xml:space="preserve">
+    <value>تم التخطي</value>
+  </data>
+  <data name="backup_state_critical" xml:space="preserve">
+    <value>مهم</value>
+  </data>
+  <data name="backup_nothing_selected" xml:space="preserve">
+    <value>حدد الأقسام المراد نسخها أولًا، أو اضغط "تحديد المهم".</value>
+  </data>
+  <data name="backup_large_warning" xml:space="preserve">
+    <value>هذه الأقسام كبيرة وستأخذ وقتًا ومساحة كبيرة على القرص:
+
+{0}
+
+هل تريد نسخها على أي حال؟</value>
+  </data>
+  <data name="backup_short_read" xml:space="preserve">
+    <value>تمت قراءة {0} من {1}؛ توقف الجهاز عن الإرسال (رفض الصلاحية أو انقطع الاتصال)</value>
+  </data>
+  <data name="backup_done" xml:space="preserve">
+    <value>تم حفظ {0} قسم وتسجيل بصمة SHA-256 لكل منها في:
+{1}</value>
+  </data>
+  <data name="backup_partial" xml:space="preserve">
+    <value>تم حفظ {0} من {1} قسم في:
+{2}</value>
+  </data>
+  <data name="backup_cancelled" xml:space="preserve">
+    <value>تم الإيقاف. حُذفت الملفات غير المكتملة.</value>
+  </data>
+  <data name="backup_verify_none" xml:space="preserve">
+    <value>هذا المجلد لا يحتوي على ملف SHA256SUMS، فلا يوجد ما يُفحص عليه.</value>
+  </data>
+  <data name="backup_verify_ok" xml:space="preserve">
+    <value>كل الملفات ({0}) مطابقة لبصمة SHA-256.</value>
+  </data>
+  <data name="backup_verify_bad" xml:space="preserve">
+    <value>{0} من {1} ملف مفقودة أو غير مطابقة:</value>
+  </data>
+  <data name="files_up" xml:space="preserve">
+    <value>للأعلى</value>
+  </data>
+  <data name="files_go" xml:space="preserve">
+    <value>فتح</value>
+  </data>
+  <data name="files_quick_storage" xml:space="preserve">
+    <value>الذاكرة الداخلية</value>
+  </data>
+  <data name="files_quick_dcim" xml:space="preserve">
+    <value>الكاميرا</value>
+  </data>
+  <data name="files_quick_pictures" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+  <data name="files_quick_download" xml:space="preserve">
+    <value>التنزيلات</value>
+  </data>
+  <data name="files_quick_documents" xml:space="preserve">
+    <value>المستندات</value>
+  </data>
+  <data name="files_column_name" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="files_column_kind" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="files_kind_folder" xml:space="preserve">
+    <value>مجلد</value>
+  </data>
+  <data name="files_kind_file" xml:space="preserve">
+    <value>ملف</value>
+  </data>
+  <data name="files_kind_link" xml:space="preserve">
+    <value>اختصار</value>
+  </data>
+  <data name="files_empty" xml:space="preserve">
+    <value>هذا المجلد فارغ، أو أن أندرويد لا يسمح بقراءته بدون روت.</value>
+  </data>
+  <data name="files_count" xml:space="preserve">
+    <value>{0} مجلد، {1} ملف</value>
+  </data>
+  <data name="files_copying" xml:space="preserve">
+    <value>جارٍ نسخ {0}…</value>
+  </data>
+  <data name="files_pull" xml:space="preserve">
+    <value>نسخ إلى الكمبيوتر</value>
+  </data>
+  <data name="files_note" xml:space="preserve">
+    <value>حدد الملفات أو المجلدات (Ctrl أو Shift لأكثر من عنصر، و Ctrl+A للكل) ثم انسخها. المجلدات تُنسخ بكل محتوياتها. انقر مرتين على المجلد لفتحه.</value>
+  </data>
+  <data name="files_nothing_selected" xml:space="preserve">
+    <value>حدد الملفات أو المجلدات المراد نسخها أولًا.</value>
+  </data>
+  <data name="files_done" xml:space="preserve">
+    <value>تم نسخ {0} عنصر إلى:
+{1}</value>
+  </data>
+  <data name="files_partial" xml:space="preserve">
+    <value>تم نسخ {0} من {1} عنصر إلى:
+{2}</value>
+  </data>
+  <data name="payload_container" xml:space="preserve">
+    <value>الحاوية</value>
+  </data>
+  <data name="payload_container_inplace" xml:space="preserve">
+    <value>حزمة OTA (قراءة مباشرة)</value>
+  </data>
+  <data name="payload_container_unpacked" xml:space="preserve">
+    <value>حزمة OTA (فُكّت مؤقتًا)</value>
+  </data>
+  <data name="payload_security_patch" xml:space="preserve">
+    <value>التصحيح الأمني</value>
+  </data>
+  <data name="payload_partial_update" xml:space="preserve">
+    <value>تحديث جزئي</value>
+  </data>
+  <data name="payload_apex" xml:space="preserve">
+    <value>حزم APEX</value>
+  </data>
+  <data name="payload_operations" xml:space="preserve">
+    <value>العمليات</value>
+  </data>
+  <data name="flash_file_detail" xml:space="preserve">
+    <value>{0} قسم  ·  {1}  ·  {2}</value>
+  </data>
+  <data name="flash_written_count" xml:space="preserve">
+    <value>تمت كتابة {0} من {1} قسم</value>
+  </data>
+  <data name="extract_done_detail" xml:space="preserve">
+    <value>{0} خلال {1} ث</value>
+  </data>
+  <data name="chrome_minimize" xml:space="preserve">
+    <value>تصغير</value>
+  </data>
+  <data name="chrome_maximize" xml:space="preserve">
+    <value>تكبير</value>
+  </data>
+  <data name="chrome_restore" xml:space="preserve">
+    <value>استعادة</value>
+  </data>
+  <data name="chrome_close" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>اللغة</value>
+  </data>
+  <data name="language_restart" xml:space="preserve">
+    <value>تُطبَّق اللغة الجديدة بعد إعادة تشغيل البرنامج. إعادة تشغيل Fastboot Studio الآن؟</value>
+  </data>
+  <data name="language_busy" xml:space="preserve">
+    <value>انتظر حتى ينتهي التفليش أو الاستخراج الجاري قبل تغيير اللغة.</value>
+  </data>
+  <data name="nav_images" xml:space="preserve">
+    <value>أدوات الصور</value>
+  </data>
+  <data name="images_subtitle" xml:space="preserve">
+    <value>افحص صور أندرويد وحوّلها وفكّها: sparse و super و ext4 و EROFS وغيرها</value>
+  </data>
+  <data name="images_open" xml:space="preserve">
+    <value>فتح صورة…</value>
+  </data>
+  <data name="images_drop_hint" xml:space="preserve">
+    <value>اسحب صورة إلى هنا</value>
+  </data>
+  <data name="images_drop_detail" xml:space="preserve">
+    <value>مثل system.img و super.img و vendor.img… سواء كانت sparse أو raw. للصور المقسّمة إلى أجزاء (system.img_sparsechunk.0 و .1…) افتح أي جزء وسيُعثر على البقية تلقائيًا.</value>
+  </data>
+  <data name="images_tab_details" xml:space="preserve">
+    <value>التفاصيل</value>
+  </data>
+  <data name="images_tab_partitions" xml:space="preserve">
+    <value>أقسام super</value>
+  </data>
+  <data name="images_tab_chunks" xml:space="preserve">
+    <value>مقاطع sparse</value>
+  </data>
+  <data name="images_select_all" xml:space="preserve">
+    <value>تحديد الكل</value>
+  </data>
+  <data name="images_column_group" xml:space="preserve">
+    <value>المجموعة</value>
+  </data>
+  <data name="images_column_type" xml:space="preserve">
+    <value>النوع</value>
+  </data>
+  <data name="images_column_start" xml:space="preserve">
+    <value>أول كتلة</value>
+  </data>
+  <data name="images_column_blocks" xml:space="preserve">
+    <value>الكتل</value>
+  </data>
+  <data name="images_extract" xml:space="preserve">
+    <value>استخراج الأقسام (lpunpack)</value>
+  </data>
+  <data name="images_to_raw" xml:space="preserve">
+    <value>تحويل إلى raw (simg2img)</value>
+  </data>
+  <data name="images_to_sparse" xml:space="preserve">
+    <value>تحويل إلى sparse (img2simg)</value>
+  </data>
+  <data name="images_resplit" xml:space="preserve">
+    <value>تقسيم إلى أجزاء (simg2simg)</value>
+  </data>
+  <data name="images_split" xml:space="preserve">
+    <value>تقسيم إلى أجزاء بحد أقصى</value>
+  </data>
+  <data name="images_empty_slot" xml:space="preserve">
+    <value>شق فارغ</value>
+  </data>
+  <data name="images_parts_not_sparse" xml:space="preserve">
+    <value>اخترت أكثر من ملف لكنها ليست أجزاء sparse لصورة واحدة. افتح صورة واحدة في كل مرة.</value>
+  </data>
+  <data name="images_kind_super" xml:space="preserve">
+    <value>Super (أقسام ديناميكية)</value>
+  </data>
+  <data name="images_kind_ext4" xml:space="preserve">
+    <value>نظام ملفات ext4</value>
+  </data>
+  <data name="images_kind_erofs" xml:space="preserve">
+    <value>نظام ملفات EROFS</value>
+  </data>
+  <data name="images_kind_f2fs" xml:space="preserve">
+    <value>نظام ملفات F2FS</value>
+  </data>
+  <data name="images_kind_boot" xml:space="preserve">
+    <value>صورة إقلاع (boot)</value>
+  </data>
+  <data name="images_kind_vendor_boot" xml:space="preserve">
+    <value>صورة vendor_boot</value>
+  </data>
+  <data name="images_kind_vbmeta" xml:space="preserve">
+    <value>vbmeta (التحقق من الإقلاع)</value>
+  </data>
+  <data name="images_kind_payload" xml:space="preserve">
+    <value>payload تحديث OTA (افتحه في مستخرج Payload)</value>
+  </data>
+  <data name="images_kind_zip" xml:space="preserve">
+    <value>ملف مضغوط Zip</value>
+  </data>
+  <data name="images_row_file" xml:space="preserve">
+    <value>الملف</value>
+  </data>
+  <data name="images_parts" xml:space="preserve">
+    <value>{0} أجزاء</value>
+  </data>
+  <data name="images_row_format" xml:space="preserve">
+    <value>الصيغة</value>
+  </data>
+  <data name="images_format_raw" xml:space="preserve">
+    <value>صورة raw</value>
+  </data>
+  <data name="images_row_content" xml:space="preserve">
+    <value>المحتوى</value>
+  </data>
+  <data name="images_row_size" xml:space="preserve">
+    <value>حجم الصورة</value>
+  </data>
+  <data name="images_row_disk" xml:space="preserve">
+    <value>الحجم على القرص</value>
+  </data>
+  <data name="images_row_block_size" xml:space="preserve">
+    <value>حجم الكتلة</value>
+  </data>
+  <data name="images_row_blocks" xml:space="preserve">
+    <value>الكتل</value>
+  </data>
+  <data name="images_blocks_detail" xml:space="preserve">
+    <value>{1} / {2} / {3}</value>
+  </data>
+  <data name="images_row_chunks" xml:space="preserve">
+    <value>المقاطع</value>
+  </data>
+  <data name="images_row_crc" xml:space="preserve">
+    <value>CRC-32</value>
+  </data>
+  <data name="images_crc_none" xml:space="preserve">
+    <value>غير مسجّل</value>
+  </data>
+  <data name="images_row_metadata" xml:space="preserve">
+    <value>البيانات الوصفية</value>
+  </data>
+  <data name="images_metadata_detail" xml:space="preserve">
+    <value>الإصدار {0}، {1} شق</value>
+  </data>
+  <data name="images_backup_copy" xml:space="preserve">
+    <value>قُرئت من النسخة الاحتياطية</value>
+  </data>
+  <data name="images_row_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="images_row_partitions" xml:space="preserve">
+    <value>الأقسام</value>
+  </data>
+  <data name="images_partitions_detail" xml:space="preserve">
+    <value>{0} فيها بيانات، {1} إجمالًا</value>
+  </data>
+  <data name="images_row_group" xml:space="preserve">
+    <value>المجموعة</value>
+  </data>
+  <data name="images_unlimited" xml:space="preserve">
+    <value>بلا حد</value>
+  </data>
+  <data name="images_row_super_size" xml:space="preserve">
+    <value>حجم super</value>
+  </data>
+  <data name="images_note_super" xml:space="preserve">
+    <value>تُقرأ الأقسام مباشرة من الصورة سواء كانت sparse أو لا، ويُتحقق من كل بصمات البيانات الوصفية. يُحفظ كل قسم باسم name.img في مجلد بجانب الصورة.</value>
+  </data>
+  <data name="images_note_sparse" xml:space="preserve">
+    <value>التحويل إلى raw يعيد بناء الصورة كاملة (كل الأجزاء معًا) ويتحقق من أي CRC-32 مسجّل فيها. التقسيم ينتج أجزاء يمكن تفليشها واحدًا تلو الآخر.</value>
+  </data>
+  <data name="images_note_raw" xml:space="preserve">
+    <value>التحويل إلى sparse يخزّن الكتل المتكررة كسجل واحد، وهي الصيغة التي يستخدمها fastboot وصور المصنع. الناتج مطابق لأداة img2simg من AOSP بايت بايت.</value>
+  </data>
+  <data name="images_overwrite" xml:space="preserve">
+    <value>هذه الملفات موجودة وسيتم استبدالها:
+
+{0}
+
+هل تريد المتابعة؟</value>
+  </data>
+  <data name="images_done_in" xml:space="preserve">
+    <value>تم خلال {0} ث</value>
+  </data>
+  <data name="images_raw_done" xml:space="preserve">
+    <value>تمت كتابة صورة raw:
+{0}
+{1}</value>
+  </data>
+  <data name="images_crc_line" xml:space="preserve">
+    <value>CRC-32 {0}</value>
+  </data>
+  <data name="images_crc_checked" xml:space="preserve">
+    <value>تم التحقق من {0} بصمة مسجّلة</value>
+  </data>
+  <data name="images_split_invalid" xml:space="preserve">
+    <value>اكتب أكبر حجم للجزء بالميجابايت، مثل 512.</value>
+  </data>
+  <data name="images_resplit_one" xml:space="preserve">
+    <value>افتح صورة sparse واحدة لتقسيمها. لدمج الأجزاء، حوّلها إلى raw أولًا.</value>
+  </data>
+  <data name="images_sparse_done" xml:space="preserve">
+    <value>تمت كتابة {0} ملف sparse ({1}):
+{2}</value>
+  </data>
+  <data name="images_nothing_selected" xml:space="preserve">
+    <value>حدد الأقسام المراد استخراجها أولًا.</value>
+  </data>
+  <data name="images_extract_done" xml:space="preserve">
+    <value>تم استخراج {0} قسم إلى:
+{1}</value>
+  </data>
+  <data name="images_row_block_kinds" xml:space="preserve">
+    <value>بيانات / تعبئة / متجاهلة</value>
+  </data>
+  <data name="backup_fb_title" xml:space="preserve">
+    <value>الجهاز {0} في وضع الفاست بوت</value>
+  </data>
+  <data name="backup_fb_why" xml:space="preserve">
+    <value>الفاست بوت يكتب الأقسام لكنه لا يستطيع قراءتها: أندرويد يمنع ذلك في الجوالات التجارية. النسخ الاحتياطي يعمل عبر adb، لذا يجب إخراج الجوال من الفاست بوت أولاً بإحدى هذه الطرق:</value>
+  </data>
+  <data name="backup_fb_android" xml:space="preserve">
+    <value>تشغيل أندرويد</value>
+  </data>
+  <data name="backup_fb_android_note" xml:space="preserve">
+    <value>يمكن نسخ الملفات مباشرة. يجب تفعيل تصحيح USB، ونسخ الأقسام يحتاج روت أيضاً (Magisk أو KernelSU).</value>
+  </data>
+  <data name="backup_fb_recovery" xml:space="preserve">
+    <value>تشغيل الريكفري</value>
+  </data>
+  <data name="backup_fb_recovery_note" xml:space="preserve">
+    <value>إذا كان عندك ريكفري مخصص مثبّت (TWRP أو OrangeFox): الأقسام والملفات بدون روت. الريكفري الأصلي لا يدعم adb.</value>
+  </data>
+  <data name="backup_fb_boot" xml:space="preserve">
+    <value>تشغيل صورة ريكفري مؤقتاً بدون تثبيتها</value>
+  </data>
+  <data name="backup_fb_boot_note" xml:space="preserve">
+    <value>يرسل صورة TWRP أو OrangeFox الخاصة بجوالك ويشغّلها، بدون أي تغيير على الجوال. يحتاج بوت لودر مفتوح.</value>
+  </data>
+  <data name="backup_fb_boot_button" xml:space="preserve">
+    <value>اختيار صورة الريكفري…</value>
+  </data>
+  <data name="backup_fb_rebooting" xml:space="preserve">
+    <value>جارٍ إعادة تشغيل {0}… ستنتقل هذه الصفحة تلقائياً عندما يتصل الجوال عبر adb.</value>
+  </data>
+  <data name="backup_fb_sending" xml:space="preserve">
+    <value>جارٍ إرسال {0} إلى الجوال…</value>
+  </data>
+  <data name="backup_fb_booted" xml:space="preserve">
+    <value>تم إرسال صورة الريكفري وتشغيلها. بعد اكتمال التحميل سيظهر الجوال هنا عبر adb ويمكنك بدء النسخ.</value>
+  </data>
+  <data name="backup_fb_boot_failed" xml:space="preserve">
+    <value>لم يقبل الجوال تشغيل الصورة.
+
+{0}
+
+تأكد أن البوت لودر مفتوح وأن الصورة مخصصة لهذا الجوال. بعض الجوالات (مثل سامسونج) لا تدعم تشغيل صورة بدون تفليشها.</value>
+  </data>
+  <data name="backup_fb_not_boot_image" xml:space="preserve">
+    <value>هذا الملف ليس صورة إقلاع أو ريكفري. اختر ملف ‎.img‎ الخاص بـ TWRP أو OrangeFox لهذا الجوال.</value>
+  </data>
+  <data name="backup_fb_userspace" xml:space="preserve">
+    <value>الجوال في وضع fastbootd، وهذا الوضع لا يستطيع تشغيل صورة. إعادة تشغيله إلى البوت لودر الآن؟ بعد رجوعه اختر الصورة مرة أخرى.</value>
+  </data>
+  <data name="backup_fb_failed" xml:space="preserve">
+    <value>لم يكتمل أمر fastboot: {0}</value>
+  </data>
+  <data name="nav_super" xml:space="preserve">
+    <value>بناء Super</value>
+  </data>
+  <data name="super_subtitle" xml:space="preserve">
+    <value>اجمع صور الأقسام في ملف super.img واحد جاهز للتفليش بالفاست بوت</value>
+  </data>
+  <data name="super_import" xml:space="preserve">
+    <value>استيراد من super.img…</value>
+  </data>
+  <data name="super_read_phone" xml:space="preserve">
+    <value>قراءة الحجم من الجوال</value>
+  </data>
+  <data name="super_layout" xml:space="preserve">
+    <value>التقسيم</value>
+  </data>
+  <data name="super_mode_vab" xml:space="preserve">
+    <value>Virtual A/B</value>
+  </data>
+  <data name="super_mode_ab" xml:space="preserve">
+    <value>A/B</value>
+  </data>
+  <data name="super_mode_single" xml:space="preserve">
+    <value>خانة واحدة</value>
+  </data>
+  <data name="super_mode_imported" xml:space="preserve">
+    <value>مثل super المستورد</value>
+  </data>
+  <data name="super_mode_note_vab" xml:space="preserve">
+    <value>أغلب الجوالات من أندرويد 11 وما بعده. الأقسام تأخذ _a و _b، وتبقى خانة b فارغة كما في صور المصنع.</value>
+  </data>
+  <data name="super_mode_note_ab" xml:space="preserve">
+    <value>جوالات A/B بدون Virtual A/B (غالباً أندرويد 10). كل خانة تأخذ نصف super.</value>
+  </data>
+  <data name="super_mode_note_single" xml:space="preserve">
+    <value>جوالات بدون خانات A/B: الأقسام تبقى بأسمائها العادية.</value>
+  </data>
+  <data name="super_mode_note_imported" xml:space="preserve">
+    <value>المجموعات والخانات وترتيب الأقسام منسوخة من {0}. كل صورة تحل محل القسم الذي يحمل اسمها.</value>
+  </data>
+  <data name="super_size" xml:space="preserve">
+    <value>حجم SUPER (بايت)</value>
+  </data>
+  <data name="super_size_hint" xml:space="preserve">
+    <value>مثال 9126805504</value>
+  </data>
+  <data name="super_group_size" xml:space="preserve">
+    <value>حجم المجموعة (بايت)</value>
+  </data>
+  <data name="super_group_name" xml:space="preserve">
+    <value>اسم المجموعة</value>
+  </data>
+  <data name="super_auto" xml:space="preserve">
+    <value>تلقائي</value>
+  </data>
+  <data name="super_auto_value" xml:space="preserve">
+    <value>تلقائي: {0}</value>
+  </data>
+  <data name="super_usage" xml:space="preserve">
+    <value>المستخدم {0} من {1} · المتبقي {2}</value>
+  </data>
+  <data name="super_usage_none" xml:space="preserve">
+    <value>أدخل حجم super لترى كم تستهلك الأقسام.</value>
+  </data>
+  <data name="super_add" xml:space="preserve">
+    <value>إضافة صور…</value>
+  </data>
+  <data name="super_add_folder" xml:space="preserve">
+    <value>إضافة مجلد…</value>
+  </data>
+  <data name="super_remove" xml:space="preserve">
+    <value>إزالة</value>
+  </data>
+  <data name="super_clear" xml:space="preserve">
+    <value>مسح الكل</value>
+  </data>
+  <data name="super_empty_hint" xml:space="preserve">
+    <value>أضف صور الأقسام (system.img و vendor.img و product.img…) أو استورد تقسيم ملف super.img موجود. الصور المفكوكة من أدوات الصور يتم العثور عليها تلقائياً.</value>
+  </data>
+  <data name="super_column_image" xml:space="preserve">
+    <value>الصورة</value>
+  </data>
+  <data name="super_empty_partition" xml:space="preserve">
+    <value>فارغ</value>
+  </data>
+  <data name="super_output" xml:space="preserve">
+    <value>الإخراج</value>
+  </data>
+  <data name="super_format_sparse" xml:space="preserve">
+    <value>Sparse</value>
+  </data>
+  <data name="super_format_raw" xml:space="preserve">
+    <value>Raw</value>
+  </data>
+  <data name="super_format_note" xml:space="preserve">
+    <value>Sparse أصغر حجماً وهو المستخدم في صور المصنع؛ Raw بحجم super الكامل.</value>
+  </data>
+  <data name="super_verify" xml:space="preserve">
+    <value>التحقق من الصورة بعد البناء</value>
+  </data>
+  <data name="super_build" xml:space="preserve">
+    <value>بناء super.img…</value>
+  </data>
+  <data name="super_building" xml:space="preserve">
+    <value>جارٍ بناء super.img</value>
+  </data>
+  <data name="super_verifying" xml:space="preserve">
+    <value>جارٍ التحقق من super.img</value>
+  </data>
+  <data name="super_flash_note" xml:space="preserve">
+    <value>للتفليش: fastboot flash super super.img. احتفظ بنسخة من super الحالي في جوالك قبل ذلك.</value>
+  </data>
+  <data name="super_done" xml:space="preserve">
+    <value>ملف super.img جاهز وتم التحقق منه: قُرئ كل قسم من جديد وطابق صورته.
+
+{0}
+{1} · {2} أقسام</value>
+  </data>
+  <data name="super_done_unchecked" xml:space="preserve">
+    <value>ملف super.img جاهز.
+
+{0}
+{1} · {2} أقسام</value>
+  </data>
+  <data name="super_verify_failed" xml:space="preserve">
+    <value>تمت كتابة super.img لكنه لم يجتز التحقق، فلا تفلشه:
+
+{0}</value>
+  </data>
+  <data name="super_problem_no_size" xml:space="preserve">
+    <value>أدخل حجم super: اقرأه من الجوال أو استورد ملف super.img.</value>
+  </data>
+  <data name="super_problem_size_aligned" xml:space="preserve">
+    <value>حجم super يجب أن يكون من مضاعفات 4096 بايت.</value>
+  </data>
+  <data name="super_problem_metadata" xml:space="preserve">
+    <value>إعدادات البيانات الوصفية لهذا التقسيم غير صالحة.</value>
+  </data>
+  <data name="super_problem_metadata_large" xml:space="preserve">
+    <value>عدد الأقسام أكبر من مساحة البيانات الوصفية.</value>
+  </data>
+  <data name="super_problem_no_images" xml:space="preserve">
+    <value>أضف صورة قسم واحدة على الأقل.</value>
+  </data>
+  <data name="super_problem_bad_name" xml:space="preserve">
+    <value>الاسم "{0}" غير صالح (حروف وأرقام و _ . - وبحد أقصى 36 حرفاً).</value>
+  </data>
+  <data name="super_problem_duplicate" xml:space="preserve">
+    <value>الاسم "{0}" مكرر.</value>
+  </data>
+  <data name="super_problem_unknown_group" xml:space="preserve">
+    <value>المجموعة "{0}" غير موجودة.</value>
+  </data>
+  <data name="super_problem_group_full" xml:space="preserve">
+    <value>المجموعة {0} صغيرة: أقسامها تحتاج {1} والمسموح {2}.</value>
+  </data>
+  <data name="super_problem_does_not_fit" xml:space="preserve">
+    <value>الأقسام تحتاج {0} لكن حجم super هو {1}.</value>
+  </data>
+  <data name="super_import_source" xml:space="preserve">
+    <value>تقسيم {0} · {1} · {2} خانات بيانات وصفية · المجموعات {3}</value>
+  </data>
+  <data name="super_found_images" xml:space="preserve">
+    <value>تم العثور على {0} صور أقسام في {1}.</value>
+  </data>
+  <data name="super_not_super" xml:space="preserve">
+    <value>هذا الملف ليس صورة super.</value>
+  </data>
+  <data name="super_not_filesystem" xml:space="preserve">
+    <value>هذه الملفات ليست صور أنظمة ملفات، وغالباً لا تنتمي إلى super (مثل boot و vbmeta تُفلَّش وحدها):
+
+{0}
+
+إضافتها على أي حال؟</value>
+  </data>
+  <data name="super_folder_skipped" xml:space="preserve">
+    <value>تم تخطي {0} ملفات ليست صور أنظمة ملفات: {1}</value>
+  </data>
+  <data name="super_folder_none" xml:space="preserve">
+    <value>لم يتم العثور على صور أقسام في هذا المجلد.</value>
+  </data>
+  <data name="super_clear_confirm" xml:space="preserve">
+    <value>إزالة جميع صور الأقسام من القائمة؟</value>
+  </data>
+  <data name="super_phone_none" xml:space="preserve">
+    <value>لا يوجد جوال في وضع الفاست بوت. وصّله في البوت لودر أو fastbootd وحاول مرة أخرى.</value>
+  </data>
+  <data name="super_phone_read" xml:space="preserve">
+    <value>تمت القراءة من {0}: حجم super هو {1} ({2} بايت). التقسيم: {3}.</value>
+  </data>
+  <data name="super_phone_failed" xml:space="preserve">
+    <value>تعذّرت قراءة حجم super من الجوال:
+
+{0}</value>
+  </data>
+  <data name="super_reading_phone" xml:space="preserve">
+    <value>جارٍ القراءة من الجوال…</value>
+  </data>
+  <data name="super_pick_image" xml:space="preserve">
+    <value>اختر صورة {0}</value>
+  </data>
+  <data name="super_output_is_input" xml:space="preserve">
+    <value>ملف الإخراج هو إحدى الصور الداخلة في super. اختر اسماً آخر.</value>
+  </data>
+  <data name="images_format_pieces" xml:space="preserve">
+    <value>أجزاء من حزمة تفليش كوالكوم ({0})</value>
+  </data>
+  <data name="images_note_pieces" xml:space="preserve">
+    <value>هذه الملفات ({0}) أجزاء من صورة {1} واحدة، ومواضعها محددة في {2}. اجمعها في صورة واحدة، أو استخرج الأقسام منها مباشرة.</value>
+  </data>
+  <data name="images_combine_sparse" xml:space="preserve">
+    <value>جمعها كـ sparse</value>
+  </data>
+  <data name="images_combine_raw" xml:space="preserve">
+    <value>جمعها كـ raw</value>
+  </data>
+  <data name="images_combine_done" xml:space="preserve">
+    <value>تم جمع {0} أجزاء في صورة واحدة:
+
+{1}
+{2}
+
+{3}</value>
+  </data>
+  <data name="images_combine_sparse_note" xml:space="preserve">
+    <value>للتفليش: fastboot flash super super.img</value>
+  </data>
+  <data name="images_combine_raw_note" xml:space="preserve">
+    <value>صورة raw بحجم القسم الكامل؛ للتفليش بالفاست بوت صورة sparse أصغر.</value>
+  </data>
+</root>

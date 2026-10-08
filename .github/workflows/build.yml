@@ -1,0 +1,76 @@
+name: build
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  core:
+    name: core library and tests (linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: |
+          dotnet restore src/FastbootEnhance.Core/FastbootEnhance.Core.csproj
+          dotnet restore tests/FastbootEnhance.Core.Tests/FastbootEnhance.Core.Tests.csproj
+          dotnet restore tools/FastbootEnhance.PayloadTool/FastbootEnhance.PayloadTool.csproj
+
+      - name: Build core
+        run: dotnet build src/FastbootEnhance.Core/FastbootEnhance.Core.csproj -c Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test tests/FastbootEnhance.Core.Tests/FastbootEnhance.Core.Tests.csproj
+          -c Release --no-restore --logger "console;verbosity=normal"
+
+      - name: Build payload tool
+        run: dotnet build tools/FastbootEnhance.PayloadTool/FastbootEnhance.PayloadTool.csproj -c Release --no-restore
+
+  app:
+    name: wpf app (windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # WPF cannot be compiled on Linux, so this job is what proves the app itself builds.
+      - name: Restore
+        run: dotnet restore FastbootEnhance.csproj
+
+      - name: Build
+        run: dotnet build FastbootEnhance.csproj -c Release --no-restore
+
+      - name: Publish single file
+        run: >
+          dotnet publish FastbootEnhance.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -o publish
+
+      - name: Check published output
+        shell: pwsh
+        run: |
+          Get-ChildItem publish | Select-Object Name, Length
+          # fastboot.exe runs as its own process, so it must sit beside the exe, not inside it.
+          foreach ($f in 'FastbootStudio.exe', 'fastboot.exe', 'adb.exe', 'AdbWinApi.dll', 'AdbWinUsbApi.dll', 'platform-tools-NOTICE.txt') {
+            if (-not (Test-Path (Join-Path publish $f))) { throw "$f missing from publish output" }
+          }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FastbootStudio-win-x64
+          path: publish/
+          if-no-files-found: error

@@ -70,7 +70,7 @@ namespace FastbootEnhance.Properties {
         }
         
         /// <summary>
-        ///   查找类似 Fastboot Enhance 的本地化字符串。
+        ///   Looks up a localized string similar to Fastboot Studio.
         /// </summary>
         public static string app_name {
             get {
@@ -1146,6 +1146,2722 @@ namespace FastbootEnhance.Properties {
         public static string yes {
             get {
                 return ResourceManager.GetString("yes", resourceCulture);
+            }
+        }
+            /// <summary>
+        ///   Looks up a localized string similar to Device.
+        /// </summary>
+        public static string nav_device {
+            get {
+                return ResourceManager.GetString("nav_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash.
+        /// </summary>
+        public static string nav_flash {
+            get {
+                return ResourceManager.GetString("nav_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logs.
+        /// </summary>
+        public static string nav_logs {
+            get {
+                return ResourceManager.GetString("nav_logs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live device state, partitions and quick actions.
+        /// </summary>
+        public static string device_subtitle {
+            get {
+                return ResourceManager.GetString("device_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Connected devices.
+        /// </summary>
+        public static string device_list_title {
+            get {
+                return ResourceManager.GetString("device_list_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Double-click a device, or select it and press Enter..
+        /// </summary>
+        public static string device_list_hint {
+            get {
+                return ResourceManager.GetString("device_list_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device in bootloader or fastbootd yet. Connect one and it shows up here within a second..
+        /// </summary>
+        public static string device_list_empty {
+            get {
+                return ResourceManager.GetString("device_list_empty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Device variables.
+        /// </summary>
+        public static string device_variables {
+            get {
+                return ResourceManager.GetString("device_variables", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Quick actions.
+        /// </summary>
+        public static string quick_actions {
+            get {
+                return ResourceManager.GetString("quick_actions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pre-flash checks.
+        /// </summary>
+        public static string preflash_checks {
+            get {
+                return ResourceManager.GetString("preflash_checks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partition actions.
+        /// </summary>
+        public static string partition_actions {
+            get {
+                return ResourceManager.GetString("partition_actions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bootloader unlocked: images can be written.
+        /// </summary>
+        public static string check_unlocked {
+            get {
+                return ResourceManager.GetString("check_unlocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bootloader locked: the device will refuse to flash.
+        /// </summary>
+        public static string check_locked {
+            get {
+                return ResourceManager.GetString("check_locked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No Virtual A/B update is pending.
+        /// </summary>
+        public static string check_no_update {
+            get {
+                return ResourceManager.GetString("check_no_update", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A Virtual A/B update is {0}: cancel it before flashing.
+        /// </summary>
+        public static string check_update_pending {
+            get {
+                return ResourceManager.GetString("check_update_pending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Leftover COW partitions found: remove them before flashing.
+        /// </summary>
+        public static string check_cow {
+            get {
+                return ResourceManager.GetString("check_cow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to In fastbootd: logical partitions can be written.
+        /// </summary>
+        public static string check_fastbootd {
+            get {
+                return ResourceManager.GetString("check_fastbootd", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to In the bootloader: reboot to fastbootd to write logical partitions.
+        /// </summary>
+        public static string check_bootloader {
+            get {
+                return ResourceManager.GetString("check_bootloader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Active slot: {0}.
+        /// </summary>
+        public static string check_slot {
+            get {
+                return ResourceManager.GetString("check_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} device(s) in fastboot mode.
+        /// </summary>
+        public static string rail_devices {
+            get {
+                return ResourceManager.GetString("rail_devices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to fastboot.exe is missing.
+        /// </summary>
+        public static string rail_no_fastboot {
+            get {
+                return ResourceManager.GetString("rail_no_fastboot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every image is extracted in parallel and checked against the manifest before anything is written.
+        /// </summary>
+        public static string flash_subtitle {
+            get {
+                return ResourceManager.GetString("flash_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No payload chosen.
+        /// </summary>
+        public static string flash_no_payload {
+            get {
+                return ResourceManager.GetString("flash_no_payload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a device on the Device page first..
+        /// </summary>
+        public static string flash_no_device {
+            get {
+                return ResourceManager.GetString("flash_no_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device selected.
+        /// </summary>
+        public static string flash_target_none {
+            get {
+                return ResourceManager.GetString("flash_target_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Target: {0}.
+        /// </summary>
+        public static string flash_target {
+            get {
+                return ResourceManager.GetString("flash_target", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Each image is checked against its SHA-256 before it is written..
+        /// </summary>
+        public static string flash_note_verify {
+            get {
+                return ResourceManager.GetString("flash_note_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing reaches the device until every image has extracted cleanly..
+        /// </summary>
+        public static string flash_note_order {
+            get {
+                return ResourceManager.GetString("flash_note_order", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Idle.
+        /// </summary>
+        public static string flash_phase_idle {
+            get {
+                return ResourceManager.GetString("flash_phase_idle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extracting.
+        /// </summary>
+        public static string flash_phase_extract {
+            get {
+                return ResourceManager.GetString("flash_phase_extract", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing.
+        /// </summary>
+        public static string flash_phase_flash {
+            get {
+                return ResourceManager.GetString("flash_phase_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string flash_phase_done {
+            get {
+                return ResourceManager.GetString("flash_phase_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string flash_phase_failed {
+            get {
+                return ResourceManager.GetString("flash_phase_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Queued.
+        /// </summary>
+        public static string flash_state_queued {
+            get {
+                return ResourceManager.GetString("flash_state_queued", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extracting.
+        /// </summary>
+        public static string flash_state_extracting {
+            get {
+                return ResourceManager.GetString("flash_state_extracting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Verified.
+        /// </summary>
+        public static string flash_state_verified {
+            get {
+                return ResourceManager.GetString("flash_state_verified", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing.
+        /// </summary>
+        public static string flash_state_flashing {
+            get {
+                return ResourceManager.GetString("flash_state_flashing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashed.
+        /// </summary>
+        public static string flash_state_flashed {
+            get {
+                return ResourceManager.GetString("flash_state_flashed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed.
+        /// </summary>
+        public static string flash_state_failed {
+            get {
+                return ResourceManager.GetString("flash_state_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not written.
+        /// </summary>
+        public static string flash_state_not_written {
+            get {
+                return ResourceManager.GetString("flash_state_not_written", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phase.
+        /// </summary>
+        public static string label_phase {
+            get {
+                return ResourceManager.GetString("label_phase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Elapsed.
+        /// </summary>
+        public static string label_elapsed {
+            get {
+                return ResourceManager.GetString("label_elapsed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Written.
+        /// </summary>
+        public static string label_written {
+            get {
+                return ResourceManager.GetString("label_written", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Live log.
+        /// </summary>
+        public static string live_log {
+            get {
+                return ResourceManager.GetString("live_log", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Every fastboot command and its output in this session.
+        /// </summary>
+        public static string logs_subtitle {
+            get {
+                return ResourceManager.GetString("logs_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string logs_copy {
+            get {
+                return ResourceManager.GetString("logs_copy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string logs_clear {
+            get {
+                return ResourceManager.GetString("logs_clear", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open a payload.bin or an OTA zip to inspect it and extract images.
+        /// </summary>
+        public static string payload_subtitle {
+            get {
+                return ResourceManager.GetString("payload_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Drop a payload.bin or OTA zip here.
+        /// </summary>
+        public static string payload_drop_hint {
+            get {
+                return ResourceManager.GetString("payload_drop_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Codec.
+        /// </summary>
+        public static string column_codec {
+            get {
+                return ResourceManager.GetString("column_codec", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extractable.
+        /// </summary>
+        public static string column_extractable {
+            get {
+                return ResourceManager.GetString("column_extractable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        public static string column_progress {
+            get {
+                return ResourceManager.GetString("column_progress", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to State.
+        /// </summary>
+        public static string column_state {
+            get {
+                return ResourceManager.GetString("column_state", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partition.
+        /// </summary>
+        public static string column_partition {
+            get {
+                return ResourceManager.GetString("column_partition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string column_size {
+            get {
+                return ResourceManager.GetString("column_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Payload engine: zstd, xz and bzip2, multi-extent operations, parallel extraction with SHA-256 checks.
+        /// </summary>
+        public static string about_engine {
+            get {
+                return ResourceManager.GetString("about_engine", resourceCulture);
+            }
+        }
+            /// <summary>
+        ///   Looks up a localized string similar to Are you sure?.
+        /// </summary>
+        public static string confirm_title {
+            get {
+                return ResourceManager.GetString("confirm_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Erase the partition "{0}"? Everything on it will be lost..
+        /// </summary>
+        public static string confirm_erase {
+            get {
+                return ResourceManager.GetString("confirm_erase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the logical partition "{0}" from super? It cannot be undone..
+        /// </summary>
+        public static string confirm_delete {
+            get {
+                return ResourceManager.GetString("confirm_delete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A payload is being flashed. Closing now stops it part way and can leave the device unbootable. Close anyway?.
+        /// </summary>
+        public static string confirm_close_flashing {
+            get {
+                return ResourceManager.GetString("confirm_close_flashing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Some images are incomplete: operations this build cannot apply were left as zeros and those images were not checked against the manifest..
+        /// </summary>
+        public static string extract_incomplete {
+            get {
+                return ResourceManager.GetString("extract_incomplete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} operations skipped, not verified.
+        /// </summary>
+        public static string extract_incomplete_detail {
+            get {
+                return ResourceManager.GetString("extract_incomplete_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Images are being extracted. Closing now stops the extraction and removes the unfinished files. Close anyway?.
+        /// </summary>
+        public static string confirm_close_extracting {
+            get {
+                return ResourceManager.GetString("confirm_close_extracting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These partitions carry no SHA-256 in the payload, so their images cannot be checked before they are written:.
+        /// </summary>
+        public static string flash_unverified {
+            get {
+                return ResourceManager.GetString("flash_unverified", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string cancel {
+            get {
+                return ResourceManager.GetString("cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string dialog_warning {
+            get {
+                return ResourceManager.GetString("dialog_warning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string dialog_done {
+            get {
+                return ResourceManager.GetString("dialog_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Developer.
+        /// </summary>
+        public static string about_developer {
+            get {
+                return ResourceManager.GetString("about_developer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Original author.
+        /// </summary>
+        public static string about_original {
+            get {
+                return ResourceManager.GetString("about_original", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Built on Fastboot Enhance by LibXZR, released under the MIT License. Copyright © 2021 LibXZR..
+        /// </summary>
+        public static string about_original_detail {
+            get {
+                return ResourceManager.GetString("about_original_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Original project.
+        /// </summary>
+        public static string about_original_project {
+            get {
+                return ResourceManager.GetString("about_original_project", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to License.
+        /// </summary>
+        public static string about_license {
+            get {
+                return ResourceManager.GetString("about_license", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Backup.
+        /// </summary>
+        public static string nav_backup {
+            get {
+                return ResourceManager.GetString("nav_backup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save partitions and any file from the phone to this computer, over adb.
+        /// </summary>
+        public static string backup_subtitle {
+            get {
+                return ResourceManager.GetString("backup_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DEVICES OVER ADB.
+        /// </summary>
+        public static string backup_adb_devices {
+            get {
+                return ResourceManager.GetString("backup_adb_devices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Model.
+        /// </summary>
+        public static string backup_column_model {
+            get {
+                return ResourceManager.GetString("backup_column_model", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string backup_column_mode {
+            get {
+                return ResourceManager.GetString("backup_column_mode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Looking for devices… Boot Android with USB debugging on, or a custom recovery (TWRP, OrangeFox)..
+        /// </summary>
+        public static string backup_waiting {
+            get {
+                return ResourceManager.GetString("backup_waiting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No device over adb. Turn on USB debugging in Developer options and connect the phone, or boot a custom recovery..
+        /// </summary>
+        public static string backup_no_device {
+            get {
+                return ResourceManager.GetString("backup_no_device", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock the phone and allow USB debugging for this computer..
+        /// </summary>
+        public static string backup_unauthorized {
+            get {
+                return ResourceManager.GetString("backup_unauthorized", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The device is in "{0}" mode. Partitions and files need Android or a custom recovery..
+        /// </summary>
+        public static string backup_not_ready {
+            get {
+                return ResourceManager.GetString("backup_not_ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files can be copied now. Partition backup needs root (Magisk, KernelSU) or a custom recovery; press "Read partition table" to check..
+        /// </summary>
+        public static string backup_root_unknown {
+            get {
+                return ResourceManager.GetString("backup_root_unknown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root shell available (recovery or adb root): partitions can be backed up..
+        /// </summary>
+        public static string backup_root_direct {
+            get {
+                return ResourceManager.GetString("backup_root_direct", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root through su: partitions can be backed up..
+        /// </summary>
+        public static string backup_root_su {
+            get {
+                return ResourceManager.GetString("backup_root_su", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Asking for root; allow the prompt on the phone if one appears..
+        /// </summary>
+        public static string backup_asking_root {
+            get {
+                return ResourceManager.GetString("backup_asking_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading partitions needs root. Root the phone with Magisk or KernelSU and allow the prompt, or boot a custom recovery such as TWRP or OrangeFox. Files can still be copied from the Files tab..
+        /// </summary>
+        public static string backup_needs_root {
+            get {
+                return ResourceManager.GetString("backup_needs_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The partition table could not be read from this device..
+        /// </summary>
+        public static string backup_no_table {
+            get {
+                return ResourceManager.GetString("backup_no_table", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions.
+        /// </summary>
+        public static string backup_tab_partitions {
+            get {
+                return ResourceManager.GetString("backup_tab_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files.
+        /// </summary>
+        public static string backup_tab_files {
+            get {
+                return ResourceManager.GetString("backup_tab_files", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read partition table.
+        /// </summary>
+        public static string backup_read {
+            get {
+                return ResourceManager.GetString("backup_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select critical.
+        /// </summary>
+        public static string backup_select_critical {
+            get {
+                return ResourceManager.GetString("backup_select_critical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string backup_select_none {
+            get {
+                return ResourceManager.GetString("backup_select_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by name.
+        /// </summary>
+        public static string backup_filter_hint {
+            get {
+                return ResourceManager.GetString("backup_filter_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SAVE TO.
+        /// </summary>
+        public static string backup_save_to {
+            get {
+                return ResourceManager.GetString("backup_save_to", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Change….
+        /// </summary>
+        public static string backup_change {
+            get {
+                return ResourceManager.GetString("backup_change", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Back up selected.
+        /// </summary>
+        public static string backup_start {
+            get {
+                return ResourceManager.GetString("backup_start", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string backup_cancel {
+            get {
+                return ResourceManager.GetString("backup_cancel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check a backup….
+        /// </summary>
+        public static string backup_verify {
+            get {
+                return ResourceManager.GetString("backup_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Backup check.
+        /// </summary>
+        public static string backup_verify_title {
+            get {
+                return ResourceManager.GetString("backup_verify_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open folder.
+        /// </summary>
+        public static string backup_open_folder {
+            get {
+                return ResourceManager.GetString("backup_open_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Each image is saved with its SHA-256 in SHA256SUMS, next to backup-info.txt. To restore one, flash it from Device › Partitions..
+        /// </summary>
+        public static string backup_note {
+            get {
+                return ResourceManager.GetString("backup_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading.
+        /// </summary>
+        public static string backup_state_reading {
+            get {
+                return ResourceManager.GetString("backup_state_reading", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string backup_state_saved {
+            get {
+                return ResourceManager.GetString("backup_state_saved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped.
+        /// </summary>
+        public static string backup_state_skipped {
+            get {
+                return ResourceManager.GetString("backup_state_skipped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Critical.
+        /// </summary>
+        public static string backup_state_critical {
+            get {
+                return ResourceManager.GetString("backup_state_critical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tick the partitions to back up first, or press "Select critical"..
+        /// </summary>
+        public static string backup_nothing_selected {
+            get {
+                return ResourceManager.GetString("backup_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These partitions are large and will take a while and a lot of disk space:.
+        /// </summary>
+        public static string backup_large_warning {
+            get {
+                return ResourceManager.GetString("backup_large_warning", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to read {0} of {1}; the device stopped sending (permission denied or disconnected).
+        /// </summary>
+        public static string backup_short_read {
+            get {
+                return ResourceManager.GetString("backup_short_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions were saved and their SHA-256 recorded in:.
+        /// </summary>
+        public static string backup_done {
+            get {
+                return ResourceManager.GetString("backup_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} partitions were saved in:.
+        /// </summary>
+        public static string backup_partial {
+            get {
+                return ResourceManager.GetString("backup_partial", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped. Unfinished files were removed..
+        /// </summary>
+        public static string backup_cancelled {
+            get {
+                return ResourceManager.GetString("backup_cancelled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This folder has no SHA256SUMS file, so there is nothing to check it against..
+        /// </summary>
+        public static string backup_verify_none {
+            get {
+                return ResourceManager.GetString("backup_verify_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All {0} files match their SHA-256..
+        /// </summary>
+        public static string backup_verify_ok {
+            get {
+                return ResourceManager.GetString("backup_verify_ok", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} files are missing or do not match:.
+        /// </summary>
+        public static string backup_verify_bad {
+            get {
+                return ResourceManager.GetString("backup_verify_bad", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Up.
+        /// </summary>
+        public static string files_up {
+            get {
+                return ResourceManager.GetString("files_up", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string files_go {
+            get {
+                return ResourceManager.GetString("files_go", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Internal storage.
+        /// </summary>
+        public static string files_quick_storage {
+            get {
+                return ResourceManager.GetString("files_quick_storage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Camera.
+        /// </summary>
+        public static string files_quick_dcim {
+            get {
+                return ResourceManager.GetString("files_quick_dcim", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pictures.
+        /// </summary>
+        public static string files_quick_pictures {
+            get {
+                return ResourceManager.GetString("files_quick_pictures", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Download.
+        /// </summary>
+        public static string files_quick_download {
+            get {
+                return ResourceManager.GetString("files_quick_download", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Documents.
+        /// </summary>
+        public static string files_quick_documents {
+            get {
+                return ResourceManager.GetString("files_quick_documents", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string files_column_name {
+            get {
+                return ResourceManager.GetString("files_column_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string files_column_kind {
+            get {
+                return ResourceManager.GetString("files_column_kind", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Folder.
+        /// </summary>
+        public static string files_kind_folder {
+            get {
+                return ResourceManager.GetString("files_kind_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string files_kind_file {
+            get {
+                return ResourceManager.GetString("files_kind_file", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Link.
+        /// </summary>
+        public static string files_kind_link {
+            get {
+                return ResourceManager.GetString("files_kind_link", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is empty, or Android does not allow reading it without root..
+        /// </summary>
+        public static string files_empty {
+            get {
+                return ResourceManager.GetString("files_empty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} folders, {1} files.
+        /// </summary>
+        public static string files_count {
+            get {
+                return ResourceManager.GetString("files_count", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copying {0}….
+        /// </summary>
+        public static string files_copying {
+            get {
+                return ResourceManager.GetString("files_copying", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to computer.
+        /// </summary>
+        public static string files_pull {
+            get {
+                return ResourceManager.GetString("files_pull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select files or folders (Ctrl or Shift for several) and copy them. Folders are copied with everything inside. Double-click a folder to open it..
+        /// </summary>
+        public static string files_note {
+            get {
+                return ResourceManager.GetString("files_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select the files or folders to copy first..
+        /// </summary>
+        public static string files_nothing_selected {
+            get {
+                return ResourceManager.GetString("files_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} items copied to:.
+        /// </summary>
+        public static string files_done {
+            get {
+                return ResourceManager.GetString("files_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} items copied to:.
+        /// </summary>
+        public static string files_partial {
+            get {
+                return ResourceManager.GetString("files_partial", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Container.
+        /// </summary>
+        public static string payload_container {
+            get {
+                return ResourceManager.GetString("payload_container", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA zip (read in place).
+        /// </summary>
+        public static string payload_container_inplace {
+            get {
+                return ResourceManager.GetString("payload_container_inplace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA zip (unpacked to temp).
+        /// </summary>
+        public static string payload_container_unpacked {
+            get {
+                return ResourceManager.GetString("payload_container_unpacked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Security patch.
+        /// </summary>
+        public static string payload_security_patch {
+            get {
+                return ResourceManager.GetString("payload_security_patch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partial update.
+        /// </summary>
+        public static string payload_partial_update {
+            get {
+                return ResourceManager.GetString("payload_partial_update", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to APEX packages.
+        /// </summary>
+        public static string payload_apex {
+            get {
+                return ResourceManager.GetString("payload_apex", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Operations.
+        /// </summary>
+        public static string payload_operations {
+            get {
+                return ResourceManager.GetString("payload_operations", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions  ·  {1}  ·  {2}.
+        /// </summary>
+        public static string flash_file_detail {
+            get {
+                return ResourceManager.GetString("flash_file_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} partitions were written.
+        /// </summary>
+        public static string flash_written_count {
+            get {
+                return ResourceManager.GetString("flash_written_count", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} in {1} s.
+        /// </summary>
+        public static string extract_done_detail {
+            get {
+                return ResourceManager.GetString("extract_done_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Minimize.
+        /// </summary>
+        public static string chrome_minimize {
+            get {
+                return ResourceManager.GetString("chrome_minimize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Maximize.
+        /// </summary>
+        public static string chrome_maximize {
+            get {
+                return ResourceManager.GetString("chrome_maximize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restore.
+        /// </summary>
+        public static string chrome_restore {
+            get {
+                return ResourceManager.GetString("chrome_restore", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string chrome_close {
+            get {
+                return ResourceManager.GetString("chrome_close", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to LANGUAGE.
+        /// </summary>
+        public static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The new language applies after a restart. Restart Fastboot Studio now?.
+        /// </summary>
+        public static string language_restart {
+            get {
+                return ResourceManager.GetString("language_restart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for the current flash or extraction to finish before changing the language..
+        /// </summary>
+        public static string language_busy {
+            get {
+                return ResourceManager.GetString("language_busy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image Tools.
+        /// </summary>
+        public static string nav_images {
+            get {
+                return ResourceManager.GetString("nav_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Inspect, convert and unpack Android images: sparse, super, ext4, EROFS and more.
+        /// </summary>
+        public static string images_subtitle {
+            get {
+                return ResourceManager.GetString("images_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open image….
+        /// </summary>
+        public static string images_open {
+            get {
+                return ResourceManager.GetString("images_open", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Drop an image here.
+        /// </summary>
+        public static string images_drop_hint {
+            get {
+                return ResourceManager.GetString("images_drop_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to system.img, super.img, vendor.img… sparse or raw. For an image split into parts (system.img_sparsechunk.0, .1…) open any one part; the others are found automatically..
+        /// </summary>
+        public static string images_drop_detail {
+            get {
+                return ResourceManager.GetString("images_drop_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Details.
+        /// </summary>
+        public static string images_tab_details {
+            get {
+                return ResourceManager.GetString("images_tab_details", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions in super.
+        /// </summary>
+        public static string images_tab_partitions {
+            get {
+                return ResourceManager.GetString("images_tab_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse chunks.
+        /// </summary>
+        public static string images_tab_chunks {
+            get {
+                return ResourceManager.GetString("images_tab_chunks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string images_select_all {
+            get {
+                return ResourceManager.GetString("images_select_all", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string images_column_group {
+            get {
+                return ResourceManager.GetString("images_column_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string images_column_type {
+            get {
+                return ResourceManager.GetString("images_column_type", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to First block.
+        /// </summary>
+        public static string images_column_start {
+            get {
+                return ResourceManager.GetString("images_column_start", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Blocks.
+        /// </summary>
+        public static string images_column_blocks {
+            get {
+                return ResourceManager.GetString("images_column_blocks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extract partitions (lpunpack).
+        /// </summary>
+        public static string images_extract {
+            get {
+                return ResourceManager.GetString("images_extract", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Convert to raw (simg2img).
+        /// </summary>
+        public static string images_to_raw {
+            get {
+                return ResourceManager.GetString("images_to_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Convert to sparse (img2simg).
+        /// </summary>
+        public static string images_to_sparse {
+            get {
+                return ResourceManager.GetString("images_to_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Split into parts (simg2simg).
+        /// </summary>
+        public static string images_resplit {
+            get {
+                return ResourceManager.GetString("images_resplit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Split into parts of at most.
+        /// </summary>
+        public static string images_split {
+            get {
+                return ResourceManager.GetString("images_split", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to empty slot.
+        /// </summary>
+        public static string images_empty_slot {
+            get {
+                return ResourceManager.GetString("images_empty_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Several files were chosen, but they are not sparse parts of one image. Open one image at a time..
+        /// </summary>
+        public static string images_parts_not_sparse {
+            get {
+                return ResourceManager.GetString("images_parts_not_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Super (dynamic partitions).
+        /// </summary>
+        public static string images_kind_super {
+            get {
+                return ResourceManager.GetString("images_kind_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ext4 file system.
+        /// </summary>
+        public static string images_kind_ext4 {
+            get {
+                return ResourceManager.GetString("images_kind_ext4", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to EROFS file system.
+        /// </summary>
+        public static string images_kind_erofs {
+            get {
+                return ResourceManager.GetString("images_kind_erofs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to F2FS file system.
+        /// </summary>
+        public static string images_kind_f2fs {
+            get {
+                return ResourceManager.GetString("images_kind_f2fs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot image.
+        /// </summary>
+        public static string images_kind_boot {
+            get {
+                return ResourceManager.GetString("images_kind_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Vendor boot image.
+        /// </summary>
+        public static string images_kind_vendor_boot {
+            get {
+                return ResourceManager.GetString("images_kind_vendor_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to vbmeta (Android Verified Boot).
+        /// </summary>
+        public static string images_kind_vbmeta {
+            get {
+                return ResourceManager.GetString("images_kind_vbmeta", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OTA payload (open it in Payload Dumper).
+        /// </summary>
+        public static string images_kind_payload {
+            get {
+                return ResourceManager.GetString("images_kind_payload", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Zip archive.
+        /// </summary>
+        public static string images_kind_zip {
+            get {
+                return ResourceManager.GetString("images_kind_zip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string images_row_file {
+            get {
+                return ResourceManager.GetString("images_row_file", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} parts.
+        /// </summary>
+        public static string images_parts {
+            get {
+                return ResourceManager.GetString("images_parts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Format.
+        /// </summary>
+        public static string images_row_format {
+            get {
+                return ResourceManager.GetString("images_row_format", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw image.
+        /// </summary>
+        public static string images_format_raw {
+            get {
+                return ResourceManager.GetString("images_format_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Content.
+        /// </summary>
+        public static string images_row_content {
+            get {
+                return ResourceManager.GetString("images_row_content", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image size.
+        /// </summary>
+        public static string images_row_size {
+            get {
+                return ResourceManager.GetString("images_row_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Size on disk.
+        /// </summary>
+        public static string images_row_disk {
+            get {
+                return ResourceManager.GetString("images_row_disk", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Block size.
+        /// </summary>
+        public static string images_row_block_size {
+            get {
+                return ResourceManager.GetString("images_row_block_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Blocks.
+        /// </summary>
+        public static string images_row_blocks {
+            get {
+                return ResourceManager.GetString("images_row_blocks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {1} / {2} / {3}.
+        /// </summary>
+        public static string images_blocks_detail {
+            get {
+                return ResourceManager.GetString("images_blocks_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Chunks.
+        /// </summary>
+        public static string images_row_chunks {
+            get {
+                return ResourceManager.GetString("images_row_chunks", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CRC-32.
+        /// </summary>
+        public static string images_row_crc {
+            get {
+                return ResourceManager.GetString("images_row_crc", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to not recorded.
+        /// </summary>
+        public static string images_crc_none {
+            get {
+                return ResourceManager.GetString("images_crc_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Metadata.
+        /// </summary>
+        public static string images_row_metadata {
+            get {
+                return ResourceManager.GetString("images_row_metadata", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to version {0}, {1} slots.
+        /// </summary>
+        public static string images_metadata_detail {
+            get {
+                return ResourceManager.GetString("images_metadata_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to read from the backup copy.
+        /// </summary>
+        public static string images_backup_copy {
+            get {
+                return ResourceManager.GetString("images_backup_copy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual A/B.
+        /// </summary>
+        public static string images_row_vab {
+            get {
+                return ResourceManager.GetString("images_row_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions.
+        /// </summary>
+        public static string images_row_partitions {
+            get {
+                return ResourceManager.GetString("images_row_partitions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} with data, {1} in total.
+        /// </summary>
+        public static string images_partitions_detail {
+            get {
+                return ResourceManager.GetString("images_partitions_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        public static string images_row_group {
+            get {
+                return ResourceManager.GetString("images_row_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to no limit.
+        /// </summary>
+        public static string images_unlimited {
+            get {
+                return ResourceManager.GetString("images_unlimited", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Super size.
+        /// </summary>
+        public static string images_row_super_size {
+            get {
+                return ResourceManager.GetString("images_row_super_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Partitions are read straight from the image, sparse or not, and every metadata checksum is verified. Each one is saved as name.img in a folder next to the image..
+        /// </summary>
+        public static string images_note_super {
+            get {
+                return ResourceManager.GetString("images_note_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Converting to raw rebuilds the full image (all parts together) and verifies any CRC-32 it carries. Splitting makes parts fastboot can flash one by one..
+        /// </summary>
+        public static string images_note_sparse {
+            get {
+                return ResourceManager.GetString("images_note_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Converting to sparse stores repeated blocks as one record, the format fastboot and factory images use. The output matches AOSP img2simg byte for byte..
+        /// </summary>
+        public static string images_note_raw {
+            get {
+                return ResourceManager.GetString("images_note_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These already exist and will be replaced:.
+        /// </summary>
+        public static string images_overwrite {
+            get {
+                return ResourceManager.GetString("images_overwrite", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done in {0} s.
+        /// </summary>
+        public static string images_done_in {
+            get {
+                return ResourceManager.GetString("images_done_in", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw image written:.
+        /// </summary>
+        public static string images_raw_done {
+            get {
+                return ResourceManager.GetString("images_raw_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CRC-32 {0}.
+        /// </summary>
+        public static string images_crc_line {
+            get {
+                return ResourceManager.GetString("images_crc_line", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recorded checksum(s) verified.
+        /// </summary>
+        public static string images_crc_checked {
+            get {
+                return ResourceManager.GetString("images_crc_checked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the largest part size in megabytes, for example 512..
+        /// </summary>
+        public static string images_split_invalid {
+            get {
+                return ResourceManager.GetString("images_split_invalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open a single sparse image to split it. To join parts, convert them to raw first..
+        /// </summary>
+        public static string images_resplit_one {
+            get {
+                return ResourceManager.GetString("images_resplit_one", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} sparse file(s) written ({1}):.
+        /// </summary>
+        public static string images_sparse_done {
+            get {
+                return ResourceManager.GetString("images_sparse_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tick the partitions to extract first..
+        /// </summary>
+        public static string images_nothing_selected {
+            get {
+                return ResourceManager.GetString("images_nothing_selected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} partitions extracted to:.
+        /// </summary>
+        public static string images_extract_done {
+            get {
+                return ResourceManager.GetString("images_extract_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Data / fill / don't care.
+        /// </summary>
+        public static string images_row_block_kinds {
+            get {
+                return ResourceManager.GetString("images_row_block_kinds", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is in Fastboot mode.
+        /// </summary>
+        public static string backup_fb_title {
+            get {
+                return ResourceManager.GetString("backup_fb_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fastboot can write partitions but cannot read them back: on retail phones Android does not allow it. Backup works over adb, so the phone has to leave Fastboot first, in one of these ways:.
+        /// </summary>
+        public static string backup_fb_why {
+            get {
+                return ResourceManager.GetString("backup_fb_why", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start Android.
+        /// </summary>
+        public static string backup_fb_android {
+            get {
+                return ResourceManager.GetString("backup_fb_android", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Files can be copied right away. USB debugging must be on; partition backup also needs root (Magisk or KernelSU)..
+        /// </summary>
+        public static string backup_fb_android_note {
+            get {
+                return ResourceManager.GetString("backup_fb_android_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start the recovery.
+        /// </summary>
+        public static string backup_fb_recovery {
+            get {
+                return ResourceManager.GetString("backup_fb_recovery", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to For a custom recovery that is installed (TWRP, OrangeFox): partitions and files, no root needed. The stock recovery has no adb..
+        /// </summary>
+        public static string backup_fb_recovery_note {
+            get {
+                return ResourceManager.GetString("backup_fb_recovery_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot a recovery image once, without installing it.
+        /// </summary>
+        public static string backup_fb_boot {
+            get {
+                return ResourceManager.GetString("backup_fb_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sends a TWRP or OrangeFox image made for this phone and starts it; nothing on the phone is changed. Needs an unlocked bootloader..
+        /// </summary>
+        public static string backup_fb_boot_note {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose recovery image….
+        /// </summary>
+        public static string backup_fb_boot_button {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_button", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restarting {0}… This page switches over by itself when the phone answers on adb..
+        /// </summary>
+        public static string backup_fb_rebooting {
+            get {
+                return ResourceManager.GetString("backup_fb_rebooting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sending {0} to the phone….
+        /// </summary>
+        public static string backup_fb_sending {
+            get {
+                return ResourceManager.GetString("backup_fb_sending", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The recovery image was sent and started. Once it has loaded, the phone shows up here over adb and the backup can start..
+        /// </summary>
+        public static string backup_fb_booted {
+            get {
+                return ResourceManager.GetString("backup_fb_booted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone did not boot the image.  {0}  Check that the bootloader is unlocked and that the image was made for this phone. Some phones (Samsung and a few others) do not support booting an image without flashing it..
+        /// </summary>
+        public static string backup_fb_boot_failed {
+            get {
+                return ResourceManager.GetString("backup_fb_boot_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a boot or recovery image. Choose the .img of TWRP or OrangeFox made for this phone..
+        /// </summary>
+        public static string backup_fb_not_boot_image {
+            get {
+                return ResourceManager.GetString("backup_fb_not_boot_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Choose the image again once it is back..
+        /// </summary>
+        public static string backup_fb_userspace {
+            get {
+                return ResourceManager.GetString("backup_fb_userspace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to fastboot did not finish: {0}.
+        /// </summary>
+        public static string backup_fb_failed {
+            get {
+                return ResourceManager.GetString("backup_fb_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Build Super.
+        /// </summary>
+        public static string nav_super {
+            get {
+                return ResourceManager.GetString("nav_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine partition images into one super.img that fastboot can flash.
+        /// </summary>
+        public static string super_subtitle {
+            get {
+                return ResourceManager.GetString("super_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import from super.img….
+        /// </summary>
+        public static string super_import {
+            get {
+                return ResourceManager.GetString("super_import", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read size from phone.
+        /// </summary>
+        public static string super_read_phone {
+            get {
+                return ResourceManager.GetString("super_read_phone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to LAYOUT.
+        /// </summary>
+        public static string super_layout {
+            get {
+                return ResourceManager.GetString("super_layout", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual A/B.
+        /// </summary>
+        public static string super_mode_vab {
+            get {
+                return ResourceManager.GetString("super_mode_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A/B.
+        /// </summary>
+        public static string super_mode_ab {
+            get {
+                return ResourceManager.GetString("super_mode_ab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Single slot.
+        /// </summary>
+        public static string super_mode_single {
+            get {
+                return ResourceManager.GetString("super_mode_single", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to As in the imported super.
+        /// </summary>
+        public static string super_mode_imported {
+            get {
+                return ResourceManager.GetString("super_mode_imported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Most phones from Android 11 on. Partitions get _a and _b; slot b is left empty, as in factory images..
+        /// </summary>
+        public static string super_mode_note_vab {
+            get {
+                return ResourceManager.GetString("super_mode_note_vab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A/B phones without Virtual A/B (mostly Android 10). Each slot gets half of super..
+        /// </summary>
+        public static string super_mode_note_ab {
+            get {
+                return ResourceManager.GetString("super_mode_note_ab", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phones without A/B slots: partitions keep their plain names..
+        /// </summary>
+        public static string super_mode_note_single {
+            get {
+                return ResourceManager.GetString("super_mode_note_single", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Groups, slots and partition order are copied from {0}. Images replace the partitions of the same name..
+        /// </summary>
+        public static string super_mode_note_imported {
+            get {
+                return ResourceManager.GetString("super_mode_note_imported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SUPER SIZE (BYTES).
+        /// </summary>
+        public static string super_size {
+            get {
+                return ResourceManager.GetString("super_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. 9126805504.
+        /// </summary>
+        public static string super_size_hint {
+            get {
+                return ResourceManager.GetString("super_size_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GROUP SIZE (BYTES).
+        /// </summary>
+        public static string super_group_size {
+            get {
+                return ResourceManager.GetString("super_group_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to GROUP NAME.
+        /// </summary>
+        public static string super_group_name {
+            get {
+                return ResourceManager.GetString("super_group_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to auto.
+        /// </summary>
+        public static string super_auto {
+            get {
+                return ResourceManager.GetString("super_auto", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to auto: {0}.
+        /// </summary>
+        public static string super_auto_value {
+            get {
+                return ResourceManager.GetString("super_auto_value", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} used · {2} free.
+        /// </summary>
+        public static string super_usage {
+            get {
+                return ResourceManager.GetString("super_usage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the size of super to see how much the partitions use..
+        /// </summary>
+        public static string super_usage_none {
+            get {
+                return ResourceManager.GetString("super_usage_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add images….
+        /// </summary>
+        public static string super_add {
+            get {
+                return ResourceManager.GetString("super_add", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add folder….
+        /// </summary>
+        public static string super_add_folder {
+            get {
+                return ResourceManager.GetString("super_add_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string super_remove {
+            get {
+                return ResourceManager.GetString("super_remove", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string super_clear {
+            get {
+                return ResourceManager.GetString("super_clear", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add partition images (system.img, vendor.img, product.img…) or import the layout of an existing super.img. Images unpacked by Image Tools are found by themselves..
+        /// </summary>
+        public static string super_empty_hint {
+            get {
+                return ResourceManager.GetString("super_empty_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Image.
+        /// </summary>
+        public static string super_column_image {
+            get {
+                return ResourceManager.GetString("super_column_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to empty.
+        /// </summary>
+        public static string super_empty_partition {
+            get {
+                return ResourceManager.GetString("super_empty_partition", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OUTPUT.
+        /// </summary>
+        public static string super_output {
+            get {
+                return ResourceManager.GetString("super_output", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse.
+        /// </summary>
+        public static string super_format_sparse {
+            get {
+                return ResourceManager.GetString("super_format_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Raw.
+        /// </summary>
+        public static string super_format_raw {
+            get {
+                return ResourceManager.GetString("super_format_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sparse is smaller and is what factory images ship; raw is the full size of super..
+        /// </summary>
+        public static string super_format_note {
+            get {
+                return ResourceManager.GetString("super_format_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check the image after building.
+        /// </summary>
+        public static string super_verify {
+            get {
+                return ResourceManager.GetString("super_verify", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Build super.img….
+        /// </summary>
+        public static string super_build {
+            get {
+                return ResourceManager.GetString("super_build", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Building super.img.
+        /// </summary>
+        public static string super_building {
+            get {
+                return ResourceManager.GetString("super_building", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Checking super.img.
+        /// </summary>
+        public static string super_verifying {
+            get {
+                return ResourceManager.GetString("super_verifying", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash it with: fastboot flash super super.img. Keep a backup of the phone's current super first..
+        /// </summary>
+        public static string super_flash_note {
+            get {
+                return ResourceManager.GetString("super_flash_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img is ready and checked: every partition was read back and matches its image.  {0} {1} · {2} partitions.
+        /// </summary>
+        public static string super_done {
+            get {
+                return ResourceManager.GetString("super_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img is ready.  {0} {1} · {2} partitions.
+        /// </summary>
+        public static string super_done_unchecked {
+            get {
+                return ResourceManager.GetString("super_done_unchecked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to super.img was written but did not pass the check, so do not flash it:  {0}.
+        /// </summary>
+        public static string super_verify_failed {
+            get {
+                return ResourceManager.GetString("super_verify_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the size of super: read it from the phone or import a super.img..
+        /// </summary>
+        public static string super_problem_no_size {
+            get {
+                return ResourceManager.GetString("super_problem_no_size", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The size of super must be a multiple of 4096 bytes..
+        /// </summary>
+        public static string super_problem_size_aligned {
+            get {
+                return ResourceManager.GetString("super_problem_size_aligned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The metadata settings of this layout cannot be used..
+        /// </summary>
+        public static string super_problem_metadata {
+            get {
+                return ResourceManager.GetString("super_problem_metadata", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Too many partitions for the metadata area..
+        /// </summary>
+        public static string super_problem_metadata_large {
+            get {
+                return ResourceManager.GetString("super_problem_metadata_large", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add at least one partition image..
+        /// </summary>
+        public static string super_problem_no_images {
+            get {
+                return ResourceManager.GetString("super_problem_no_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" is not a valid name (letters, digits, _ . - and at most 36 characters)..
+        /// </summary>
+        public static string super_problem_bad_name {
+            get {
+                return ResourceManager.GetString("super_problem_bad_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" appears twice..
+        /// </summary>
+        public static string super_problem_duplicate {
+            get {
+                return ResourceManager.GetString("super_problem_duplicate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group "{0}" does not exist..
+        /// </summary>
+        public static string super_problem_unknown_group {
+            get {
+                return ResourceManager.GetString("super_problem_unknown_group", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Group {0} is too small: its partitions need {1}, it allows {2}..
+        /// </summary>
+        public static string super_problem_group_full {
+            get {
+                return ResourceManager.GetString("super_problem_group_full", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The partitions need {0}, but super is {1}..
+        /// </summary>
+        public static string super_problem_does_not_fit {
+            get {
+                return ResourceManager.GetString("super_problem_does_not_fit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Layout of {0} · {1} · {2} metadata slots · groups {3}.
+        /// </summary>
+        public static string super_import_source {
+            get {
+                return ResourceManager.GetString("super_import_source", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Found {0} partition images in {1}..
+        /// </summary>
+        public static string super_found_images {
+            get {
+                return ResourceManager.GetString("super_found_images", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a super image..
+        /// </summary>
+        public static string super_not_super {
+            get {
+                return ResourceManager.GetString("super_not_super", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These files are not file-system images, so they probably do not belong in super (boot, vbmeta and the like are flashed on their own):  {0}  Add them anyway?.
+        /// </summary>
+        public static string super_not_filesystem {
+            get {
+                return ResourceManager.GetString("super_not_filesystem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped {0} files that are not file-system images: {1}.
+        /// </summary>
+        public static string super_folder_skipped {
+            get {
+                return ResourceManager.GetString("super_folder_skipped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No partition images were found in this folder..
+        /// </summary>
+        public static string super_folder_none {
+            get {
+                return ResourceManager.GetString("super_folder_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all partition images from the list?.
+        /// </summary>
+        public static string super_clear_confirm {
+            get {
+                return ResourceManager.GetString("super_clear_confirm", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No phone in fastboot mode. Connect it in the bootloader or fastbootd and try again..
+        /// </summary>
+        public static string super_phone_none {
+            get {
+                return ResourceManager.GetString("super_phone_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Read from {0}: super is {1} ({2} bytes). Layout: {3}..
+        /// </summary>
+        public static string super_phone_read {
+            get {
+                return ResourceManager.GetString("super_phone_read", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not read the size of super from the phone:  {0}.
+        /// </summary>
+        public static string super_phone_failed {
+            get {
+                return ResourceManager.GetString("super_phone_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading from the phone….
+        /// </summary>
+        public static string super_reading_phone {
+            get {
+                return ResourceManager.GetString("super_reading_phone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose the image for {0}.
+        /// </summary>
+        public static string super_pick_image {
+            get {
+                return ResourceManager.GetString("super_pick_image", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The output file is one of the images going into super. Choose another name..
+        /// </summary>
+        public static string super_output_is_input {
+            get {
+                return ResourceManager.GetString("super_output_is_input", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pieces of a Qualcomm flash package ({0}).
+        /// </summary>
+        public static string images_format_pieces {
+            get {
+                return ResourceManager.GetString("images_format_pieces", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These {0} files are pieces of one {1} image, placed by {2}. Combine them into one image, or extract the partitions straight from the pieces..
+        /// </summary>
+        public static string images_note_pieces {
+            get {
+                return ResourceManager.GetString("images_note_pieces", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine into one image (sparse).
+        /// </summary>
+        public static string images_combine_sparse {
+            get {
+                return ResourceManager.GetString("images_combine_sparse", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Combine into one image (raw).
+        /// </summary>
+        public static string images_combine_raw {
+            get {
+                return ResourceManager.GetString("images_combine_raw", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} pieces combined into one image:  {1} {2}  {3}.
+        /// </summary>
+        public static string images_combine_done {
+            get {
+                return ResourceManager.GetString("images_combine_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash it with: fastboot flash super super.img.
+        /// </summary>
+        public static string images_combine_sparse_note {
+            get {
+                return ResourceManager.GetString("images_combine_sparse_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The raw image has the full size of the partition; for fastboot the sparse one is smaller..
+        /// </summary>
+        public static string images_combine_raw_note {
+            get {
+                return ResourceManager.GetString("images_combine_raw_note", resourceCulture);
             }
         }
     }

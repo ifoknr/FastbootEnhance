@@ -121,7 +121,7 @@
     <value>バージョン情報</value>
   </data>
   <data name="app_name" xml:space="preserve">
-    <value>Fastboot Enhance</value>
+    <value>Fastboot Studio</value>
   </data>
   <data name="author" xml:space="preserve">
     <value>開発者: LibXZR @ akr-developers.com</value>
@@ -412,7 +412,7 @@
     <value>名前で絞り込む:</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>チェックサム (Base64)</value>
+    <value>チェックサム (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>名前</value>

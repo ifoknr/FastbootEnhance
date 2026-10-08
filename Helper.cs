@@ -1,6 +1,8 @@
-﻿using System;
+using FastbootEnhance.Core;
+using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace FastbootEnhance
@@ -25,16 +27,36 @@ namespace FastbootEnhance
             {
                 MainWindow.THIS.taskbariteminfo.ProgressValue = percent / 100.0;
             }
+
+            public static void error()
+            {
+                MainWindow.THIS.taskbariteminfo.ProgressState = System.Windows.Shell.TaskbarItemProgressState.Error;
+            }
         }
 
         public static void offloadAndRun(Action bigtask, Action callbackOnUIThread)
         {
-            new Thread(new ThreadStart(delegate
+            Thread thread = new Thread(new ThreadStart(delegate
             {
                 bigtask();
                 MainWindow.THIS.Dispatcher.Invoke(callbackOnUIThread);
-            })).Start();
+            }));
+            thread.IsBackground = true;
+            thread.Start();
         }
+
+        /// <summary>
+        /// A yes/no prompt. Returns true only when the user picks yes. A destructive question is
+        /// drawn as a warning, with a red "yes", and Enter answers no.
+        /// </summary>
+        public static bool confirm(string message, string title, bool destructive = false)
+        {
+            return ThemedDialog.Show(message, title, MessageBoxButton.YesNo,
+                    destructive ? MessageBoxImage.Warning : MessageBoxImage.Question,
+                    destructive ? MessageBoxResult.No : MessageBoxResult.Yes)
+                == MessageBoxResult.Yes;
+        }
+
         public class ListHelper<T>
         {
             public delegate bool Filter(T t);
@@ -83,49 +105,63 @@ namespace FastbootEnhance
         }
 
         public delegate void PathSelectCallback(string path);
+
         public static void fileSelect(PathSelectCallback callback, string filter = "All Files|*.*")
         {
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            openFileDialog.Filter = filter;
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.Filter = filter;
+            if (dialog.ShowDialog() == true)
             {
-                callback(openFileDialog.FileName);
+                callback(dialog.FileName);
             }
         }
 
         public static void pathSelect(PathSelectCallback callback)
         {
-            System.Windows.Forms.FolderBrowserDialog folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            folderBrowserDialog.Description = Properties.Resources.select_save_path;
-
-            if (folderBrowserDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            Microsoft.Win32.OpenFolderDialog dialog = new Microsoft.Win32.OpenFolderDialog();
+            dialog.Title = Properties.Resources.select_save_path;
+            if (dialog.ShowDialog() == true)
             {
-                callback(folderBrowserDialog.SelectedPath);
+                callback(dialog.FolderName);
             }
         }
 
-        public static DateTime timeStamp2DataTime(Int64 timestamp)
+        /// <summary>
+        /// Formats a unix timestamp in the machine's own time zone. Timestamps come from the
+        /// payload manifest, so a nonsensical value must not be allowed to throw.
+        /// </summary>
+        public static DateTime? timeStamp2DataTime(Int64 timestamp)
         {
-            Int64 begtime = timestamp * 10000000;
-            DateTime dt_1970 = new DateTime(1970, 1, 1, 8, 0, 0);
-            long tricks_1970 = dt_1970.Ticks;
-            long time_tricks = tricks_1970 + begtime;
-            DateTime dt = new DateTime(time_tricks);
-            return dt;
+            try
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime().DateTime;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
         }
 
         public static string byte2AUnit(ulong size)
         {
-            if (size > 1024 * 1024 * 1024)
-                return (int)((double)size / 1024 / 1024 / 1024 * 100) / 100.0 + " GB";
+            return ltr(ByteSize.Format(size > long.MaxValue ? long.MaxValue : (long)size));
+        }
 
-            if (size > 1024 * 1024)
-                return (int)((double)size / 1024 / 1024 * 100) / 100.0 + " MB";
+        public static string byte2AUnit(long size)
+        {
+            return ltr(ByteSize.Format(size));
+        }
 
-            if (size > 1024)
-                return (int)((double)size / 1024 * 100) / 100.0 + " KB";
-
-            return size + " B";
+        /// <summary>
+        /// In a right-to-left interface, "16.00 MB" or "326 (95.0%)" would be laid out back to
+        /// front; left-to-right marks around the value keep it in reading order. A no-op in
+        /// left-to-right languages, so logs and copied text are unaffected there.
+        /// </summary>
+        public static string ltr(string value)
+        {
+            if (!Languages.RightToLeft || string.IsNullOrEmpty(value))
+                return value;
+            return "\u200E" + value + "\u200E";
         }
     }
 }

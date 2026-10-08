@@ -1,0 +1,84 @@
+name: screenshots
+
+# Runs the real app on Windows with a generated sample OTA and captures every tab.
+# Doubles as a smoke test: the job fails if the app does not start or crashes.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '*.xaml'
+      - '*.cs'
+      - 'src/**'
+      - 'tools/FastbootEnhance.SampleGen/**'
+      - 'tools/FastbootEnhance.FakeFastboot/**'
+      - 'tools/FastbootEnhance.FakeAdb/**'
+      - 'Themes/**'
+      - '.github/scripts/screenshots.ps1'
+      - '.github/workflows/screenshots.yml'
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  capture:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so the commit step can rebase
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish app
+        run: >
+          dotnet publish FastbootEnhance.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -o publish
+
+      - name: Generate sample OTA
+        run: dotnet run --project tools/FastbootEnhance.SampleGen -c Release -- sample
+
+      # The runner has no phone, so the real fastboot.exe and adb.exe are swapped for
+      # stand-ins: one device in fastbootd, and one in a custom recovery over adb.
+      # Only this test copy is touched.
+      - name: Swap in the stand-in fastboot and adb
+        shell: pwsh
+        run: |
+          dotnet publish tools/FastbootEnhance.FakeFastboot -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o fakefb
+          Copy-Item fakefb/fastboot.exe publish/fastboot.exe -Force
+          dotnet publish tools/FastbootEnhance.FakeAdb -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o fakeadb
+          Copy-Item fakeadb/adb.exe publish/adb.exe -Force
+
+      # The sample OTA has 12 partitions; every one of them must reach "fastboot flash".
+      # The stand-in phone has 20 critical partitions; each must be backed up intact.
+      - name: Capture
+        shell: pwsh
+        run: ./.github/scripts/screenshots.ps1 -App publish/FastbootStudio.exe -Payload sample/sample-ota.zip -Out docs/screenshots -ExpectedFlashes 12 -ExpectedBackups 20 -Arabic
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: docs/screenshots/
+          if-no-files-found: warn
+
+      # Committed back so the images can be viewed straight from the branch.
+      - name: Commit screenshots
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "Update app screenshots [skip ci]"
+            # The branch may have moved while the app was being captured.
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin HEAD:${{ github.ref_name }}
+          }

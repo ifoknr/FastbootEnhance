@@ -44,7 +44,7 @@ jobs:
           TELEGRAM_TOPIC: ${{ secrets.TELEGRAM_TOPIC }}
           TOOL: FastbootStudio
           ICON: "🧰"
-          LAYER: "أداة ويندوز للفاستبوت و Payload"
-          REQUIRES: "Windows + .NET Framework 4.5.2"
+          LAYER: "أداة ويندوز للفاستبوت والتفليش وصور super والنسخ الاحتياطي"
+          REQUIRES: "Windows 10/11 64-bit (بدون تثبيت)"
           AUTO_UPDATE: "false"
         run: bash .github/scripts/telegram-release.sh

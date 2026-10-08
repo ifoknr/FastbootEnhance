@@ -4,7 +4,7 @@ using System.Windows;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// Fastboot_create_resize.xaml 的交互逻辑
+    /// Interaction logic for FastbootActionWindow.xaml
     /// </summary>
     public partial class FastbootActionWindow : Window
     {
@@ -20,6 +20,9 @@ namespace FastbootEnhance
             string partition_name, long size, FastbootLogicalCallback callback)
         {
             InitializeComponent();
+            Owner = MainWindow.THIS;
+            FlowDirection = Languages.Flow;
+            ThemedWindow.Attach(this);
 
             this.name.Text = partition_name;
             this.size.Text = size.ToString();
@@ -28,13 +31,13 @@ namespace FastbootEnhance
             {
                 if (this.name.Text == "")
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_name_empty);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_name_empty);
                     return;
                 }
 
                 if (this.size.Text == "")
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_empty);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_empty);
                     return;
                 }
 
@@ -45,7 +48,7 @@ namespace FastbootEnhance
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_invalid);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_invalid);
                     return;
                 }
 
@@ -57,7 +60,7 @@ namespace FastbootEnhance
 
                 if (type == StartType.RESIZE && new_size < (ulong)size)
                 {
-                    MessageBox.Show(Properties.Resources.fastboot_partition_size_unable_shrink);
+                    ThemedDialog.Show(Properties.Resources.fastboot_partition_size_unable_shrink);
                     return;
                 }
 

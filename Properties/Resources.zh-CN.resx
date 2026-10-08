@@ -409,7 +409,7 @@
     <value>根据分区名过滤：</value>
   </data>
   <data name="payload_partitions_hash" xml:space="preserve">
-    <value>校验值 (Base64)</value>
+    <value>校验值 (SHA-256)</value>
   </data>
   <data name="payload_partitions_name" xml:space="preserve">
     <value>分区名</value>
