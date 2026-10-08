@@ -1410,10 +1410,10 @@ Add them anyway?</value>
     <value>These {0} files are pieces of one {1} image, placed by {2}. Combine them into one image, or extract the partitions straight from the pieces.</value>
   </data>
   <data name="images_combine_sparse" xml:space="preserve">
-    <value>Combine into one image (sparse)</value>
+    <value>Combine as sparse</value>
   </data>
   <data name="images_combine_raw" xml:space="preserve">
-    <value>Combine into one image (raw)</value>
+    <value>Combine as raw</value>
   </data>
   <data name="images_combine_done" xml:space="preserve">
     <value>{0} pieces combined into one image:

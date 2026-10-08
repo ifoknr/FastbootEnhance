@@ -341,6 +341,7 @@ namespace FastbootEnhance
             // Re-splitting a sparse image always needs a size; for raw input splitting is optional.
             // Combined pieces are written as one file.
             W.images_split.Visibility = opened.IsSparse || pieces != null ? Visibility.Collapsed : Visibility.Visible;
+            W.images_split_row.Visibility = pieces != null ? Visibility.Collapsed : Visibility.Visible;
             W.images_split_mb.IsEnabled = opened.IsSparse || W.images_split.IsChecked == true;
             W.images_note.Text = pieces != null
                 ? string.Format(Properties.Resources.images_note_pieces, pieces.Pieces.Count, Helper.ltr(pieces.Label), Helper.ltr(Path.GetFileName(pieces.Xml)))

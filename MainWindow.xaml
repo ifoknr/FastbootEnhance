@@ -589,7 +589,7 @@
                                         Content="{x:Static props:Resources.images_to_sparse}"/>
 
                                 <CheckBox x:Name="images_split" Margin="0,4,0,6" Content="{x:Static props:Resources.images_split}"/>
-                                <DockPanel Margin="26,0,0,12">
+                                <DockPanel x:Name="images_split_row" Margin="26,0,0,12">
                                     <TextBlock DockPanel.Dock="Right" Text="MB" Foreground="{StaticResource Dim}" VerticalAlignment="Center" Margin="8,0,0,0"/>
                                     <TextBox x:Name="images_split_mb" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}" Text="512"/>
                                 </DockPanel>
