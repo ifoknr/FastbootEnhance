@@ -28,6 +28,16 @@ public static class Win32 {
     [DllImport("user32.dll")] public static extern bool RedrawWindow(IntPtr h, IntPtr rect, IntPtr region, uint flags);
     [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr h, IntPtr after, int x, int y, int cx, int cy, uint flags);
     [DllImport("dwmapi.dll")] public static extern int DwmGetWindowAttribute(IntPtr h, int attr, out RECT r, int size);
+    [StructLayout(LayoutKind.Sequential)] public struct POINT { public int X, Y; }
+    [StructLayout(LayoutKind.Sequential)] public struct CURSORINFO { public int cbSize; public int flags; public IntPtr hCursor; public POINT pt; }
+    [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+    [DllImport("user32.dll")] public static extern bool GetCursorInfo(ref CURSORINFO ci);
+    [DllImport("user32.dll")] public static extern IntPtr LoadCursor(IntPtr instance, IntPtr name);
+    public static IntPtr CurrentCursor() {
+        CURSORINFO ci = new CURSORINFO();
+        ci.cbSize = Marshal.SizeOf(ci);
+        return GetCursorInfo(ref ci) ? ci.hCursor : IntPtr.Zero;
+    }
 }
 "@
 [Win32]::SetProcessDPIAware() | Out-Null
@@ -235,6 +245,31 @@ $i = 1
 foreach ($sub in (Visible-Tabs $payloadTab)) {
     Select-Item $sub
     Save-Window ('{0:D2}-payload-{1}' -f $i, ($sub.Current.Name -replace '[^A-Za-z0-9]+', '-').Trim('-').ToLower()); $i++
+}
+
+# ---------------------------------------------------------------- the mouse cursor
+# The hand belongs on what can be clicked: a navigation entry shows it, the page it opens
+# does not. (A cursor set on a tab used to reach the whole page under it.)
+function Cursor-Over($element) {
+    $r = $element.Current.BoundingRectangle
+    $x = [int]($r.X + $r.Width / 2); $y = [int]($r.Y + $r.Height / 2)
+    [Win32]::SetForegroundWindow($script:hwnd) | Out-Null
+    [Win32]::SetCursorPos($x, $y) | Out-Null
+    Start-Sleep -Milliseconds 400
+    [Win32]::SetCursorPos($x + 2, $y + 1) | Out-Null   # a move makes WPF ask for the cursor again
+    Start-Sleep -Milliseconds 400
+    return [Win32]::CurrentCursor()
+}
+$arrow = [Win32]::LoadCursor([IntPtr]::Zero, [IntPtr]32512)   # IDC_ARROW
+$hand = [Win32]::LoadCursor([IntPtr]::Zero, [IntPtr]32649)    # IDC_HAND
+$onPage = Cursor-Over (Wait-For { Shown $root 'payload_info' } 10 "the payload properties")
+$onNav = Cursor-Over (Wait-For { By-Id $mainTabs 'device_tab' } 10 "the Device entry")
+Write-Host "cursor over the page: $onPage (arrow $arrow), over a navigation entry: $onNav (hand $hand)"
+if ($onPage -eq [IntPtr]::Zero -or $onNav -eq [IntPtr]::Zero) {
+    Write-Host "the runner reports no cursor; skipping the cursor check"
+} else {
+    if ($onPage -ne $arrow) { Fail "the payload page shows a cursor other than the arrow" }
+    if ($onNav -ne $hand) { Fail "a navigation entry does not show the hand cursor" }
 }
 
 # ---------------------------------------------------------------- device list and device
