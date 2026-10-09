@@ -262,6 +262,7 @@ function Cursor-Over($element) {
 }
 $arrow = [Win32]::LoadCursor([IntPtr]::Zero, [IntPtr]32512)   # IDC_ARROW
 $hand = [Win32]::LoadCursor([IntPtr]::Zero, [IntPtr]32649)    # IDC_HAND
+Select-Item (Visible-Tabs $payloadTab)[0]   # the loop above left the last sub-tab open
 $onPage = Cursor-Over (Wait-For { Shown $root 'payload_info' } 10 "the payload properties")
 $onNav = Cursor-Over (Wait-For { By-Id $mainTabs 'device_tab' } 10 "the Device entry")
 Write-Host "cursor over the page: $onPage (arrow $arrow), over a navigation entry: $onNav (hand $hand)"
