@@ -4044,5 +4044,284 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("boot_once_started", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Super.
+        /// </summary>
+        public static string super_space_title {
+            get {
+                return ResourceManager.GetString("super_space_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Shown in fastbootd: the bootloader does not list the partitions inside super..
+        /// </summary>
+        public static string super_space_bootloader {
+            get {
+                return ResourceManager.GetString("super_space_bootloader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone does not report the size of super..
+        /// </summary>
+        public static string super_space_unknown {
+            get {
+                return ResourceManager.GetString("super_space_unknown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} in all, about {1} free.
+        /// </summary>
+        public static string super_space_total {
+            get {
+                return ResourceManager.GetString("super_space_total", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Slot {0}: {1}.
+        /// </summary>
+        public static string super_space_slot {
+            get {
+                return ResourceManager.GetString("super_space_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to (in use).
+        /// </summary>
+        public static string super_space_in_use {
+            get {
+                return ResourceManager.GetString("super_space_in_use", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Update copies (COW): {0}.
+        /// </summary>
+        public static string super_space_cow {
+            get {
+                return ResourceManager.GetString("super_space_cow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Without a slot: {0}.
+        /// </summary>
+        public static string super_space_unslotted {
+            get {
+                return ResourceManager.GetString("super_space_unslotted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not enough room in super.
+        /// </summary>
+        public static string super_full_title {
+            get {
+                return ResourceManager.GetString("super_full_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These images need about {0} more room in super ({1}), but only about {2} is free. fastbootd would stop with "Not enough space to resize partition".  Ways to make room:.
+        /// </summary>
+        public static string super_full {
+            get {
+                return ResourceManager.GetString("super_full", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the partitions of slot {0}: {1}. Slot {0} will not start until it is flashed again..
+        /// </summary>
+        public static string super_full_other_slot {
+            get {
+                return ResourceManager.GetString("super_full_other_slot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove what an earlier update left behind: cancel the pending update (Cancel update), or delete the COW partitions..
+        /// </summary>
+        public static string super_full_cow {
+            get {
+                return ResourceManager.GetString("super_full_cow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing else is using super; these images are bigger than this phone's super..
+        /// </summary>
+        public static string super_full_nothing {
+            get {
+                return ResourceManager.GetString("super_full_nothing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The numbers are estimates. Flash anyway?.
+        /// </summary>
+        public static string super_full_ask {
+            get {
+                return ResourceManager.GetString("super_full_ask", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing partitions.
+        /// </summary>
+        public static string create_missing_title {
+            get {
+                return ResourceManager.GetString("create_missing_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone has no {0}. They are partitions this update places inside super, so they can be created there now (empty) and then written.  fastbootd puts new partitions in the "default" group, not in the [rest of string was truncated].
+        /// </summary>
+        public static string create_missing {
+            get {
+                return ResourceManager.GetString("create_missing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to fastbootd puts new partitions in the "default" group, not in the phone's own group (such as main_a). It works; the next full update puts it in the usual group..
+        /// </summary>
+        public static string create_default_group_note {
+            get {
+                return ResourceManager.GetString("create_default_group_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to USB check.
+        /// </summary>
+        public static string usb_check {
+            get {
+                return ResourceManager.GetString("usb_check", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to USB check.
+        /// </summary>
+        public static string usb_check_title {
+            get {
+                return ResourceManager.GetString("usb_check_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: Windows has no driver for it, so fastboot and adb cannot see it..
+        /// </summary>
+        public static string usb_missing_driver {
+            get {
+                return ResourceManager.GetString("usb_missing_driver", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: its driver is installed but not working (code {1}). Unplug and plug it in again, or reinstall the driver..
+        /// </summary>
+        public static string usb_driver_problem {
+            get {
+                return ResourceManager.GetString("usb_driver_problem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: the phone is in Qualcomm emergency download mode (EDL, 9008), used by QFIL. fastboot cannot reach this mode; hold the power key for 10 to 15 seconds to leave it..
+        /// </summary>
+        public static string usb_edl {
+            get {
+                return ResourceManager.GetString("usb_edl", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: the phone is in MediaTek BROM or preloader mode, used by SP Flash Tool. fastboot cannot reach it; unplug it and start fastboot with the phone's key combination..
+        /// </summary>
+        public static string usb_mediatek {
+            get {
+                return ResourceManager.GetString("usb_mediatek", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: the phone is in Unisoc (Spreadtrum) download mode. fastboot cannot reach it; unplug it and start fastboot with the phone's key combination..
+        /// </summary>
+        public static string usb_unisoc {
+            get {
+                return ResourceManager.GetString("usb_unisoc", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: the phone is in Samsung Download (Odin) mode. Samsung phones have no fastboot; Odin is the tool for this mode..
+        /// </summary>
+        public static string usb_samsung {
+            get {
+                return ResourceManager.GetString("usb_samsung", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: a fastboot interface with a working driver. If the phone is not listed, unplug it and plug it in again..
+        /// </summary>
+        public static string usb_fastboot_ready {
+            get {
+                return ResourceManager.GetString("usb_fastboot_ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: the phone is connected in Android or recovery (adb), not in fastboot..
+        /// </summary>
+        public static string usb_adb_ready {
+            get {
+                return ResourceManager.GetString("usb_adb_ready", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Windows sees no phone on USB.  •  Use a data cable; many cables only charge. •  Try another USB port, a USB 2.0 port directly on the PC if you can. •  Make sure the phone is in fastboot (bootloader or[rest of string was truncated].
+        /// </summary>
+        public static string usb_nothing {
+            get {
+                return ResourceManager.GetString("usb_nothing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to To install the driver: get the Google USB Driver (developer.android.com/studio/run/win-usb) or the phone maker's driver. If Windows still shows the phone without a driver, in Device Manager right-clic[rest of string was truncated].
+        /// </summary>
+        public static string usb_driver_howto {
+            get {
+                return ResourceManager.GetString("usb_driver_howto", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open Device Manager now?.
+        /// </summary>
+        public static string usb_open_device_manager {
+            get {
+                return ResourceManager.GetString("usb_open_device_manager", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot it to the bootloader now, so it shows up here?.
+        /// </summary>
+        public static string usb_reboot_bootloader_ask {
+            get {
+                return ResourceManager.GetString("usb_reboot_bootloader_ask", resourceCulture);
+            }
+        }
     }
 }

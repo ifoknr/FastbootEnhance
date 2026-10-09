@@ -12,7 +12,8 @@ namespace FastbootEnhance.FakeFastboot
     {
         const string Serial = "FBE0SAMPLE01";
 
-        // Partitions the sample OTA contains, with sizes large enough to take its images.
+        // Partitions the sample OTA contains, with sizes large enough to take its images. odm
+        // is missing on purpose: the app has to offer to create it before flashing the OTA.
         static readonly (string name, long size, bool logical)[] Partitions =
         {
             ("boot_a", 0x4000000, false), ("boot_b", 0x4000000, false),
@@ -28,7 +29,6 @@ namespace FastbootEnhance.FakeFastboot
             ("product_a", 0x8000000, true), ("product_b", 0, true),
             ("vendor_a", 0x6000000, true), ("vendor_b", 0, true),
             ("vendor_dlkm_a", 0x2000000, true), ("vendor_dlkm_b", 0, true),
-            ("odm_a", 0x800000, true), ("odm_b", 0, true),
             ("super", 0x240000000, false),
             ("metadata", 0x1000000, false),
             ("misc", 0x100000, false),

@@ -2,6 +2,7 @@
 using FastbootEnhance.Core.Fastboot;
 using FastbootEnhance.Core.Images;
 using FastbootEnhance.Core.Payload;
+using FastbootEnhance.Core.Usb;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -395,6 +396,7 @@ namespace FastbootEnhance
             MainWindow.THIS.fastboot_mode_badge.Visibility = Visibility.Visible;
 
             MainWindow.THIS.fastboot_checks.ItemsSource = buildChecks();
+            showSuperSpace();
         }
 
         /// <summary>What to look at before writing anything to this device.</summary>
@@ -426,6 +428,211 @@ namespace FastbootEnhance
                     string.Format(Properties.Resources.check_slot, fastbootData.current_slot)));
 
             return checks;
+        }
+
+        /// <summary>The "Super" card on the partition tab: what each slot takes and what is free.</summary>
+        static void showSuperSpace()
+        {
+            SuperSpace space = SuperSpace.From(fastbootData);
+            MainWindow.THIS.fastboot_super_bar.Value = 0;
+            MainWindow.THIS.fastboot_super_bar.Foreground = Palette.Get("Accent");
+
+            if (!fastbootData.fastbootd)
+            {
+                MainWindow.THIS.fastboot_super_text.Text = Properties.Resources.super_space_bootloader;
+                return;
+            }
+            if (!space.Known)
+            {
+                MainWindow.THIS.fastboot_super_text.Text = Properties.Resources.super_space_unknown;
+                return;
+            }
+
+            MainWindow.THIS.fastboot_super_bar.Value = Math.Min(100, space.Used * 100.0 / space.SuperSize);
+            MainWindow.THIS.fastboot_super_bar.Foreground = Palette.Get(
+                space.Free < (512L << 20) ? "Danger" : space.Free < (2L << 30) ? "Warn" : "Accent");
+
+            List<string> lines = new List<string>();
+            lines.Add(string.Format(Properties.Resources.super_space_total,
+                Helper.byte2AUnit(space.SuperSize), Helper.byte2AUnit(space.Free)));
+            if (space.CurrentSlot != null)
+                lines.Add(string.Format(Properties.Resources.super_space_slot, space.CurrentSlot,
+                    Helper.byte2AUnit(space.CurrentSlotBytes)) + "  " + Properties.Resources.super_space_in_use);
+            if (space.OtherSlot != null)
+                lines.Add(string.Format(Properties.Resources.super_space_slot, space.OtherSlot,
+                    Helper.byte2AUnit(space.OtherSlotBytes)));
+            if (space.CowBytes > 0)
+                lines.Add(string.Format(Properties.Resources.super_space_cow, Helper.byte2AUnit(space.CowBytes)));
+            if (space.UnslottedBytes > 0)
+                lines.Add(string.Format(Properties.Resources.super_space_unslotted, Helper.byte2AUnit(space.UnslottedBytes)));
+            MainWindow.THIS.fastboot_super_text.Text = string.Join("\n", lines);
+        }
+
+        /// <summary>
+        /// Before writing to logical partitions in fastbootd: when super is known to be too
+        /// small for the images, says by how much and what could make room, and asks.
+        /// True to go ahead.
+        /// </summary>
+        static bool superSpaceAllowed(IEnumerable<KeyValuePair<string, long>> writes, IEnumerable<string> created = null)
+        {
+            if (fastbootData == null || !fastbootData.fastbootd)
+                return true;
+
+            SuperSpace space = SuperSpace.From(fastbootData);
+            SuperFit fit = space.Check(writes, created);
+            appendLog("super space: " + (space.Known ? Helper.byte2AUnit(space.Free) + " free" : "size unknown")
+                + ", writes need " + Helper.byte2AUnit(fit.Needed) + (fit.Fits ? "" : " (does not fit)"));
+            if (fit.Fits)
+                return true;
+
+            List<string> ways = new List<string>();
+            if (space.OtherSlotPartitions.Count > 0)
+                ways.Add(string.Format(Properties.Resources.super_full_other_slot, space.OtherSlot,
+                    string.Join(", ", space.OtherSlotPartitions.Take(6)
+                        .Select(p => p.Name + " (" + Helper.byte2AUnit(p.Size) + ")"))));
+            if (space.CowPartitions.Count > 0 || fastbootData.HasPendingUpdate)
+                ways.Add(Properties.Resources.super_full_cow);
+            if (ways.Count == 0)
+                ways.Add(Properties.Resources.super_full_nothing);
+
+            string text = string.Format(Properties.Resources.super_full,
+                    Helper.byte2AUnit(fit.Needed), string.Join(", ", fit.Growing), Helper.byte2AUnit(fit.Free))
+                + "\n\n" + string.Join("\n\n", ways.Select(w => "•  " + w))
+                + "\n\n" + Properties.Resources.super_full_ask;
+            return Helper.confirm(text, Properties.Resources.super_full_title, true);
+        }
+
+        /// <summary>
+        /// The USB check: looks at what Windows sees on USB and explains why a phone may be
+        /// missing from the list (no driver, a broken driver, a download mode, Android mode).
+        /// </summary>
+        static void checkUsb()
+        {
+            MainWindow.THIS.fastboot_usb_check.IsEnabled = false;
+            IReadOnlyList<UsbFinding> findings = null;
+            Exception failure = null;
+
+            Helper.offloadAndRun(new Action(delegate
+            {
+                try
+                {
+                    findings = UsbDiagnosis.Diagnose(UsbScan.Read());
+                }
+                catch (Exception e)
+                {
+                    failure = e;
+                }
+            }), new Action(delegate
+            {
+                MainWindow.THIS.fastboot_usb_check.IsEnabled = true;
+                if (failure != null)
+                {
+                    appendLog("usb check failed: " + failure.Message);
+                    ThemedDialog.Show(failure.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                showUsbFindings(findings);
+            }));
+        }
+
+        static void showUsbFindings(IReadOnlyList<UsbFinding> findings)
+        {
+            List<string> lines = new List<string>();
+            bool driverTrouble = false;
+            bool adbReady = false;
+
+            foreach (UsbFinding finding in findings)
+            {
+                appendLog("usb: " + finding.Kind + ", " + finding.Device.Name + " " + finding.UsbId
+                    + ", code " + finding.Device.ErrorCode);
+                string device = finding.Device.Name + (finding.UsbId != null ? "  (" + finding.UsbId + ")" : "");
+                switch (finding.Kind)
+                {
+                    case UsbFindingKind.MissingDriver:
+                        lines.Add(string.Format(Properties.Resources.usb_missing_driver, device));
+                        driverTrouble = true;
+                        break;
+                    case UsbFindingKind.DriverProblem:
+                        lines.Add(string.Format(Properties.Resources.usb_driver_problem, device, finding.Device.ErrorCode));
+                        driverTrouble = true;
+                        break;
+                    case UsbFindingKind.QualcommEdl:
+                        lines.Add(string.Format(Properties.Resources.usb_edl, device));
+                        break;
+                    case UsbFindingKind.MediaTekDownload:
+                        lines.Add(string.Format(Properties.Resources.usb_mediatek, device));
+                        break;
+                    case UsbFindingKind.UnisocDownload:
+                        lines.Add(string.Format(Properties.Resources.usb_unisoc, device));
+                        break;
+                    case UsbFindingKind.SamsungDownload:
+                        lines.Add(string.Format(Properties.Resources.usb_samsung, device));
+                        break;
+                    case UsbFindingKind.FastbootReady:
+                        lines.Add(string.Format(Properties.Resources.usb_fastboot_ready, device));
+                        break;
+                    case UsbFindingKind.AdbReady:
+                        lines.Add(string.Format(Properties.Resources.usb_adb_ready, device));
+                        adbReady = true;
+                        break;
+                }
+            }
+
+            if (lines.Count == 0)
+            {
+                ThemedDialog.Show(Properties.Resources.usb_nothing, Properties.Resources.usb_check_title,
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            string text = string.Join("\n\n", lines.Select(line => "•  " + line));
+
+            if (driverTrouble)
+            {
+                if (ThemedDialog.Show(text + "\n\n" + Properties.Resources.usb_driver_howto
+                        + "\n\n" + Properties.Resources.usb_open_device_manager,
+                        Properties.Resources.usb_check_title, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("devmgmt.msc") { UseShellExecute = true });
+                    }
+                    catch (Exception e)
+                    {
+                        ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                return;
+            }
+
+            if (adbReady)
+            {
+                if (!Helper.confirm(text + "\n\n" + Properties.Resources.usb_reboot_bootloader_ask, Properties.Resources.usb_check_title))
+                    return;
+
+                string problem = null;
+                Helper.offloadAndRun(new Action(delegate
+                {
+                    try
+                    {
+                        Adb.Result result = Adb.Run("reboot bootloader", Adb.ShortCommand);
+                        if (!result.Succeeded)
+                            problem = result.Problem;
+                    }
+                    catch (Exception e)
+                    {
+                        problem = e.Message;
+                    }
+                }), new Action(delegate
+                {
+                    appendLog("adb reboot bootloader: " + (problem ?? "ok"));
+                    if (problem != null)
+                        ThemedDialog.Show(problem, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                }));
+                return;
+            }
+
+            ThemedDialog.Show(text, Properties.Resources.usb_check_title, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         static void change_page()
@@ -752,8 +959,8 @@ namespace FastbootEnhance
                         return;
                     }
 
-                    string unknown = findUnknownPartitions(opened);
-                    if (unknown != null)
+                    MissingPartitions missing = findMissingPartitions(opened);
+                    if (missing.Unknown.Count > 0)
                     {
                         opened.Dispose();
                         action_unlock();
@@ -761,8 +968,21 @@ namespace FastbootEnhance
                             ? "\n" + Properties.Resources.fastboot_unknown_partition_str1
                             : "\n" + Properties.Resources.fastboot_unknown_partition_str2;
                         ThemedDialog.Show(Properties.Resources.fastboot_unknown_partition_str0
-                            + "\n" + unknown + hint);
+                            + "\n" + string.Join(" ", missing.Unknown) + hint);
                         return;
+                    }
+
+                    // Logical partitions the update adds (or the phone lost) are created first.
+                    if (missing.Create.Count > 0)
+                    {
+                        appendLog("missing logical partitions: " + string.Join(", ", missing.Create));
+                        if (!Helper.confirm(string.Format(Properties.Resources.create_missing,
+                                string.Join(", ", missing.Create)), Properties.Resources.create_missing_title))
+                        {
+                            opened.Dispose();
+                            action_unlock();
+                            return;
+                        }
                     }
 
                     List<string> blocked = opened.Partitions
@@ -802,36 +1022,68 @@ namespace FastbootEnhance
                         return;
                     }
 
-                    flashPayload(opened, serial);
+                    // In fastbootd each logical partition is resized to its image as it is
+                    // written; make sure super can take them, in the order they are written.
+                    Dictionary<string, string> createdAs = new Dictionary<string, string>(StringComparer.Ordinal);
+                    for (int i = 0; i < missing.Create.Count; i++)
+                        createdAs[missing.CreateFrom[i]] = missing.Create[i];
+                    List<KeyValuePair<string, long>> writes = opened.Partitions
+                        .Select(part => new KeyValuePair<string, long>(
+                            createdAs.ContainsKey(part.Name) ? createdAs[part.Name] : part.Name, part.UnpackedSize))
+                        .ToList();
+                    if (!superSpaceAllowed(writes, missing.Create))
+                    {
+                        opened.Dispose();
+                        action_unlock();
+                        return;
+                    }
+
+                    flashPayload(opened, serial, missing.Create);
                 }));
         }
 
         /// <summary>
-        /// Returns a space separated list of payload partitions the device does not have,
-        /// or null when every partition can be written.
+        /// The partitions of the payload the phone does not have, split into those that can
+        /// be created in super and those that cannot. Nothing when the user chose to ignore them.
         /// </summary>
-        static string findUnknownPartitions(PayloadFile payload)
+        static MissingPartitions findMissingPartitions(PayloadFile payload)
         {
             if (MainWindow.THIS.ignore_unknown_part.IsChecked == true)
-                return null;
+                return MissingPartitions.Find(fastbootData, new string[0], new string[0]);
 
-            List<string> missing = new List<string>();
+            return MissingPartitions.Find(fastbootData, payload.Partitions.Select(part => part.Name),
+                payload.LogicalPartitionNames());
+        }
 
-            foreach (PayloadPartitionInfo part in payload.Partitions)
+        /// <summary>
+        /// "create-logical-partition NAME 0" for each partition; fastbootd then sizes each one to
+        /// the image written to it. Returns the error, or null when all were created.
+        /// </summary>
+        static string createLogicalPartitions(string serial, IReadOnlyList<string> names, CancellationToken cancel)
+        {
+            foreach (string name in names)
             {
-                long size;
-                if (fastbootData.partition_size.TryGetValue(part.Name, out size))
-                    continue;
-
-                if (fastbootData.current_slot != null &&
-                    fastbootData.partition_size.TryGetValue(
-                        part.Name + "_" + fastbootData.current_slot, out size))
-                    continue;
-
-                missing.Add(part.Name);
+                cancel.ThrowIfCancellationRequested();
+                appendLog("Creating logical partition " + name);
+                int? exitCode;
+                using (Fastboot fastboot = new Fastboot(serial,
+                    "create-logical-partition \"" + name + "\" 0", Fastboot.LongCommand))
+                {
+                    while (true)
+                    {
+                        string line = fastboot.stderr.ReadLine();
+                        if (line == null)
+                            break;
+                        appendLog(line);
+                    }
+                    exitCode = fastboot.WaitForExit();
+                }
+                if (exitCode != 0)
+                    return name + ": create-logical-partition " + (exitCode == null
+                        ? "did not finish in time"
+                        : "exited with code " + exitCode);
             }
-
-            return missing.Count == 0 ? null : string.Join(" ", missing);
+            return null;
         }
 
         /// <summary>
@@ -840,7 +1092,7 @@ namespace FastbootEnhance
         /// payload that turns out to be damaged cannot leave the phone half written. Each image
         /// is deleted as soon as it is flashed to keep the staging directory small.
         /// </summary>
-        static void flashPayload(PayloadFile payload, string serial)
+        static void flashPayload(PayloadFile payload, string serial, IReadOnlyList<string> create)
         {
             if (serial == null)
                 throw new ArgumentNullException(nameof(serial));
@@ -985,7 +1237,16 @@ namespace FastbootEnhance
                         long flashedBytes = 0;
                         List<PartitionResult> results = report.Results.ToList();
 
-                        for (int i = 0; i < results.Count; i++)
+                        // Only now, with every image extracted and verified, is super touched.
+                        error = createLogicalPartitions(serial, create, cancel.Token);
+                        if (error != null)
+                        {
+                            appendLog(error);
+                            foreach (PartitionResult result in results)
+                                updateRow(result.Partition, FlashRow.Stage.NotWritten, null);
+                        }
+
+                        for (int i = 0; error == null && i < results.Count; i++)
                         {
                             PartitionResult result = results[i];
                             appendLog("Flashing " + result.Partition);
@@ -1161,6 +1422,11 @@ namespace FastbootEnhance
             refresher.Start();
             MainWindow.THIS.main_tabs.Tag = string.Format(Properties.Resources.rail_devices, 0);
 
+            MainWindow.THIS.fastboot_usb_check.Click += delegate
+            {
+                checkUsb();
+            };
+
             MainWindow.THIS.fastboot_devices_list.MouseDoubleClick += delegate
             {
                 openSelectedDevice();
@@ -1269,6 +1535,24 @@ namespace FastbootEnhance
 
                 Helper.fileSelect(new Helper.PathSelectCallback(delegate (string path)
                 {
+                    // fastbootd resizes a logical partition to its image: check super has room.
+                    bool? isLogical;
+                    if (fastbootData.partition_is_logical.TryGetValue(target, out isLogical) && isLogical == true)
+                    {
+                        long imageSize;
+                        try
+                        {
+                            imageSize = SuperSpace.WrittenSize(path);
+                        }
+                        catch (Exception e)
+                        {
+                            ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
+                        if (!superSpaceAllowed(new[] { new KeyValuePair<string, long>(target, imageSize) }))
+                            return;
+                    }
+
                     string ext_arg = "";
 
                     if (target == "vbmeta" || target == "vbmeta_" + fastbootData.current_slot

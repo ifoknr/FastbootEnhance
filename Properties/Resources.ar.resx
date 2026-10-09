@@ -1493,4 +1493,107 @@
   <data name="boot_once_started" xml:space="preserve">
     <value>تم إرسال الصورة والجوال يشغّلها الآن. إعادة تشغيل الجوال بشكل عادي ترجّعه للنظام المثبّت.</value>
   </data>
+  <data name="super_space_title" xml:space="preserve">
+    <value>مساحة Super</value>
+  </data>
+  <data name="super_space_bootloader" xml:space="preserve">
+    <value>تظهر في وضع fastbootd فقط، لأن البوت لودر ما يعرض الأقسام اللي داخل super.</value>
+  </data>
+  <data name="super_space_unknown" xml:space="preserve">
+    <value>الجوال ما يعطي حجم super.</value>
+  </data>
+  <data name="super_space_total" xml:space="preserve">
+    <value>الحجم الكلي {0}، والفاضي تقريباً {1}</value>
+  </data>
+  <data name="super_space_slot" xml:space="preserve">
+    <value>السلوت {0}: {1}</value>
+  </data>
+  <data name="super_space_in_use" xml:space="preserve">
+    <value>(الحالي)</value>
+  </data>
+  <data name="super_space_cow" xml:space="preserve">
+    <value>نسخ التحديث (COW): {0}</value>
+  </data>
+  <data name="super_space_unslotted" xml:space="preserve">
+    <value>بدون سلوت: {0}</value>
+  </data>
+  <data name="super_full_title" xml:space="preserve">
+    <value>المساحة في super ما تكفي</value>
+  </data>
+  <data name="super_full" xml:space="preserve">
+    <value>الصور هذي تحتاج تقريباً {0} زيادة في super ({1})، والفاضي تقريباً {2} بس. fastbootd راح يوقف برسالة "Not enough space to resize partition".
+
+طرق توفير مساحة:</value>
+  </data>
+  <data name="super_full_other_slot" xml:space="preserve">
+    <value>احذف أقسام السلوت {0}: {1}. السلوت {0} ما راح يقلع لين تفلشه من جديد.</value>
+  </data>
+  <data name="super_full_cow" xml:space="preserve">
+    <value>احذف بقايا التحديث السابق: ألغِ التحديث المعلّق (زر إلغاء التحديث)، أو احذف أقسام COW.</value>
+  </data>
+  <data name="super_full_nothing" xml:space="preserve">
+    <value>ما في شي ثاني ماخذ مساحة في super، يعني الصور أكبر من super حق هذا الجوال.</value>
+  </data>
+  <data name="super_full_ask" xml:space="preserve">
+    <value>الأرقام تقريبية. تفليش على أي حال؟</value>
+  </data>
+  <data name="create_missing_title" xml:space="preserve">
+    <value>أقسام ناقصة</value>
+  </data>
+  <data name="create_missing" xml:space="preserve">
+    <value>الجوال ما فيه {0}. هذي أقسام يحطها التحديث داخل super، فممكن تنشأ الحين (فاضية) وبعدها تتفلش.
+
+fastbootd يحط الأقسام الجديدة في مجموعة "default"، مو في مجموعة الجوال الأصلية (مثل main_a). الجوال يقلع عادي، وأول تحديث كامل أو تفليش super من المصنع يرجعها لمجموعتها المعتادة.
+
+إنشاؤها والمتابعة؟</value>
+  </data>
+  <data name="create_default_group_note" xml:space="preserve">
+    <value>fastbootd يحط القسم الجديد في مجموعة "default" مو في مجموعة الجوال الأصلية (مثل main_a). يشتغل عادي، وأول تحديث كامل يرجعه لمجموعته المعتادة.</value>
+  </data>
+  <data name="usb_check" xml:space="preserve">
+    <value>فحص USB</value>
+  </data>
+  <data name="usb_check_title" xml:space="preserve">
+    <value>فحص اتصال USB</value>
+  </data>
+  <data name="usb_missing_driver" xml:space="preserve">
+    <value>{0}: ويندوز ما عنده تعريف له، فـ fastboot و adb ما يشوفونه.</value>
+  </data>
+  <data name="usb_driver_problem" xml:space="preserve">
+    <value>{0}: التعريف مثبت بس ما يشتغل (رمز {1}). افصل الجوال ورجّعه، أو أعد تثبيت التعريف.</value>
+  </data>
+  <data name="usb_edl" xml:space="preserve">
+    <value>{0}: الجوال في وضع EDL حق كوالكوم (9008)، وهو الوضع اللي يستخدمه QFIL. fastboot ما يوصل لهذا الوضع، اضغط زر التشغيل 10 إلى 15 ثانية عشان يطلع منه.</value>
+  </data>
+  <data name="usb_mediatek" xml:space="preserve">
+    <value>{0}: الجوال في وضع BROM أو Preloader حق ميدياتك، وهو الوضع اللي يستخدمه SP Flash Tool. fastboot ما يوصل له، افصل الجوال وادخل الفاست بوت بأزرار الجوال.</value>
+  </data>
+  <data name="usb_unisoc" xml:space="preserve">
+    <value>{0}: الجوال في وضع التحميل حق Unisoc (سبريدترم). fastboot ما يوصل له، افصل الجوال وادخل الفاست بوت بأزرار الجوال.</value>
+  </data>
+  <data name="usb_samsung" xml:space="preserve">
+    <value>{0}: الجوال في وضع التحميل حق سامسونج (Odin). جوالات سامسونج ما فيها fastboot، والأداة لهذا الوضع هي Odin.</value>
+  </data>
+  <data name="usb_fastboot_ready" xml:space="preserve">
+    <value>{0}: واجهة فاست بوت وتعريفها شغّال. إذا الجوال مو ظاهر في القائمة، افصله ورجّعه.</value>
+  </data>
+  <data name="usb_adb_ready" xml:space="preserve">
+    <value>{0}: الجوال متصل وهو في أندرويد أو الريكفري (adb)، مو في الفاست بوت.</value>
+  </data>
+  <data name="usb_nothing" xml:space="preserve">
+    <value>ويندوز ما يشوف أي جوال على USB.
+
+•  استخدم كيبل بيانات، كثير من الكيبلات للشحن بس.
+•  جرّب منفذ USB ثاني، ويفضّل منفذ USB 2.0 في الجهاز نفسه.
+•  تأكد إن الجوال في وضع الفاست بوت (bootloader أو fastbootd)، أو إن تصحيح USB مفعّل إذا تبي adb.</value>
+  </data>
+  <data name="usb_driver_howto" xml:space="preserve">
+    <value>لتثبيت التعريف: حمّل Google USB Driver من developer.android.com/studio/run/win-usb أو تعريف الشركة المصنعة. إذا ويندوز للحين يعرض الجوال بدون تعريف: في إدارة الأجهزة اضغط عليه بالزر اليمين ← تحديث برنامج التشغيل ← استعراض جهاز الكمبيوتر ← السماح لي بالاختيار ← Android Device ← "Android Bootloader Interface" للفاست بوت، أو "Android ADB Interface" لـ adb.</value>
+  </data>
+  <data name="usb_open_device_manager" xml:space="preserve">
+    <value>فتح إدارة الأجهزة الحين؟</value>
+  </data>
+  <data name="usb_reboot_bootloader_ask" xml:space="preserve">
+    <value>إعادة تشغيله للبوت لودر الحين عشان يظهر هنا؟</value>
+  </data>
 </root>

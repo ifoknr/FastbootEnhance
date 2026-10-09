@@ -14,6 +14,7 @@
         <TextBox FlowDirection="LeftToRight" x:Name="name" Margin="0,0,0,16" FontFamily="{StaticResource Mono}"/>
         <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.fastboot_partition_size_b}"/>
         <TextBox FlowDirection="LeftToRight" x:Name="size" Margin="0,0,0,20" FontFamily="{StaticResource Mono}"/>
+        <TextBlock x:Name="note" Style="{StaticResource Note}" TextWrapping="Wrap" Margin="0,-6,0,18" Visibility="Collapsed"/>
         <Button x:Name="ok" Style="{StaticResource AccentButton}" HorizontalAlignment="Right" MinWidth="120"
                 IsDefault="True" Content="{x:Static props:Resources.ok}"/>
     </StackPanel>

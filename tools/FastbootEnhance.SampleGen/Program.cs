@@ -126,6 +126,28 @@ namespace FastbootEnhance.SampleGen
             string initPath = Path.Combine(outDir, "init_boot-sample.img");
             File.WriteAllBytes(initPath, initBoot);
             Console.WriteLine("wrote " + initPath);
+
+            // A sparse image of 12 GiB that is one "don't care" chunk: 40 bytes on disk, far
+            // more than the stand-in phone's super can take once written.
+            const uint blockSize = 4096;
+            const uint blocks = (uint)((12L << 30) / blockSize);
+            using (BinaryWriter big = new BinaryWriter(File.Create(Path.Combine(outDir, "big-sparse.img"))))
+            {
+                big.Write(0xED26FF3Au); // magic
+                big.Write((ushort)1);   // major version
+                big.Write((ushort)0);   // minor version
+                big.Write((ushort)28);  // file header size
+                big.Write((ushort)12);  // chunk header size
+                big.Write(blockSize);
+                big.Write(blocks);      // total blocks
+                big.Write(1u);          // total chunks
+                big.Write(0u);          // checksum
+                big.Write((ushort)0xCAC3); // DONT_CARE
+                big.Write((ushort)0);
+                big.Write(blocks);      // chunk size in blocks
+                big.Write(12u);         // chunk header only
+            }
+            Console.WriteLine("wrote big-sparse.img");
         }
 
         /// <summary>

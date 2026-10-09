@@ -21,6 +21,9 @@ namespace FastbootEnhance.Core.Fastboot
         public long max_download_size;
         public string snapshot_update_status;
 
+        /// <summary>The name of the super partition ("super-partition-name"); null when not reported.</summary>
+        public string super_partition_name;
+
         /// <summary>Per slot ("a", "b"): has it booted successfully, is it marked unbootable, tries left.</summary>
         public Dictionary<string, bool> slot_successful;
         public Dictionary<string, bool> slot_unbootable;
@@ -97,6 +100,10 @@ namespace FastbootEnhance.Core.Fastboot
 
                     case "snapshot-update-status":
                         snapshot_update_status = tmp[2];
+                        break;
+
+                    case "super-partition-name":
+                        super_partition_name = tmp[2];
                         break;
 
                     // "(bootloader) slot-successful:a: yes"

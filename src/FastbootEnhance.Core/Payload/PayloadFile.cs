@@ -284,6 +284,21 @@ namespace FastbootEnhance.Core.Payload
             return null;
         }
 
+        /// <summary>
+        /// The partitions the update places inside super, from its dynamic partition
+        /// metadata. Empty for updates of phones without dynamic partitions.
+        /// </summary>
+        public ISet<string> LogicalPartitionNames()
+        {
+            HashSet<string> names = new HashSet<string>(StringComparer.Ordinal);
+            if (Manifest == null || Manifest.DynamicPartitionMetadata == null)
+                return names;
+            foreach (DynamicPartitionGroup group in Manifest.DynamicPartitionMetadata.Groups)
+                foreach (string name in group.PartitionNames)
+                    names.Add(name);
+            return names;
+        }
+
         internal PartitionUpdate FindUpdate(string name)
         {
             foreach (PartitionUpdate update in Manifest.Partitions)
