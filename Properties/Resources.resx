@@ -1597,7 +1597,7 @@ Create them and continue?</value>
     <value>Reboot it to the bootloader now, so it shows up here?</value>
   </data>
   <data name="theme" xml:space="preserve">
-    <value>Appearance</value>
+    <value>APPEARANCE</value>
   </data>
   <data name="theme_dark" xml:space="preserve">
     <value>Dark</value>

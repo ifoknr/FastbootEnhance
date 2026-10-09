@@ -2,38 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:props="clr-namespace:FastbootEnhance.Properties">
 
-    <!-- Palette. One accent; amber and red are reserved for warnings and destructive actions.
-         Theme.cs holds the light values of the same keys. -->
-    <SolidColorBrush x:Key="Bg" Color="#0E1116"/>
-    <SolidColorBrush x:Key="Rail" Color="#0A0D12"/>
-    <SolidColorBrush x:Key="Well" Color="#11151C"/>
-    <SolidColorBrush x:Key="Surface" Color="#161A21"/>
-    <SolidColorBrush x:Key="Raised" Color="#1D222B"/>
-    <SolidColorBrush x:Key="Hover" Color="#252C37"/>
-    <SolidColorBrush x:Key="Line" Color="#2A313C"/>
-    <SolidColorBrush x:Key="Text" Color="#E8ECF2"/>
-    <SolidColorBrush x:Key="Dim" Color="#9AA6B6"/>
-    <SolidColorBrush x:Key="Faint" Color="#7C8899"/>
-    <SolidColorBrush x:Key="Accent" Color="#3DD6C4"/>
-    <SolidColorBrush x:Key="AccentInk" Color="#0A0D12"/>
-    <SolidColorBrush x:Key="AccentSoft" Color="#10251F"/>
-    <SolidColorBrush x:Key="AccentLine" Color="#2F6E66"/>
-    <SolidColorBrush x:Key="Warn" Color="#F0B341"/>
-    <SolidColorBrush x:Key="WarnSoft" Color="#1C1710"/>
-    <SolidColorBrush x:Key="WarnLine" Color="#5C4320"/>
-    <SolidColorBrush x:Key="Danger" Color="#F2615C"/>
-    <SolidColorBrush x:Key="DangerSoft" Color="#231315"/>
-    <SolidColorBrush x:Key="DangerLine" Color="#5C2B2B"/>
-    <SolidColorBrush x:Key="Ok" Color="#5BD97A"/>
-    <SolidColorBrush x:Key="Thumb" Color="#3A4350"/>
-
-    <!-- Default templates fill the corner where two scroll bars meet with the system control
-         colour, which is near-white; this keeps it dark. -->
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#161A21"/>
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="#161A21"/>
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="#161A21"/>
-    <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#161A21"/>
-
+    <!-- Styles and shared resources. The colours come from Palette.Dark.xaml or
+         Palette.Light.xaml, loaded before this file (Theme.cs). -->
     <FontFamily x:Key="Mono">Cascadia Mono, Consolas, Courier New</FontFamily>
 
     <!-- Navigation icons, drawn as strokes on a 24 unit grid. -->

@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:props="clr-namespace:FastbootEnhance.Properties">
+
+    <!-- The dark palette. Palette.Light.xaml has the same keys; Theme.cs loads one of the two
+         before Styles.xaml, whose styles take their colours from whichever is loaded. -->
+    <!-- One accent; amber and red are reserved for warnings and destructive actions. -->
+    <SolidColorBrush x:Key="Bg" Color="#0E1116"/>
+    <SolidColorBrush x:Key="Rail" Color="#0A0D12"/>
+    <SolidColorBrush x:Key="Well" Color="#11151C"/>
+    <SolidColorBrush x:Key="Surface" Color="#161A21"/>
+    <SolidColorBrush x:Key="Raised" Color="#1D222B"/>
+    <SolidColorBrush x:Key="Hover" Color="#252C37"/>
+    <SolidColorBrush x:Key="Line" Color="#2A313C"/>
+    <SolidColorBrush x:Key="Text" Color="#E8ECF2"/>
+    <SolidColorBrush x:Key="Dim" Color="#9AA6B6"/>
+    <SolidColorBrush x:Key="Faint" Color="#7C8899"/>
+    <SolidColorBrush x:Key="Accent" Color="#3DD6C4"/>
+    <SolidColorBrush x:Key="AccentInk" Color="#0A0D12"/>
+    <SolidColorBrush x:Key="AccentSoft" Color="#10251F"/>
+    <SolidColorBrush x:Key="AccentLine" Color="#2F6E66"/>
+    <SolidColorBrush x:Key="Warn" Color="#F0B341"/>
+    <SolidColorBrush x:Key="WarnSoft" Color="#1C1710"/>
+    <SolidColorBrush x:Key="WarnLine" Color="#5C4320"/>
+    <SolidColorBrush x:Key="Danger" Color="#F2615C"/>
+    <SolidColorBrush x:Key="DangerSoft" Color="#231315"/>
+    <SolidColorBrush x:Key="DangerLine" Color="#5C2B2B"/>
+    <SolidColorBrush x:Key="Ok" Color="#5BD97A"/>
+    <SolidColorBrush x:Key="Thumb" Color="#3A4350"/>
+
+    <!-- Default templates fill the corner where two scroll bars meet with the system control
+         colour, which is near-white; this keeps it dark. -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="#161A21"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#161A21"/>
+
+</ResourceDictionary>
