@@ -1,14 +1,16 @@
 [CENTER][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/banner.png[/IMG]
 
 [SIZE=6][B]Fastboot Studio[/B][/SIZE]
-[SIZE=4]fastboot, OTA flashing, payload dumper, super images and backups — in one Windows app[/SIZE]
+[SIZE=4]fastboot, OTA flashing, payload dumper, super images, backups and a terminal — in one Windows app[/SIZE]
 
-[URL='https://github.com/ifoknr/FastbootStudio/releases/latest'][B]⬇ Download[/B][/URL] · [URL='https://github.com/ifoknr/FastbootStudio']Source (GitHub)[/URL] · [URL='https://github.com/ifoknr/FastbootStudio/blob/master/CHANGELOG.md']Changelog[/URL] · [URL='https://t.me/IFOKNR1']Telegram[/URL][/CENTER]
+[URL='https://github.com/ifoknr/FastbootStudio/releases/latest'][B]⬇ Download[/B][/URL] · [URL='https://github.com/ifoknr/FastbootStudio']Source (GitHub)[/URL] · [URL='https://github.com/ifoknr/FastbootStudio/blob/master/CHANGELOG.md']Changelog[/URL] · [URL='https://t.me/IFOKNR1']Telegram[/URL]
+
+[B]New in v2.3.0:[/B] light and dark themes, and a Terminal page for your own adb and fastboot commands[/CENTER]
 
 [SIZE=5][B]What is it?[/B][/SIZE]
 Fastboot Studio is a free, open-source (MIT) rewrite of [URL='https://github.com/libxzr/FastbootEnhance']Fastboot Enhance[/URL] by LibXZR. It keeps everything the original did and adds what people who flash phones reach for every day: a safe OTA flasher, image tools that replace simg2img / lpunpack / lpmake, a super image builder, and backups of partitions and files over adb.
 
-Everything runs inside the app: no Python, no Linux tools, nothing to install. adb and fastboot (platform-tools 37.0.1) are included. English and Arabic interface.
+Everything runs inside the app: no Python, no Linux tools, nothing to install. adb and fastboot (platform-tools 37.0.1) are included. English and Arabic interface, light or dark theme (or follow Windows).
 
 [SIZE=5][B]Features[/B][/SIZE]
 [B]📱 Device[/B]
@@ -57,11 +59,19 @@ Everything runs inside the app: no Python, no Linux tools, nothing to install. a
 [*]Phone in fastboot? It reboots to recovery or boots a recovery image for you
 [/LIST]
 
+[B]⌨️ Terminal[/B]
+[LIST]
+[*]Run adb and fastboot commands yourself with the bundled tools, with one-click buttons for the common ones and command history
+[*]Drop a file on the line to add its path; plain file names are looked up in a folder you choose
+[*]Guarded like the rest of the app: flashing or erasing a critical partition, locking the bootloader or writing a block device with dd needs the name typed first, and wiping data asks first
+[/LIST]
+
 [SIZE=5][B]Safety[/B][/SIZE]
 [LIST]
 [*][B]Slot switch protection[/B] — warns when the other slot has not booted yet, asks in red when it is marked unbootable or out of retries, and refuses when its logical partitions are empty (as after flashing a factory super)
 [*][B]Critical partitions[/B] (xbl, abl, tz, modem, persist, frp, preloader, nvdata…) can only be flashed or erased after typing the partition name
 [*]vbmeta: offers --disable-verity --disable-verification and explains what it needs
+[*]The Terminal asks the same questions before risky commands
 [*]Asks before closing mid-flash
 [/LIST]
 
@@ -79,16 +89,22 @@ Everything runs inside the app: no Python, no Linux tools, nothing to install. a
 [/LIST]
 
 [SIZE=5][B]Screenshots[/B][/SIZE]
-[SPOILER="Device"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/device.png[/IMG]
-[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/device-partitions.png[/IMG][/SPOILER]
-[SPOILER="Flash"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/flash.png[/IMG][/SPOILER]
-[SPOILER="Payload Dumper"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/payload.png[/IMG][/SPOILER]
-[SPOILER="Image Tools"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/image-tools.png[/IMG]
-[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/qualcomm-pieces.png[/IMG][/SPOILER]
-[SPOILER="Build Super"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/build-super.png[/IMG][/SPOILER]
-[SPOILER="Backup"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/backup-partitions.png[/IMG]
-[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/backup-fastboot.png[/IMG][/SPOILER]
-[SPOILER="Arabic interface"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/ar-device.png[/IMG][/SPOILER]
+[SPOILER="Device"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/06-device-basic-properties.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/07-device-partitions.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/05-usb-check.png[/IMG][/SPOILER]
+[SPOILER="Flash"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/10-flash.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/14-super-space.png[/IMG][/SPOILER]
+[SPOILER="Payload Dumper"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/02-payload-partitions.png[/IMG][/SPOILER]
+[SPOILER="Image Tools"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/25-images-super.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/28-images-qualcomm-pieces.png[/IMG][/SPOILER]
+[SPOILER="Build Super"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/31-super-built.png[/IMG][/SPOILER]
+[SPOILER="Backup"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/22-backup-partitions.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/18-backup-fastboot.png[/IMG][/SPOILER]
+[SPOILER="Terminal"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/32-terminal.png[/IMG][/SPOILER]
+[SPOILER="Light theme"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/light-02-device.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/light-04-terminal.png[/IMG][/SPOILER]
+[SPOILER="Arabic interface"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/ar-02-device.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/screenshots/ar-03-flash.png[/IMG][/SPOILER]
 
 [SIZE=5][B]Credits[/B][/SIZE]
 [LIST]
