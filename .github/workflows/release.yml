@@ -68,7 +68,7 @@ jobs:
           for check in "FastbootEnhance.csproj:<Version>$number</Version>" \
                        "MainWindow.xaml.cs:const string version = \"$number\";" \
                        "MainWindow.xaml:Text=\"v$number\"" \
-                       "Themes/Dark.xaml:Text=\"v$number\""; do
+                       "Themes/Styles.xaml:Text=\"v$number\""; do
             if ! grep -qF "${check#*:}" "${check%%:*}"; then
               echo "::error::${check%%:*} does not say version $number; update it before releasing."
               exit 1

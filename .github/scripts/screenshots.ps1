@@ -737,6 +737,30 @@ if (Test-Path $superPart) {
     Write-Host "build super: layout imported, 5 unpacked images found, rebuilt super matches the original byte for byte"
 }
 
+# ---------------------------------------------------------------- terminal
+# A command typed in the Terminal runs with the bundled fastboot and shows its output; one
+# that erases a boot-chain partition asks for the name first, and answering No runs nothing.
+function Terminal-Run([string] $line) {
+    $box = Wait-For { Shown $root 'terminal_input' } 10 "the terminal line"
+    $box.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($line)
+    Press 'terminal_run'
+}
+function Terminal-Output {
+    return (By-Id $root 'terminal_output').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+}
+Go 'terminal_tab' | Out-Null
+Terminal-Run 'fastboot getvar product'
+Wait-For { (Terminal-Output) -match 'product:sample_a64' -and (Terminal-Output) -match '\[exit code 0\]' } 30 "getvar in the terminal" | Out-Null
+$erasesBefore = Fastboot-Log 'erase abl_a'
+Terminal-Run 'fastboot erase abl_a'
+$termAsk = Wait-For { Find-Dialog } 20 "the terminal's critical partition question"
+Start-Sleep -Milliseconds 400
+Answer-Dialog $termAsk 'No'
+Wait-For { (Terminal-Output) -match 'Not run\.' } 10 "the terminal to say it did not run" | Out-Null
+if ((Fastboot-Log 'erase abl_a') -ne $erasesBefore) { Fail "the terminal erased abl_a after No" }
+Save-Window ('{0:D2}-terminal' -f $i); $i++
+Write-Host "terminal: getvar ran, erase of abl_a asked first and did not run"
+
 # ---------------------------------------------------------------- log and about
 Go 'logs_tab' | Out-Null
 Save-Window ('{0:D2}-logs' -f $i); $i++
@@ -846,3 +870,34 @@ if ($Arabic) {
     Remove-Item Env:FASTBOOT_STUDIO_LANG
     Write-Host "captured the Arabic screens"
 }
+
+# ---------------------------------------------------------------- the light theme
+# The same palette roles in light colours, chosen in About (here forced for this run).
+Start-Sleep -Seconds 2
+$env:FASTBOOT_STUDIO_THEME = 'light'
+Launch-App
+Go 'payload_tab' | Out-Null
+Wait-For { Shown $root 'payload_info' } 60 "the payload to open (light)" | Out-Null
+Save-Window 'light-01-payload'
+Go 'device_tab' | Out-Null
+$devices = Wait-For { By-Id $root 'fastboot_devices_list' } 10 "the device list (light)"
+$row = Wait-For { $devices.FindFirst($Scope::Descendants, $rowCond) } 20 "a device (light)"
+Select-Item $row
+$row.SetFocus()
+Send '{ENTER}'
+Wait-For { Shown $root 'fastboot_info_list' } 20 "the device page (light)" | Out-Null
+Start-Sleep -Seconds 3
+Save-Window 'light-02-device'
+Go 'flash_tab' | Out-Null
+Save-Window 'light-03-flash'
+Go 'terminal_tab' | Out-Null
+Terminal-Run 'fastboot devices'
+Wait-For { (Terminal-Output) -match 'FBE0SAMPLE01' } 30 "fastboot devices in the terminal (light)" | Out-Null
+Save-Window 'light-04-terminal'
+Go 'about_tab' | Out-Null
+Save-Window 'light-05-about'
+if (Test-Path $crashLog) { Fail "the app recorded an unhandled exception in the light theme" }
+if ($proc.HasExited) { Fail "the light-theme app exited while being captured, code $($proc.ExitCode)" }
+Stop-Process -Id $proc.Id -Force
+Remove-Item Env:FASTBOOT_STUDIO_THEME
+Write-Host "captured the light theme"

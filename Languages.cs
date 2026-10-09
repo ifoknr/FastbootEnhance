@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Windows;
 
@@ -40,9 +38,6 @@ namespace FastbootEnhance
 
         /// <summary>For automated runs: overrides the saved choice without touching it.</summary>
         const string OverrideVariable = "FASTBOOT_STUDIO_LANG";
-
-        static readonly string SettingsPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Fastboot Studio", "settings.json");
 
         public static CultureInfo Current { get; private set; } = CultureInfo.CurrentUICulture;
 
@@ -83,42 +78,13 @@ namespace FastbootEnhance
 
         static string LoadSaved()
         {
-            try
-            {
-                if (!File.Exists(SettingsPath))
-                    return null;
-                using (JsonDocument json = JsonDocument.Parse(File.ReadAllText(SettingsPath)))
-                {
-                    JsonElement language;
-                    return json.RootElement.TryGetProperty("language", out language) && language.ValueKind == JsonValueKind.String
-                        ? language.GetString()
-                        : null;
-                }
-            }
-            catch (Exception)
-            {
-                // A damaged settings file must not stop the app from starting.
-                return null;
-            }
+            return Settings.Get("language");
         }
 
         /// <summary>Saves the choice for the next start. Returns false when it could not be written.</summary>
         public static bool Save(string code)
         {
-            try
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath));
-                File.WriteAllText(SettingsPath, JsonSerializer.Serialize(new { language = code }));
-                return true;
-            }
-            catch (IOException)
-            {
-                return false;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return false;
-            }
+            return Settings.Set("language", code);
         }
     }
 }

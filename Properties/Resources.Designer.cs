@@ -4323,5 +4323,248 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("usb_reboot_bootloader_ask", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Appearance.
+        /// </summary>
+        public static string theme {
+            get {
+                return ResourceManager.GetString("theme", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string theme_dark {
+            get {
+                return ResourceManager.GetString("theme_dark", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string theme_light {
+            get {
+                return ResourceManager.GetString("theme_light", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to As Windows.
+        /// </summary>
+        public static string theme_system {
+            get {
+                return ResourceManager.GetString("theme_system", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The new appearance applies after a restart. Restart Fastboot Studio now?.
+        /// </summary>
+        public static string theme_restart {
+            get {
+                return ResourceManager.GetString("theme_restart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for the current flash or extraction to finish before changing the appearance..
+        /// </summary>
+        public static string theme_busy {
+            get {
+                return ResourceManager.GetString("theme_busy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        public static string nav_terminal {
+            get {
+                return ResourceManager.GetString("nav_terminal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run adb and fastboot commands yourself, with the tools that come with the app.
+        /// </summary>
+        public static string terminal_subtitle {
+            get {
+                return ResourceManager.GetString("terminal_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Folder….
+        /// </summary>
+        public static string terminal_folder {
+            get {
+                return ResourceManager.GetString("terminal_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Folder: {0}   ·   files named without a path are looked up here; drop a file on the line to add its path.
+        /// </summary>
+        public static string terminal_folder_now {
+            get {
+                return ResourceManager.GetString("terminal_folder_now", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run.
+        /// </summary>
+        public static string terminal_run {
+            get {
+                return ResourceManager.GetString("terminal_run", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string terminal_stop {
+            get {
+                return ResourceManager.GetString("terminal_stop", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type an adb or fastboot command and press Enter, for example: fastboot getvar all Up and Down bring back earlier commands. Type help for more..
+        /// </summary>
+        public static string terminal_welcome {
+            get {
+                return ResourceManager.GetString("terminal_welcome", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Commands start with adb or fastboot and run with the tools that come with the app.   cd FOLDER    change the folder files are read from   clear        empty this window Commands that could brick the p[rest of string was truncated].
+        /// </summary>
+        public static string terminal_help {
+            get {
+                return ResourceManager.GetString("terminal_help", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Only adb and fastboot commands run here. Start the line with adb or fastboot..
+        /// </summary>
+        public static string terminal_not_tool {
+            get {
+                return ResourceManager.GetString("terminal_not_tool", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to adb shell needs a command after it here, for example: adb shell getprop ro.product.model.
+        /// </summary>
+        public static string terminal_interactive {
+            get {
+                return ResourceManager.GetString("terminal_interactive", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A quote is not closed..
+        /// </summary>
+        public static string terminal_quote {
+            get {
+                return ResourceManager.GetString("terminal_quote", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A flash is running; wait for it to finish so the two do not talk to the phone at once..
+        /// </summary>
+        public static string terminal_busy {
+            get {
+                return ResourceManager.GetString("terminal_busy", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not run..
+        /// </summary>
+        public static string terminal_cancelled {
+            get {
+                return ResourceManager.GetString("terminal_cancelled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to [exit code {0}].
+        /// </summary>
+        public static string terminal_exit {
+            get {
+                return ResourceManager.GetString("terminal_exit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to [stopped].
+        /// </summary>
+        public static string terminal_stopped {
+            get {
+                return ResourceManager.GetString("terminal_stopped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No such folder: {0}.
+        /// </summary>
+        public static string terminal_no_folder {
+            get {
+                return ResourceManager.GetString("terminal_no_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start the command: {0}.
+        /// </summary>
+        public static string terminal_start_failed {
+            get {
+                return ResourceManager.GetString("terminal_start_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This command writes or erases {0}, part of the boot chain or of the phone's identity (IMEI, calibration, keys). A wrong image there can leave the phone unable to reach even the bootloader, or lose dat[rest of string was truncated].
+        /// </summary>
+        public static string terminal_critical {
+            get {
+                return ResourceManager.GetString("terminal_critical", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This locks the bootloader. On a phone running anything but its own stock software (custom ROM, root, patched boot, a GSI), a locked bootloader refuses to start it: the phone may not boot again until i[rest of string was truncated].
+        /// </summary>
+        public static string terminal_lock {
+            get {
+                return ResourceManager.GetString("terminal_lock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This writes straight to a partition of the phone with dd. Nothing checks the image or the partition; a mistake can leave the phone unable to start..
+        /// </summary>
+        public static string terminal_dd {
+            get {
+                return ResourceManager.GetString("terminal_dd", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This command erases the user data on the phone (apps, photos, files). Run it?.
+        /// </summary>
+        public static string terminal_wipe {
+            get {
+                return ResourceManager.GetString("terminal_wipe", resourceCulture);
+            }
+        }
     }
 }

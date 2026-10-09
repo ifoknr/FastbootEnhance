@@ -1058,6 +1058,58 @@
         </TabItem>
 
         <!-- ============================== Logs ============================== -->
+        <!-- ============================== Terminal ============================== -->
+        <TabItem x:Name="terminal_tab" Header="{x:Static props:Resources.nav_terminal}" Tag="{StaticResource IconTerminal}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="terminal_folder" Margin="0,0,10,0" Content="{x:Static props:Resources.terminal_folder}"/>
+                            <Button x:Name="terminal_clear" Style="{StaticResource GhostButton}" Content="{x:Static props:Resources.logs_clear}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_terminal}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.terminal_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Row="1" Margin="28,16,28,18">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Common commands; a click fills the line, Enter runs it. -->
+                    <WrapPanel x:Name="terminal_quick" FlowDirection="LeftToRight" Margin="0,0,0,4"/>
+
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Background="{StaticResource Rail}" Padding="14,12">
+                        <TextBox FlowDirection="LeftToRight" x:Name="terminal_output" IsReadOnly="True" BorderThickness="0" Background="Transparent" Padding="0"
+                                 FontFamily="{StaticResource Mono}" FontSize="12" Foreground="{StaticResource Text}"
+                                 TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                    </Border>
+
+                    <DockPanel Grid.Row="2" Margin="0,12,0,0" FlowDirection="LeftToRight">
+                        <Button x:Name="terminal_stop" DockPanel.Dock="Right" Style="{StaticResource DangerButton}" Margin="8,0,0,0" MinWidth="80"
+                                IsEnabled="False" Content="{x:Static props:Resources.terminal_stop}"/>
+                        <Button x:Name="terminal_run" DockPanel.Dock="Right" Style="{StaticResource AccentButton}" Margin="8,0,0,0" MinWidth="80"
+                                Content="{x:Static props:Resources.terminal_run}"/>
+                        <TextBox x:Name="terminal_input" FontFamily="{StaticResource Mono}" FontSize="13" VerticalContentAlignment="Center" MinHeight="36"/>
+                    </DockPanel>
+
+                    <TextBlock Grid.Row="3" x:Name="terminal_folder_text" Style="{StaticResource Note}" FontSize="11.5" Margin="0,6,0,0"
+                               FlowDirection="LeftToRight" TextTrimming="CharacterEllipsis"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
         <TabItem x:Name="logs_tab" Header="{x:Static props:Resources.nav_logs}" Tag="{StaticResource IconLogs}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -1100,7 +1152,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="26,4,0,0">
                             <TextBlock Text="Fastboot Studio" FontSize="22" FontWeight="SemiBold"/>
-                            <TextBlock Text="v2.2.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
+                            <TextBlock Text="v2.3.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
                             <TextBlock Style="{StaticResource Note}" Margin="0,0,0,20" Text="{x:Static props:Resources.about_engine}"/>
 
                             <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.about_developer}"/>
@@ -1139,6 +1191,8 @@
                                 <StackPanel>
                                     <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.language}"/>
                                     <WrapPanel x:Name="language_buttons"/>
+                                    <TextBlock Style="{StaticResource SectionLabel}" Margin="0,8,0,8" Text="{x:Static props:Resources.theme}"/>
+                                    <WrapPanel x:Name="theme_buttons"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>

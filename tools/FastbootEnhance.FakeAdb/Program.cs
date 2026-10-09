@@ -285,15 +285,26 @@ namespace FastbootEnhance.FakeAdb
                 file.SetLength(size);
         }
 
+        /// <summary>
+        /// Appends a line to fake-adb.log. The app runs several copies at once (a device poller next to a
+        /// transfer), and CI counts these lines, so a write that finds the file in use waits
+        /// and tries again rather than dropping its line.
+        /// </summary>
         static void Log(string line)
         {
-            try
+            string path = Path.Combine(AppContext.BaseDirectory, "fake-adb.log");
+            string text = DateTime.Now.ToString("HH:mm:ss.fff") + "  " + line + Environment.NewLine;
+            for (int attempt = 0; attempt < 200; attempt++)
             {
-                File.AppendAllText(Path.Combine(AppContext.BaseDirectory, "fake-adb.log"),
-                    DateTime.Now.ToString("HH:mm:ss.fff") + "  " + line + Environment.NewLine);
-            }
-            catch (IOException)
-            {
+                try
+                {
+                    File.AppendAllText(path, text);
+                    return;
+                }
+                catch (IOException)
+                {
+                    System.Threading.Thread.Sleep(10);
+                }
             }
         }
     }

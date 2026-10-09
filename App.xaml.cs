@@ -21,6 +21,8 @@ namespace FastbootEnhance
         protected override void OnStartup(StartupEventArgs e)
         {
             Languages.Apply();
+            // Before any window or dialog exists, so everything is drawn in the chosen theme.
+            Theme.Apply(Resources);
 
             // Checked before any window exists. Doing it in the window's constructor, as before,
             // left WPF showing a window that had already been told to shut down.

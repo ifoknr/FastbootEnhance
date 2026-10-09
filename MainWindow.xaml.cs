@@ -11,7 +11,7 @@ namespace FastbootEnhance
     public partial class MainWindow : Window
     {
         public static MainWindow THIS;
-        const string version = "2.2.0";
+        const string version = "2.3.0";
 
         public MainWindow()
         {
@@ -52,6 +52,8 @@ namespace FastbootEnhance
 
             wireLogs();
             wireLanguages();
+            wireThemes();
+            TerminalUI.init();
 
             // Closing mid-flash kills the worker between partitions and can leave the phone
             // half written, so it has to be a deliberate choice.
@@ -74,6 +76,7 @@ namespace FastbootEnhance
                 BackupUI.shutdown();
                 ImageToolsUI.shutdown();
                 SuperUI.shutdown();
+                TerminalUI.shutdown();
                 PayloadUI.cancelRunningWork();
                 PayloadUI.closeCurrent();
                 clearStagingDirectories();
@@ -110,6 +113,40 @@ namespace FastbootEnhance
                         App.Restart();
                 };
                 language_buttons.Children.Add(button);
+            }
+        }
+
+        /// <summary>Dark, light, or as Windows: the one chosen is highlighted. Applies on restart.</summary>
+        void wireThemes()
+        {
+            Theme.Mode[] modes = { Theme.Mode.Dark, Theme.Mode.Light, Theme.Mode.System };
+            string[] names = { Properties.Resources.theme_dark, Properties.Resources.theme_light, Properties.Resources.theme_system };
+            for (int i = 0; i < modes.Length; i++)
+            {
+                Theme.Mode mode = modes[i];
+                System.Windows.Controls.Button button = new System.Windows.Controls.Button
+                {
+                    Content = names[i],
+                    Tag = mode.ToString().ToLowerInvariant(),
+                    Padding = new Thickness(14, 5, 14, 5),
+                    Margin = new Thickness(0, 0, 8, 8),
+                    Style = (Style)FindResource(mode == Theme.Chosen ? "AccentButton" : "GhostButton"),
+                };
+                button.Click += delegate
+                {
+                    if (mode == Theme.Chosen)
+                        return;
+                    if (FastbootUI.flashing || PayloadUI.extracting)
+                    {
+                        ThemedDialog.Show(Properties.Resources.theme_busy);
+                        return;
+                    }
+                    Theme.Save(mode);
+                    if (ThemedDialog.Show(Properties.Resources.theme_restart, Properties.Resources.theme,
+                            MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+                        App.Restart();
+                };
+                theme_buttons.Children.Add(button);
             }
         }
 
