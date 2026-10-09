@@ -1493,4 +1493,107 @@ Flash it only with the image made for this exact phone, and keep a backup of the
   <data name="boot_once_started" xml:space="preserve">
     <value>The image was sent and the phone is starting it. Restarting the phone normally returns to the installed system.</value>
   </data>
+  <data name="super_space_title" xml:space="preserve">
+    <value>Super</value>
+  </data>
+  <data name="super_space_bootloader" xml:space="preserve">
+    <value>Shown in fastbootd: the bootloader does not list the partitions inside super.</value>
+  </data>
+  <data name="super_space_unknown" xml:space="preserve">
+    <value>The phone does not report the size of super.</value>
+  </data>
+  <data name="super_space_total" xml:space="preserve">
+    <value>{0} in all, about {1} free</value>
+  </data>
+  <data name="super_space_slot" xml:space="preserve">
+    <value>Slot {0}: {1}</value>
+  </data>
+  <data name="super_space_in_use" xml:space="preserve">
+    <value>(in use)</value>
+  </data>
+  <data name="super_space_cow" xml:space="preserve">
+    <value>Update copies (COW): {0}</value>
+  </data>
+  <data name="super_space_unslotted" xml:space="preserve">
+    <value>Without a slot: {0}</value>
+  </data>
+  <data name="super_full_title" xml:space="preserve">
+    <value>Not enough room in super</value>
+  </data>
+  <data name="super_full" xml:space="preserve">
+    <value>These images need about {0} more room in super ({1}), but only about {2} is free. fastbootd would stop with "Not enough space to resize partition".
+
+Ways to make room:</value>
+  </data>
+  <data name="super_full_other_slot" xml:space="preserve">
+    <value>Delete the partitions of slot {0}: {1}. Slot {0} will not start until it is flashed again.</value>
+  </data>
+  <data name="super_full_cow" xml:space="preserve">
+    <value>Remove what an earlier update left behind: cancel the pending update (Cancel update), or delete the COW partitions.</value>
+  </data>
+  <data name="super_full_nothing" xml:space="preserve">
+    <value>Nothing else is using super; these images are bigger than this phone's super.</value>
+  </data>
+  <data name="super_full_ask" xml:space="preserve">
+    <value>The numbers are estimates. Flash anyway?</value>
+  </data>
+  <data name="create_missing_title" xml:space="preserve">
+    <value>Missing partitions</value>
+  </data>
+  <data name="create_missing" xml:space="preserve">
+    <value>The phone has no {0}. They are partitions this update places inside super, so they can be created there now (empty) and then written.
+
+fastbootd puts new partitions in the "default" group, not in the phone's own group (such as main_a). The phone starts normally; the next full update, or flashing the factory super, puts them back in the usual group.
+
+Create them and continue?</value>
+  </data>
+  <data name="create_default_group_note" xml:space="preserve">
+    <value>fastbootd puts new partitions in the "default" group, not in the phone's own group (such as main_a). It works; the next full update puts it in the usual group.</value>
+  </data>
+  <data name="usb_check" xml:space="preserve">
+    <value>USB check</value>
+  </data>
+  <data name="usb_check_title" xml:space="preserve">
+    <value>USB check</value>
+  </data>
+  <data name="usb_missing_driver" xml:space="preserve">
+    <value>{0}: Windows has no driver for it, so fastboot and adb cannot see it.</value>
+  </data>
+  <data name="usb_driver_problem" xml:space="preserve">
+    <value>{0}: its driver is installed but not working (code {1}). Unplug and plug it in again, or reinstall the driver.</value>
+  </data>
+  <data name="usb_edl" xml:space="preserve">
+    <value>{0}: the phone is in Qualcomm emergency download mode (EDL, 9008), used by QFIL. fastboot cannot reach this mode; hold the power key for 10 to 15 seconds to leave it.</value>
+  </data>
+  <data name="usb_mediatek" xml:space="preserve">
+    <value>{0}: the phone is in MediaTek BROM or preloader mode, used by SP Flash Tool. fastboot cannot reach it; unplug it and start fastboot with the phone's key combination.</value>
+  </data>
+  <data name="usb_unisoc" xml:space="preserve">
+    <value>{0}: the phone is in Unisoc (Spreadtrum) download mode. fastboot cannot reach it; unplug it and start fastboot with the phone's key combination.</value>
+  </data>
+  <data name="usb_samsung" xml:space="preserve">
+    <value>{0}: the phone is in Samsung Download (Odin) mode. Samsung phones have no fastboot; Odin is the tool for this mode.</value>
+  </data>
+  <data name="usb_fastboot_ready" xml:space="preserve">
+    <value>{0}: a fastboot interface with a working driver. If the phone is not listed, unplug it and plug it in again.</value>
+  </data>
+  <data name="usb_adb_ready" xml:space="preserve">
+    <value>{0}: the phone is connected in Android or recovery (adb), not in fastboot.</value>
+  </data>
+  <data name="usb_nothing" xml:space="preserve">
+    <value>Windows sees no phone on USB.
+
+•  Use a data cable; many cables only charge.
+•  Try another USB port, a USB 2.0 port directly on the PC if you can.
+•  Make sure the phone is in fastboot (bootloader or fastbootd) or, for adb, that USB debugging is on.</value>
+  </data>
+  <data name="usb_driver_howto" xml:space="preserve">
+    <value>To install the driver: get the Google USB Driver (developer.android.com/studio/run/win-usb) or the phone maker's driver. If Windows still shows the phone without a driver, in Device Manager right-click it → Update driver → Browse my computer → Let me pick → Android Device → "Android Bootloader Interface" for fastboot, or "Android ADB Interface" for adb.</value>
+  </data>
+  <data name="usb_open_device_manager" xml:space="preserve">
+    <value>Open Device Manager now?</value>
+  </data>
+  <data name="usb_reboot_bootloader_ask" xml:space="preserve">
+    <value>Reboot it to the bootloader now, so it shows up here?</value>
+  </data>
 </root>

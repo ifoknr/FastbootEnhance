@@ -50,6 +50,15 @@ $adbMode = Join-Path $appDir 'fake-adb.mode'
 $fastbootMode = Join-Path $appDir 'fake-fastboot.mode'
 $saveRoot = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Fastboot Studio'
 Remove-Item $crashLog, $fakeLog, $fakeAdbLog, $adbMode, $fastbootMode -ErrorAction SilentlyContinue
+
+# What the USB check reads instead of Windows' device list: a phone without a driver and one
+# in MediaTek preloader mode (see UsbScan.cs).
+$fakeUsb = Join-Path $appDir 'fake-usb.txt'
+Set-Content $fakeUsb @(
+    'Android|USB\VID_0E8D&PID_201C\0123456789ABCDEF|28|',
+    'MediaTek PreLoader USB VCOM (Android) (COM5)|USB\VID_0E8D&PID_2000\5&2B1E&0&1|0|Ports'
+)
+$env:FASTBOOT_STUDIO_FAKE_USB = $fakeUsb
 Remove-Item $saveRoot -Recurse -Force -ErrorAction SilentlyContinue
 
 function Save-Desktop([string] $name) {
@@ -184,6 +193,41 @@ function Go([string] $tabId) {
     return $tab
 }
 
+# ---------------------------------------------------------------- helpers
+function Press([string] $id) {
+    $button = Wait-For { By-Id $root $id } 10 $id
+    Wait-For { $button.Current.IsEnabled } 30 "$id to be enabled" | Out-Null
+    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+}
+
+function Rows($list) {
+    return @($list.FindAll($Scope::Descendants, $rowCond))
+}
+
+# Picks a file in the open file dialog, then waits for that dialog (not whatever window
+# comes next) to go away.
+function Choose-File([string] $path, [string] $what) {
+    $dialog = Wait-For { Find-Dialog } 20 $what
+    $fileHwnd = $dialog.Current.NativeWindowHandle
+    Start-Sleep -Milliseconds 800
+    [System.Windows.Forms.SendKeys]::SendWait($path + '{ENTER}')
+    Wait-For { $d = Find-Dialog; $null -eq $d -or $d.Current.NativeWindowHandle -ne $fileHwnd } 20 "$what to close" | Out-Null
+}
+
+# Presses a dialog button by its label, for questions where the first button is not the answer.
+function Answer-Dialog($dialog, [string] $label) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Button)
+    $button = @($dialog.FindAll($Scope::Descendants, $cond)) | Where-Object { $_.Current.Name -eq $label } | Select-Object -First 1
+    if ($null -eq $button) { Fail "the dialog has no '$label' button" }
+    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+    Wait-For { $null -eq (Find-Dialog) } 10 "the dialog to close" | Out-Null
+    Start-Sleep -Milliseconds 800
+}
+
+function Fastboot-Log([string] $pattern) {
+    return @(Get-Content $fakeLog | Where-Object { $_ -match $pattern }).Count
+}
+
 # ---------------------------------------------------------------- payload inspector
 $payloadTab = Go 'payload_tab'
 Wait-For { Shown $root 'payload_info' } 60 "the payload to open" | Out-Null
@@ -201,6 +245,17 @@ $rowCond = New-Object System.Windows.Automation.OrCondition(
     (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::ListItem)))
 $row = Wait-For { $devices.FindFirst($Scope::Descendants, $rowCond) } 20 "a device to appear"
 Save-Window ('{0:D2}-device-list' -f $i); $i++
+
+# The USB check explains what Windows sees: here a phone without a driver and one in
+# MediaTek preloader mode. It offers Device Manager; answer No.
+Press 'fastboot_usb_check'
+$usb = Wait-For { Find-Dialog } 20 "the USB check"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-usb-check' -f $i); $i++
+$usbText = ($usb.FindAll($Scope::Descendants, [System.Windows.Automation.Condition]::TrueCondition) |
+    ForEach-Object { $_.Current.Name } | Where-Object { $_ }) -join ' | '
+Answer-Dialog $usb 'No'
+Write-Host "usb check: $usbText"
 
 Select-Item $row
 $row.SetFocus()
@@ -236,11 +291,18 @@ if ($ExpectedFlashes -gt 0) {
 
     $dialog = Wait-For { Find-Dialog } 20 "the file dialog"
     Write-Host "file dialog: '$($dialog.Current.Name)'"
+    $fileHwnd = $dialog.Current.NativeWindowHandle
     Start-Sleep -Milliseconds 800
     [System.Windows.Forms.SendKeys]::SendWait($Payload + '{ENTER}')
 
     # The file dialog takes a moment to go away; it must not be mistaken for the result.
-    Wait-For { $null -eq (Find-Dialog) } 20 "the file dialog to close" | Out-Null
+    Wait-For { $d = Find-Dialog; $null -eq $d -or $d.Current.NativeWindowHandle -ne $fileHwnd } 20 "the file dialog to close" | Out-Null
+
+    # The stand-in phone has no odm: the app offers to create it in super first.
+    $create = Wait-For { Find-Dialog } 30 "the missing partition question"
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-create-missing' -f $i); $i++
+    Answer-Dialog $create 'Yes'
 
     # The app shows "operation completed" (or an error) when it is done. With the file dialog
     # gone, the next window to appear is that box. A message box does not expose its text to
@@ -256,43 +318,20 @@ if ($ExpectedFlashes -gt 0) {
     $flashes = @(Get-Content $fakeLog | Where-Object { $_ -match ' flash ' }).Count
     Write-Host "fastboot flash commands issued: $flashes (expected $ExpectedFlashes)"
     if ($flashes -ne $ExpectedFlashes) { Fail "expected $ExpectedFlashes flash commands, saw $flashes" }
+    # odm_a is created (empty) before anything is flashed, and odm is then written to it.
+    $lines = @(Get-Content $fakeLog)
+    $created = -1; $firstFlash = -1
+    for ($n = 0; $n -lt $lines.Count; $n++) {
+        if ($created -lt 0 -and $lines[$n] -match 'create-logical-partition odm_a 0') { $created = $n }
+        if ($firstFlash -lt 0 -and $lines[$n] -match ' flash ') { $firstFlash = $n }
+    }
+    if ($created -lt 0) { Fail "odm_a was not created before flashing the OTA" }
+    if ($created -gt $firstFlash) { Fail "odm_a was created after flashing had started" }
+    if ((Fastboot-Log ' flash odm ') -ne 1) { Fail "odm was not flashed after it was created" }
+    Write-Host "missing partition: odm_a created, then written"
 }
 
 # ---------------------------------------------------------------- backup over adb
-function Press([string] $id) {
-    $button = Wait-For { By-Id $root $id } 10 $id
-    Wait-For { $button.Current.IsEnabled } 30 "$id to be enabled" | Out-Null
-    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
-}
-
-function Rows($list) {
-    return @($list.FindAll($Scope::Descendants, $rowCond))
-}
-
-# Picks a file in the open file dialog, then waits for that dialog (not whatever window
-# comes next) to go away.
-function Choose-File([string] $path, [string] $what) {
-    $dialog = Wait-For { Find-Dialog } 20 $what
-    $fileHwnd = $dialog.Current.NativeWindowHandle
-    Start-Sleep -Milliseconds 800
-    [System.Windows.Forms.SendKeys]::SendWait($path + '{ENTER}')
-    Wait-For { $d = Find-Dialog; $null -eq $d -or $d.Current.NativeWindowHandle -ne $fileHwnd } 20 "$what to close" | Out-Null
-}
-
-# Presses a dialog button by its label, for questions where the first button is not the answer.
-function Answer-Dialog($dialog, [string] $label) {
-    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Button)
-    $button = @($dialog.FindAll($Scope::Descendants, $cond)) | Where-Object { $_.Current.Name -eq $label } | Select-Object -First 1
-    if ($null -eq $button) { Fail "the dialog has no '$label' button" }
-    $button.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
-    Wait-For { $null -eq (Find-Dialog) } 10 "the dialog to close" | Out-Null
-    Start-Sleep -Milliseconds 800
-}
-
-function Fastboot-Log([string] $pattern) {
-    return @(Get-Content $fakeLog | Where-Object { $_ -match $pattern }).Count
-}
-
 # Hashes every image a backup recorded in SHA256SUMS against the file it wrote.
 function Check-Backup([string] $what) {
     $folder = Get-ChildItem (Join-Path $saveRoot 'Backups') -Directory | Sort-Object LastWriteTime | Select-Object -Last 1
@@ -391,6 +430,18 @@ $vbDone = Wait-For { Find-Dialog } 30 "vbmeta to be flashed"
 Close-Dialog $vbDone
 if ((Fastboot-Log 'flash --disable-verity --disable-verification vbmeta_a ') -ne 1) { Fail "vbmeta was not flashed with --disable-verity --disable-verification" }
 Write-Host "vbmeta: flashed with verification disabled"
+# Super: the card on the partition tab, and a 12 GiB image (a sparse file of a few bytes)
+# that cannot fit; the app says by how much and what could make room. Answer No.
+Filter-Partitions 'product_a'
+Save-Window ('{0:D2}-super-space' -f $i); $i++
+Press 'fastboot_flash'
+Choose-File (Join-Path (Split-Path $Payload) 'big-sparse.img') "the image dialog"
+$full = Wait-For { Find-Dialog } 20 "the super space warning"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-super-full' -f $i); $i++
+Answer-Dialog $full 'No'
+if ((Fastboot-Log 'flash product_a .*big-sparse') -gt 0) { Fail "an image too big for super was flashed" }
+Write-Host "super: a 12 GiB image was stopped before flashing"
 (By-Id $root 'fastboot_partition_name_textbox').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('')
 
 # Boot once: init_boot has no kernel and is refused before anything is sent.

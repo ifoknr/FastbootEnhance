@@ -25,6 +25,11 @@ nothing to install.
 > 🆕 **A new version.** Fastboot Studio is the new generation of Fastboot Enhance: a new
 > interface from top to bottom, new pages, and more protection for the phone.
 >
+> **New in 2.2:**
+> - A Super space card, and a check that images fit in super before flashing.
+> - Partitions an update needs but the phone lacks are created for you.
+> - A **USB check** that finds missing drivers and EDL / BROM modes.
+>
 > **New in 2.1:**
 > - Slot switch protection: warns about, or refuses, a slot that is empty or will not boot.
 > - Critical partitions (xbl, abl, modem, persist, preloader…) are written only after you type their name.
@@ -65,10 +70,17 @@ file onto the exe.
 Everything fastboot can tell and do, on the phone that is connected.
 
 - Lists every phone in **bootloader** or **fastbootd**; double-click to open one.
+- **USB check**: when a phone is plugged in but not listed, it reads what Windows sees and
+  says why: a missing or broken driver (with the steps to install it), or a mode fastboot
+  cannot reach (Qualcomm EDL 9008, MediaTek BROM/preloader, Unisoc or Samsung download), or a
+  phone still in Android, which it can reboot to the bootloader.
 - **Basic properties**: all `getvar` values (product, slots, unlock state, current slot,
   snapshot status…).
 - **Partitions**: every partition with its size and whether it is logical (inside super),
   with a filter by name.
+- **Super space** (fastbootd): what each slot and the update copies (COW) take in super and
+  about how much is free. Before writing to a logical partition, the app checks the image
+  fits; when it does not, it says by how much and what could make room.
 - Partition actions: **flash** an image, **erase**, and for logical partitions
   **create**, **resize** and **delete**. Destructive actions ask first, in red.
 - **Critical partitions** (xbl, abl, tz, modem, persist, frp, preloader, nvdata…) are flashed
@@ -99,6 +111,8 @@ Flashes a full OTA (`payload.bin` or the OTA zip) to the phone in fastbootd.
 
 - **Every image is extracted first, in parallel, and checked against its SHA-256**
   before anything is written. A broken download never reaches the phone.
+- **Missing partitions** the OTA places in super are created first (with a note on
+  fastbootd's `default` group), and the images are checked to fit in super before writing.
 - Per-partition progress, phase, elapsed time and a live fastboot log.
 - Asks before closing the app mid-flash, since that would leave the phone half written.
 
@@ -275,7 +289,7 @@ decompression libraries:
 | --- | --- |
 | `./` | the WPF app (`net8.0-windows`) |
 | `src/FastbootEnhance.Core` | payload, sparse, super and adb logic, no UI (`netstandard2.0` + `net8.0`) |
-| `tests/FastbootEnhance.Core.Tests` | xunit suite (154 tests), including byte-for-byte checks against AOSP liblp |
+| `tests/FastbootEnhance.Core.Tests` | xunit suite (172 tests), including byte-for-byte checks against AOSP liblp |
 | `tools/FastbootEnhance.PayloadTool` | command line front end for the core |
 | `tools/FastbootEnhance.SampleGen` | builds the sample OTA, super and Qualcomm pieces used by CI |
 | `tools/FastbootEnhance.FakeFastboot`, `FakeAdb` | stand-ins for a phone, so CI can drive every page |

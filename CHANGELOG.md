@@ -4,6 +4,12 @@
 
 <!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
 
+## v2.2.0
+- بطاقة مساحة super: كم ماخذ كل سلوت وكم الفاضي
+- تحذير قبل التفليش إذا الصور ما تدخل في super، مع طرق توفير المساحة
+- إنشاء الأقسام الناقصة تلقائياً عند تفليش التحديث
+- زر «فحص USB»: يكشف التعريف الناقص ووضع EDL و BROM
+
 ## v2.1.0
 - حماية تبديل الخانة: تحذير أو منع إذا الخانة الثانية فاضية أو ما تقلع
 - الأقسام الحساسة (xbl و abl و modem و persist و preloader…) تطلب كتابة اسم القسم
@@ -108,6 +114,19 @@
 ---
 
 <a id="english"></a>
+## Version 2.2 in short
+- **Super space** card on the Device page (fastbootd): what slot a, slot b and update copies
+  (COW) take in super, and about how much is free.
+- **Room check before flashing** in fastbootd: when the images are known not to fit in super,
+  the app says by how much and what could make room (the other slot's partitions, COW
+  partitions or a pending update) before anything is written.
+- **Missing partitions are created**: when an OTA writes logical partitions the phone does not
+  have, they are created in super (empty) and then flashed. The note explains fastbootd's
+  `default` group. The manual Create window carries the same note.
+- **USB check** on the device list: reads what Windows sees on USB and tells a missing or broken
+  driver (with the steps to fix it), Qualcomm EDL (9008), MediaTek BROM/preloader, Unisoc and
+  Samsung download modes, and a phone in Android (offering to reboot it to the bootloader).
+
 ## Version 2.1 in short
 - **Slot switch protection**: reads `slot-successful`, `slot-unbootable` and `slot-retry-count`.
   A slot that has not booted yet warns; an unbootable slot or one with no retries left asks in

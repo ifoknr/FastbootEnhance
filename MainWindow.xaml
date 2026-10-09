@@ -54,10 +54,15 @@
                     <!-- Device picker -->
                     <Border x:Name="fastboot_devices_page" Style="{StaticResource Card}">
                         <DockPanel>
-                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
-                                <TextBlock Style="{StaticResource CardTitle}" Margin="0,0,0,4" Text="{x:Static props:Resources.device_list_title}"/>
-                                <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.device_list_hint}"/>
-                            </StackPanel>
+                            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                                <!-- Why a plugged-in phone is not listed: driver, or a mode fastboot cannot reach. -->
+                                <Button x:Name="fastboot_usb_check" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="12,0,0,0"
+                                        Content="{x:Static props:Resources.usb_check}"/>
+                                <StackPanel>
+                                    <TextBlock Style="{StaticResource CardTitle}" Margin="0,0,0,4" Text="{x:Static props:Resources.device_list_title}"/>
+                                    <TextBlock Style="{StaticResource Note}" Text="{x:Static props:Resources.device_list_hint}"/>
+                                </StackPanel>
+                            </DockPanel>
                             <Grid>
                                 <ListView x:Name="fastboot_devices_list" local:ColumnFill.Column="1" local:ColumnFill.MinWidth="120" SelectionMode="Single">
                                     <ListView.View>
@@ -181,7 +186,8 @@
                                         </DockPanel>
                                     </Border>
 
-                                    <Border x:Name="fastboot_single_part_op" Grid.Column="2" Style="{StaticResource Card}" VerticalAlignment="Top">
+                                    <StackPanel Grid.Column="2">
+                                    <Border x:Name="fastboot_single_part_op" Style="{StaticResource Card}" VerticalAlignment="Top">
                                         <StackPanel>
                                             <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.partition_actions}"/>
                                             <Button x:Name="fastboot_flash" Style="{StaticResource AccentButton}" Margin="0,0,0,8" Content="{x:Static props:Resources.fastboot_partition_action_flash}"/>
@@ -191,6 +197,16 @@
                                             <Button x:Name="fastboot_logical_delete" Style="{StaticResource DangerButton}" Content="{x:Static props:Resources.fastboot_partition_action_delete}"/>
                                         </StackPanel>
                                     </Border>
+
+                                    <!-- How super is shared out; fastbootd only lists logical partitions. -->
+                                    <Border Style="{StaticResource Card}" Margin="0,18,0,0">
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.super_space_title}"/>
+                                            <ProgressBar x:Name="fastboot_super_bar" Height="8" Margin="0,0,0,10" Maximum="100"/>
+                                            <TextBlock x:Name="fastboot_super_text" Style="{StaticResource Note}" FontSize="12" LineHeight="18" TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </Border>
+                                    </StackPanel>
                                 </Grid>
                             </TabItem>
                         </TabControl>

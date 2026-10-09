@@ -72,6 +72,9 @@ namespace FastbootEnhance
             {
                 case StartType.CREATE:
                     this.Title = Properties.Resources.fastboot_create_dynamic_partition;
+                    // fastbootd adds new partitions to the "default" group, not the phone's own.
+                    this.note.Text = Properties.Resources.create_default_group_note;
+                    this.note.Visibility = Visibility.Visible;
                     break;
                 case StartType.RESIZE:
                     this.Title = Properties.Resources.fastboot_expand_dynamic_partition;
