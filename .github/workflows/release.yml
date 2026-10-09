@@ -63,10 +63,17 @@ jobs:
             echo "::error::CHANGELOG.md has no '## $RELEASE_VERSION' section; add one first."
             exit 1
           fi
-          project=$(grep -o '<Version>[^<]*' FastbootEnhance.csproj | head -1 | cut -d'>' -f2)
-          if [ "v$project" != "$RELEASE_VERSION" ]; then
-            echo "::warning::FastbootEnhance.csproj says version $project, the release is $RELEASE_VERSION."
-          fi
+          # The version is written in four places; all of them must match the release.
+          number="${RELEASE_VERSION#v}"
+          for check in "FastbootEnhance.csproj:<Version>$number</Version>" \
+                       "MainWindow.xaml.cs:const string version = \"$number\";" \
+                       "MainWindow.xaml:Text=\"v$number\"" \
+                       "Themes/Dark.xaml:Text=\"v$number\""; do
+            if ! grep -qF "${check#*:}" "${check%%:*}"; then
+              echo "::error::${check%%:*} does not say version $number; update it before releasing."
+              exit 1
+            fi
+          done
 
       - uses: actions/setup-dotnet@v4
         with:

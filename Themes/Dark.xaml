@@ -562,7 +562,7 @@
                                            RenderOptions.BitmapScalingMode="HighQuality"/>
                                     <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
                                         <TextBlock Text="Fastboot Studio" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource Text}"/>
-                                        <TextBlock Text="v2.0.0" FontSize="11" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}"/>
+                                        <TextBlock Text="v2.1.0" FontSize="11" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Border DockPanel.Dock="Bottom" Background="#11151C" BorderBrush="{StaticResource Line}"

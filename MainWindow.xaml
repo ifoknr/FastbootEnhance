@@ -1084,7 +1084,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="26,4,0,0">
                             <TextBlock Text="Fastboot Studio" FontSize="22" FontWeight="SemiBold"/>
-                            <TextBlock Text="v2.0.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
+                            <TextBlock Text="v2.1.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
                             <TextBlock Style="{StaticResource Note}" Margin="0,0,0,20" Text="{x:Static props:Resources.about_engine}"/>
 
                             <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.about_developer}"/>
