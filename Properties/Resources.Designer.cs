@@ -3864,5 +3864,185 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("images_combine_raw_note", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type {0} to confirm:.
+        /// </summary>
+        public static string confirm_type_name {
+            get {
+                return ResourceManager.GetString("confirm_type_name", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Critical partition.
+        /// </summary>
+        public static string critical_title {
+            get {
+                return ResourceManager.GetString("critical_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is part of the boot chain or holds the phone's identity (IMEI, calibration, keys). A wrong image here can leave the phone unable to reach even the bootloader, or lose data no firmware can bring ba[rest of string was truncated].
+        /// </summary>
+        public static string confirm_critical_flash {
+            get {
+                return ResourceManager.GetString("confirm_critical_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Erasing {0} can leave the phone unable to start, or wipe its IMEI, calibration or keys for good. There is no undo..
+        /// </summary>
+        public static string confirm_critical_erase {
+            get {
+                return ResourceManager.GetString("confirm_critical_erase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Switch slot.
+        /// </summary>
+        public static string slot_switch_title {
+            get {
+                return ResourceManager.GetString("slot_switch_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Slot {0} cannot start as it is, so it was not activated..
+        /// </summary>
+        public static string slot_switch_blocked {
+            get {
+                return ResourceManager.GetString("slot_switch_blocked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Slot {0} will most likely not start. Switch to it anyway?.
+        /// </summary>
+        public static string slot_switch_danger {
+            get {
+                return ResourceManager.GetString("slot_switch_danger", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to slot {0}?.
+        /// </summary>
+        public static string slot_switch_warn {
+            get {
+                return ResourceManager.GetString("slot_switch_warn", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Slot {0} has not completed a boot yet. That is normal right after flashing it; otherwise the phone may fall back to the other slot or fail to start..
+        /// </summary>
+        public static string slot_reason_never_booted {
+            get {
+                return ResourceManager.GetString("slot_reason_never_booted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The bootloader marks slot {0} as unbootable..
+        /// </summary>
+        public static string slot_reason_unbootable {
+            get {
+                return ResourceManager.GetString("slot_reason_unbootable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Slot {0} has no boot attempts left and has never started successfully..
+        /// </summary>
+        public static string slot_reason_no_retries {
+            get {
+                return ResourceManager.GetString("slot_reason_no_retries", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to These partitions of slot {0} are missing or empty: {1}. Flash that slot (or the full firmware) first..
+        /// </summary>
+        public static string slot_reason_empty {
+            get {
+                return ResourceManager.GetString("slot_reason_empty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot image once….
+        /// </summary>
+        public static string fastboot_boot_once {
+            get {
+                return ResourceManager.GetString("fastboot_boot_once", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Boot once.
+        /// </summary>
+        public static string fastboot_boot_once_title {
+            get {
+                return ResourceManager.GetString("fastboot_boot_once_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Starts a boot or recovery image one time without flashing it; restarting the phone returns to what is installed..
+        /// </summary>
+        public static string fastboot_boot_once_note {
+            get {
+                return ResourceManager.GetString("fastboot_boot_once_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This image has no kernel (an init_boot image, or a boot image of that kind), so the phone cannot start it on its own. Boot a full boot.img, or flash init_boot instead..
+        /// </summary>
+        public static string boot_once_no_kernel {
+            get {
+                return ResourceManager.GetString("boot_once_no_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This is a vendor_boot image: it holds ramdisks and the device tree only, nothing that starts on its own..
+        /// </summary>
+        public static string boot_once_vendor_boot {
+            get {
+                return ResourceManager.GetString("boot_once_vendor_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a boot or recovery image..
+        /// </summary>
+        public static string boot_once_not_boot {
+            get {
+                return ResourceManager.GetString("boot_once_not_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Then choose the image again..
+        /// </summary>
+        public static string boot_once_fastbootd {
+            get {
+                return ResourceManager.GetString("boot_once_fastbootd", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The image was sent and the phone is starting it. Restarting the phone normally returns to the installed system..
+        /// </summary>
+        public static string boot_once_started {
+            get {
+                return ResourceManager.GetString("boot_once_started", resourceCulture);
+            }
+        }
     }
 }

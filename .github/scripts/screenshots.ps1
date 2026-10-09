@@ -310,10 +310,124 @@ function Check-Backup([string] $what) {
 
 $twrp = Join-Path (Split-Path $Payload) 'twrp-sample.img'
 
+# ---------------------------------------------------------------- device safety
+# Switching to a slot whose logical partitions are empty is refused; a boot-chain partition
+# needs its name typed; vbmeta can be flashed with verification off; "boot once" refuses an
+# init_boot image and goes through the bootloader, since fastbootd cannot boot an image.
+$initBoot = Join-Path (Split-Path $Payload) 'init_boot-sample.img'
+Remove-Item $fastbootMode -ErrorAction SilentlyContinue
+$deviceTab = Go 'device_tab'
+Start-Sleep -Seconds 1
+if ($null -eq (Shown $root 'fastboot_info_list')) {
+    $row = Wait-For { (By-Id $root 'fastboot_devices_list').FindFirst($Scope::Descendants, $rowCond) } 20 "a device to appear"
+    Select-Item $row
+    $row.SetFocus()
+    Send '{ENTER}'
+}
+Wait-For { Shown $root 'fastboot_info_list' } 20 "the device page" | Out-Null
+Start-Sleep -Seconds 3   # getvar all
+
+function Filter-Partitions([string] $name) {
+    Select-Item (Wait-For { By-Id $root 'device_partitions_tab' } 10 "the partition table tab")
+    $box = Wait-For { By-Id $root 'fastboot_partition_name_textbox' } 10 "the partition filter"
+    $box.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue($name)
+    Start-Sleep -Milliseconds 600
+    $list = Wait-For { By-Id $root 'fastboot_partition_list' } 10 "the partition list"
+    # The filter matches by substring; each name used here matches one partition only.
+    Wait-For { (Rows $list).Count -eq 1 } 10 "the list to show only $name" | Out-Null
+    Select-Item (Rows $list)[0]
+}
+
+function Dialog-Button($dialog, [string] $label) {
+    $cond = New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Button)
+    return @($dialog.FindAll($Scope::Descendants, $cond)) | Where-Object { $_.Current.Name -eq $label } | Select-Object -First 1
+}
+
+# The stand-in sits in fastbootd with system_b, vendor_b... at size 0, as after a factory super.
+Select-Item (Wait-For { By-Id $root 'device_basic_tab' } 10 "the basic tab")
+Press 'fastboot_ab_switch'
+$blocked = Wait-For { Find-Dialog } 20 "the slot switch refusal"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-slot-switch-blocked' -f $i); $i++
+if ($null -ne (Dialog-Button $blocked 'Yes')) { Fail "switching to a slot with empty partitions was offered, not refused" }
+Close-Dialog $blocked
+if ((Fastboot-Log 'set_active') -gt 0) { Fail "set_active was sent to a slot with empty partitions" }
+Write-Host "slot switch: refused, b has empty logical partitions"
+
+# abl is part of the boot chain: Yes stays disabled until the name is typed.
+Filter-Partitions 'abl_a'
+Press 'fastboot_erase'
+$typedAsk = Wait-For { Find-Dialog } 20 "the critical partition confirmation"
+Start-Sleep -Milliseconds 600
+$yes = Dialog-Button $typedAsk 'Yes'
+if ($null -eq $yes) { Fail "the critical partition confirmation has no Yes button" }
+if ($yes.Current.IsEnabled) { Fail "Yes is enabled before the partition name is typed" }
+$typedBox = Wait-For { $typedAsk.FindFirst($Scope::Descendants, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Edit))) } 10 "the name box"
+$typedBox.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('abl')
+Start-Sleep -Milliseconds 400
+if ($yes.Current.IsEnabled) { Fail "Yes is enabled with the wrong name typed" }
+$typedBox.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('abl_a')
+Wait-For { $yes.Current.IsEnabled } 5 "Yes to be enabled once the name is typed" | Out-Null
+Save-Window ('{0:D2}-critical-confirm' -f $i); $i++
+Answer-Dialog $typedAsk 'Yes'
+Wait-For { (Fastboot-Log 'erase abl_a') -gt 0 } 20 "fastboot erase abl_a" | Out-Null
+Write-Host "critical partition: erase sent only after the name was typed"
+
+# vbmeta: the question about disabling verification, answered Yes, adds both flags.
+Filter-Partitions 'vbmeta_a'
+Press 'fastboot_flash'
+Choose-File $twrp "the vbmeta image dialog"
+$vbAsk = Wait-For { Find-Dialog } 20 "the vbmeta question"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-vbmeta-question' -f $i); $i++
+Answer-Dialog $vbAsk 'Yes'
+$vbDone = Wait-For { Find-Dialog } 30 "vbmeta to be flashed"
+Close-Dialog $vbDone
+if ((Fastboot-Log 'flash --disable-verity --disable-verification vbmeta_a ') -ne 1) { Fail "vbmeta was not flashed with --disable-verity --disable-verification" }
+Write-Host "vbmeta: flashed with verification disabled"
+(By-Id $root 'fastboot_partition_name_textbox').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('')
+
+# Boot once: init_boot has no kernel and is refused before anything is sent.
+Select-Item (Wait-For { By-Id $root 'device_basic_tab' } 10 "the basic tab")
+Press 'fastboot_boot_once'
+Choose-File $initBoot "the boot image dialog"
+$refused = Wait-For { Find-Dialog } 20 "the init_boot refusal"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-boot-once-init-boot' -f $i); $i++
+Close-Dialog $refused
+if ((Fastboot-Log '-s \S+ (boot|reboot) ') -gt 0) { Fail "an init_boot image was sent to boot" }
+
+# In fastbootd it offers the bootloader first, then boots the image from there.
+$getvars = Fastboot-Log 'getvar all'
+Press 'fastboot_boot_once'
+Choose-File $twrp "the boot image dialog"
+$toBootloader = Wait-For { Find-Dialog } 20 "the fastbootd question"
+Answer-Dialog $toBootloader 'Yes'
+Wait-For { (Fastboot-Log 'reboot bootloader') -gt 0 } 20 "fastboot reboot bootloader" | Out-Null
+Wait-For { (Fastboot-Log 'getvar all') -gt $getvars } 30 "the device to be read again" | Out-Null
+Start-Sleep -Seconds 2
+if ((Fastboot-Log '-s \S+ boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
+
+Press 'fastboot_boot_once'
+Choose-File $twrp "the boot image dialog"
+$started = Wait-For { Find-Dialog } 30 "the image to boot"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}-boot-once-started' -f $i); $i++
+Close-Dialog $started
+if ((Fastboot-Log '-s \S+ boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the image was not issued once" }
+Wait-For { Shown $root 'fastboot_devices_list' } 20 "the device list after booting" | Out-Null
+Write-Host "boot once: init_boot refused, bootloader first, then booted"
+
+# Back to fastbootd for the backup below.
+Remove-Item $fastbootMode -ErrorAction SilentlyContinue
+
 if ($ExpectedBackups -gt 0) {
     # ------------------------------------------------------------ phone in fastboot
     # Nothing on adb, the phone in fastboot: the page explains and offers a way out instead
     # of waiting for a device forever.
+    # The device steps above booted an image too; count only what the backup page sends.
+    $rebootsBefore = Fastboot-Log 'reboot bootloader'
+    $bootsBefore = Fastboot-Log '-s \S+ boot '
     Set-Content $adbMode 'none'
     Go 'backup_tab' | Out-Null
     Wait-For { Shown $root 'backup_fb_reboot_recovery' } 30 "the fastboot panel" | Out-Null
@@ -332,8 +446,8 @@ if ($ExpectedBackups -gt 0) {
     Start-Sleep -Milliseconds 600
     Save-Window ('{0:D2}-backup-fastbootd-question' -f $i); $i++
     Answer-Dialog $ask 'Yes'
-    Wait-For { (Fastboot-Log 'reboot bootloader') -gt 0 } 20 "fastboot reboot bootloader" | Out-Null
-    if ((Fastboot-Log '-s \S+ boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
+    Wait-For { (Fastboot-Log 'reboot bootloader') -gt $rebootsBefore } 20 "fastboot reboot bootloader" | Out-Null
+    if ((Fastboot-Log '-s \S+ boot ') -gt $bootsBefore) { Fail "the image was sent to fastbootd, which cannot boot it" }
 
     Press 'backup_fb_boot_image'
     Choose-File $twrp "the recovery image dialog"
@@ -341,7 +455,7 @@ if ($ExpectedBackups -gt 0) {
     Start-Sleep -Milliseconds 600
     Save-Window ('{0:D2}-backup-recovery-booted' -f $i); $i++
     Close-Dialog $booted
-    if ((Fastboot-Log '-s \S+ boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the recovery image was not issued once" }
+    if ((Fastboot-Log '-s \S+ boot .*twrp-sample\.img') -ne $bootsBefore + 1) { Fail "fastboot boot of the recovery image was not issued once" }
     Write-Host "fastboot panel: recovery image booted"
 
     # The "recovery" comes up on adb: the panel gives way to the backup tabs.

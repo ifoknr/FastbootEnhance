@@ -111,10 +111,21 @@ namespace FastbootEnhance.SampleGen
         {
             byte[] image = new byte[2 << 20];
             System.Text.Encoding.ASCII.GetBytes("ANDROID!").CopyTo(image, 0);
-            BitConverter.GetBytes(4096u).CopyTo(image, 36);   // page_size
+            BitConverter.GetBytes(1u << 20).CopyTo(image, 8);   // kernel_size: it has a kernel
+            BitConverter.GetBytes(4096u).CopyTo(image, 36);     // page_size (header v0)
             string path = Path.Combine(outDir, "twrp-sample.img");
             File.WriteAllBytes(path, image);
             Console.WriteLine("wrote " + path);
+
+            // An init_boot image (header v4, ramdisk only), which cannot be booted on its own.
+            byte[] initBoot = new byte[64 << 10];
+            System.Text.Encoding.ASCII.GetBytes("ANDROID!").CopyTo(initBoot, 0);
+            BitConverter.GetBytes(32768u).CopyTo(initBoot, 12);  // ramdisk_size
+            BitConverter.GetBytes(4096u).CopyTo(initBoot, 20);   // header_size
+            BitConverter.GetBytes(4u).CopyTo(initBoot, 40);      // header_version
+            string initPath = Path.Combine(outDir, "init_boot-sample.img");
+            File.WriteAllBytes(initPath, initBoot);
+            Console.WriteLine("wrote " + initPath);
         }
 
         /// <summary>
