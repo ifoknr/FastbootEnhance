@@ -57,10 +57,20 @@ Everything fastboot can tell and do, on the phone that is connected.
   with a filter by name.
 - Partition actions: **flash** an image, **erase**, and for logical partitions
   **create**, **resize** and **delete**. Destructive actions ask first, in red.
+- **Critical partitions** (xbl, abl, tz, modem, persist, frp, preloader, nvdata…) are flashed
+  or erased only after you type the partition name: a mistake there can hard-brick the phone
+  or lose its IMEI. Flashing **vbmeta** offers to disable verification and says what that needs.
 - **Pre-flash checks** at a glance: bootloader unlocked or locked, bootloader or fastbootd,
   a pending Virtual A/B update, leftover COW partitions, current slot.
 - **Reboot** to system, bootloader, fastbootd or recovery, **switch slot** A ↔ B, and
   **cancel a pending update** that blocks flashing.
+- **Slot switch protection**: before switching, the other slot's state is read. Not booted yet
+  (normal after an update) warns; marked unbootable or out of retries asks in red; in fastbootd,
+  empty or missing logical partitions on that slot (as after a factory super) refuse the switch
+  and name them. A bootloader that reports nothing does not block.
+- **Boot once** starts a boot or recovery image from memory (`fastboot boot`) without flashing
+  it. The image header is checked first: init_boot and vendor_boot cannot start on their own
+  and are refused, and from fastbootd it offers the bootloader first.
 
 **Why it helps:** no command line, no typos in partition names, and you see what the
 phone reports before you touch anything.

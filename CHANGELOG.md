@@ -4,6 +4,12 @@
 
 <!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
 
+## v2.1.0
+- حماية تبديل الخانة: تحذير أو منع إذا الخانة الثانية فاضية أو ما تقلع
+- الأقسام الحساسة (xbl و abl و modem و persist و preloader…) تطلب كتابة اسم القسم
+- زر «إقلاع مرة واحدة» يرفض init_boot و vendor_boot
+- شرح أوضح لتعطيل التحقق في vbmeta
+
 ## v2.0.0
 - واجهة داكنة جديدة باللغة العربية وأيقونة جديدة
 - تفليش التحديثات مع التحقق من كل صورة قبل الكتابة
@@ -102,6 +108,20 @@
 ---
 
 <a id="english"></a>
+## Version 2.1 in short
+- **Slot switch protection**: reads `slot-successful`, `slot-unbootable` and `slot-retry-count`.
+  A slot that has not booted yet warns; an unbootable slot or one with no retries left asks in
+  red; in fastbootd, a target slot whose logical partitions are missing or empty is refused.
+  A bootloader that reports nothing does not block.
+- **Critical partitions** (xbl, abl, tz, aop, hyp, devcfg, keymaster, modem, modemst, fsg,
+  persist, frp, devinfo, preloader, lk, nvram, nvdata, seccfg…): flash and erase need the
+  partition name typed.
+- **Boot once** on the Device page: reads the image header and refuses init_boot (no kernel)
+  and vendor_boot; in fastbootd it offers the bootloader first.
+- **vbmeta**: the question explains that verification off needs an unlocked bootloader and
+  usually a data wipe.
+- Releases are also published when a `v*` tag is pushed.
+
 ## Version 2.0 in detail
 
 Everything that changed compared with the original Fastboot Enhance 1.x by LibXZR.
