@@ -153,3 +153,34 @@ jobs:
           AUTO_UPDATE: "false"
           VERSION: ${{ inputs.version || github.ref_name }}
         run: bash .github/scripts/telegram-release.sh
+
+      # The winget manifests of this release (packaging/winget/README.md), as an artifact.
+      - name: Write winget manifests
+        if: env.PRE != 'true'
+        run: bash .github/scripts/winget-manifests.sh "$RELEASE_VERSION" "$FILE" winget
+
+      - uses: actions/upload-artifact@v4
+        if: env.PRE != 'true'
+        with:
+          name: winget-manifests
+          path: winget/
+
+      # Once Fastboot Studio is in winget, each release is sent there by itself. That needs a
+      # classic token with the public_repo scope in the WINGET_TOKEN secret; without it this
+      # is skipped.
+      - name: Check for a winget token
+        id: winget
+        if: env.PRE != 'true'
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: echo "enabled=$([ -n "$WINGET_TOKEN" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Submit to winget
+        if: steps.winget.outputs.enabled == 'true'
+        continue-on-error: true
+        uses: vedantmgoyal9/winget-releaser@v2
+        with:
+          identifier: IFOKNR.FastbootStudio
+          release-tag: ${{ env.RELEASE_VERSION }}
+          installers-regex: 'win-x64\.zip$'
+          token: ${{ secrets.WINGET_TOKEN }}

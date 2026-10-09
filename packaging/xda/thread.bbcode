@@ -1,0 +1,104 @@
+[CENTER][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/banner.png[/IMG]
+
+[SIZE=6][B]Fastboot Studio[/B][/SIZE]
+[SIZE=4]fastboot, OTA flashing, payload dumper, super images and backups — in one Windows app[/SIZE]
+
+[URL='https://github.com/ifoknr/FastbootStudio/releases/latest'][B]⬇ Download[/B][/URL] · [URL='https://github.com/ifoknr/FastbootStudio']Source (GitHub)[/URL] · [URL='https://github.com/ifoknr/FastbootStudio/blob/master/CHANGELOG.md']Changelog[/URL] · [URL='https://t.me/IFOKNR1']Telegram[/URL][/CENTER]
+
+[SIZE=5][B]What is it?[/B][/SIZE]
+Fastboot Studio is a free, open-source (MIT) rewrite of [URL='https://github.com/libxzr/FastbootEnhance']Fastboot Enhance[/URL] by LibXZR. It keeps everything the original did and adds what people who flash phones reach for every day: a safe OTA flasher, image tools that replace simg2img / lpunpack / lpmake, a super image builder, and backups of partitions and files over adb.
+
+Everything runs inside the app: no Python, no Linux tools, nothing to install. adb and fastboot (platform-tools 37.0.1) are included. English and Arabic interface.
+
+[SIZE=5][B]Features[/B][/SIZE]
+[B]📱 Device[/B]
+[LIST]
+[*]Every getvar value, every partition with its size and whether it is logical, a filter by name
+[*]Flash, erase, and for logical partitions create / resize / delete
+[*]Pre-flash checks: bootloader lock state, bootloader or fastbootd, pending Virtual A/B update, leftover COW partitions, current slot
+[*]Reboot to system / bootloader / fastbootd / recovery, switch slot, cancel a pending update
+[*][B]Boot once[/B] (fastboot boot) — refuses init_boot and vendor_boot images, which cannot start on their own, and goes through the bootloader when you are in fastbootd
+[*][B]Super space[/B] — what each slot and the COW partitions take in super, and how much is free
+[*][B]USB check[/B] — phone plugged in but not listed? It tells you why: a missing or broken driver (with the steps to fix it), Qualcomm EDL (9008), MediaTek BROM/preloader, Unisoc or Samsung download mode, or a phone still in Android (and reboots it to the bootloader)
+[/LIST]
+
+[B]⚡ Flash[/B]
+[LIST]
+[*]Flashes a full OTA (payload.bin or the OTA zip) in fastbootd
+[*][B]Every image is extracted first, in parallel, and checked against its SHA-256 before anything is written[/B] — a broken download never reaches the phone
+[*]Logical partitions the OTA needs but the phone lacks are created first; the images are checked to fit in super before writing
+[*]Per-partition progress and a live fastboot log
+[/LIST]
+
+[B]📦 Payload Dumper[/B]
+[LIST]
+[*]Opens payload.bin or the OTA zip directly (read in place, no unzipping)
+[*]Full OTAs with every operation they use: REPLACE, ZERO, xz, bzip2, zstd…
+[*]Extracts in parallel with hash checks
+[/LIST]
+
+[B]🧱 Image Tools[/B]
+[LIST]
+[*]Sparse ↔ raw (simg2img / img2simg), split sparse images
+[*]Inspect and unpack super images (lpunpack), including split factory parts
+[*]Combine Qualcomm super_1.img … super_N.img pieces using rawprogram XML
+[/LIST]
+
+[B]🧩 Build Super[/B]
+[LIST]
+[*]Builds super images byte-for-byte like AOSP lpmake (Virtual A/B, A/B, single slot)
+[*]Import the layout from a phone's super, read the size from the phone
+[/LIST]
+
+[B]💾 Backup[/B]
+[LIST]
+[*]Partitions over adb (root, or from recovery) with SHA-256 for every image
+[*]Copies files and folders from the phone (DCIM, Download…)
+[*]Phone in fastboot? It reboots to recovery or boots a recovery image for you
+[/LIST]
+
+[SIZE=5][B]Safety[/B][/SIZE]
+[LIST]
+[*][B]Slot switch protection[/B] — warns when the other slot has not booted yet, asks in red when it is marked unbootable or out of retries, and refuses when its logical partitions are empty (as after flashing a factory super)
+[*][B]Critical partitions[/B] (xbl, abl, tz, modem, persist, frp, preloader, nvdata…) can only be flashed or erased after typing the partition name
+[*]vbmeta: offers --disable-verity --disable-verification and explains what it needs
+[*]Asks before closing mid-flash
+[/LIST]
+
+[SIZE=5][B]Requirements[/B][/SIZE]
+[LIST]
+[*]Windows 10 / 11, 64-bit
+[*]The phone's USB driver (e.g. Google USB Driver) — the USB check helps if it is missing
+[/LIST]
+
+[SIZE=5][B]Download & install[/B][/SIZE]
+[LIST=1]
+[*]Download [B]FastbootStudio-vX.Y.Z-win-x64.zip[/B] from [URL='https://github.com/ifoknr/FastbootStudio/releases/latest']GitHub Releases[/URL]
+[*]Unzip it anywhere
+[*]Run [B]FastbootStudio.exe[/B]
+[/LIST]
+
+[SIZE=5][B]Screenshots[/B][/SIZE]
+[SPOILER="Device"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/device.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/device-partitions.png[/IMG][/SPOILER]
+[SPOILER="Flash"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/flash.png[/IMG][/SPOILER]
+[SPOILER="Payload Dumper"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/payload.png[/IMG][/SPOILER]
+[SPOILER="Image Tools"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/image-tools.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/qualcomm-pieces.png[/IMG][/SPOILER]
+[SPOILER="Build Super"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/build-super.png[/IMG][/SPOILER]
+[SPOILER="Backup"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/backup-partitions.png[/IMG]
+[IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/backup-fastboot.png[/IMG][/SPOILER]
+[SPOILER="Arabic interface"][IMG]https://raw.githubusercontent.com/ifoknr/FastbootStudio/master/docs/images/ar-device.png[/IMG][/SPOILER]
+
+[SIZE=5][B]Credits[/B][/SIZE]
+[LIST]
+[*][URL='https://github.com/libxzr/FastbootEnhance']Fastboot Enhance[/URL] by [B]LibXZR[/B] (MIT), the project this grew from
+[*]AOSP libsparse and liblp (sparse and super formats), Android platform-tools (Apache 2.0)
+[*]Roboto and Noto Kufi Arabic fonts (SIL OFL 1.1)
+[/LIST]
+
+[SIZE=5][B]Feedback[/B][/SIZE]
+Bug reports and ideas are welcome — here, on [URL='https://github.com/ifoknr/FastbootStudio/issues/new/choose']GitHub Issues[/URL] (please include your phone model, the mode and a copy of the Logs page), or on Telegram [URL='https://t.me/IFOKNR1']@IFOKNR1[/URL]. Pull requests and translations too.
+
+[B]Source code:[/B] [URL]https://github.com/ifoknr/FastbootStudio[/URL]
+[B]License:[/B] MIT
