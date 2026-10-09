@@ -423,6 +423,12 @@ namespace FastbootEnhance
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
+                if (BootImageHeader.Read(path).Kind == BootImageKind.NoKernel)
+                {
+                    ThemedDialog.Show(Properties.Resources.boot_once_no_kernel, Properties.Resources.error,
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
                 string name = Path.GetFileName(path);
                 fastbootJob(serial, string.Format(Properties.Resources.backup_fb_sending, Helper.ltr(name)), delegate

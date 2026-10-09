@@ -21,6 +21,11 @@ namespace FastbootEnhance.Core.Fastboot
         public long max_download_size;
         public string snapshot_update_status;
 
+        /// <summary>Per slot ("a", "b"): has it booted successfully, is it marked unbootable, tries left.</summary>
+        public Dictionary<string, bool> slot_successful;
+        public Dictionary<string, bool> slot_unbootable;
+        public Dictionary<string, int> slot_retry_count;
+
         public FastbootData(string real_raw_data)
         {
             partition_size = new Dictionary<string, long>();
@@ -32,6 +37,9 @@ namespace FastbootEnhance.Core.Fastboot
             fastbootd = false;
             max_download_size = -1;
             snapshot_update_status = null;
+            slot_successful = new Dictionary<string, bool>();
+            slot_unbootable = new Dictionary<string, bool>();
+            slot_retry_count = new Dictionary<string, int>();
 
             if (real_raw_data == null)
                 return;
@@ -89,6 +97,23 @@ namespace FastbootEnhance.Core.Fastboot
 
                     case "snapshot-update-status":
                         snapshot_update_status = tmp[2];
+                        break;
+
+                    // "(bootloader) slot-successful:a: yes"
+                    case "slot-successful":
+                        if (tmp.Length >= 4)
+                            slot_successful[tmp[2]] = tmp[3] == "yes";
+                        break;
+
+                    case "slot-unbootable":
+                        if (tmp.Length >= 4)
+                            slot_unbootable[tmp[2]] = tmp[3] == "yes";
+                        break;
+
+                    case "slot-retry-count":
+                        int retries;
+                        if (tmp.Length >= 4 && int.TryParse(tmp[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out retries))
+                            slot_retry_count[tmp[2]] = retries;
                         break;
                 }
             }

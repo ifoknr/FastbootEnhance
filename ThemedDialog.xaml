@@ -30,11 +30,17 @@
                            VerticalAlignment="Center" TextWrapping="Wrap"/>
             </DockPanel>
 
-            <ScrollViewer Grid.Row="1" Margin="70,10,22,0" MaxHeight="380"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                <TextBlock x:Name="message" TextWrapping="Wrap" Foreground="{StaticResource Dim}"
-                           LineHeight="19"/>
-            </ScrollViewer>
+            <StackPanel Grid.Row="1" Margin="70,10,22,0">
+                <ScrollViewer MaxHeight="380" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="message" TextWrapping="Wrap" Foreground="{StaticResource Dim}"
+                               LineHeight="19"/>
+                </ScrollViewer>
+                <!-- For the riskiest actions: the main button waits until a word is typed. -->
+                <StackPanel x:Name="typed_panel" Margin="0,14,0,0" Visibility="Collapsed">
+                    <TextBlock x:Name="typed_prompt" TextWrapping="Wrap" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                    <TextBox x:Name="typed" FlowDirection="LeftToRight" FontFamily="{StaticResource Mono}"/>
+                </StackPanel>
+            </StackPanel>
 
             <Border Grid.Row="2" Margin="0,22,0,0" Padding="22,14" Background="{StaticResource Bg}"
                     BorderBrush="{StaticResource Line}" BorderThickness="0,1,0,0" CornerRadius="0,0,11,11">

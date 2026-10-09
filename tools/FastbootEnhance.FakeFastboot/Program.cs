@@ -21,6 +21,8 @@ namespace FastbootEnhance.FakeFastboot
             ("dtbo_a", 0x800000, false), ("dtbo_b", 0x800000, false),
             ("vbmeta_a", 0x10000, false), ("vbmeta_b", 0x10000, false),
             ("vbmeta_system_a", 0x10000, false), ("vbmeta_system_b", 0x10000, false),
+            ("abl_a", 0x800000, false), ("abl_b", 0x800000, false),
+            ("xbl_a", 0x600000, false), ("xbl_b", 0x600000, false),
             ("system_a", 0x10000000, true), ("system_b", 0, true),
             ("system_ext_a", 0x6000000, true), ("system_ext_b", 0, true),
             ("product_a", 0x8000000, true), ("product_b", 0, true),
@@ -40,6 +42,10 @@ namespace FastbootEnhance.FakeFastboot
                 rest.RemoveRange(0, 2);
 
             Log(string.Join(" ", args));
+
+            // Options such as --disable-verity come before the command, as fastboot takes them.
+            while (rest.Count > 0 && rest[0].StartsWith("--", StringComparison.Ordinal))
+                rest.RemoveAt(0);
 
             string command = rest.Count > 0 ? rest[0] : "";
             switch (command)
@@ -88,6 +94,12 @@ namespace FastbootEnhance.FakeFastboot
             err.WriteLine("(bootloader) secure:yes");
             err.WriteLine("(bootloader) unlocked:yes");
             err.WriteLine("(bootloader) current-slot:a");
+            err.WriteLine("(bootloader) slot-successful:a:yes");
+            err.WriteLine("(bootloader) slot-successful:b:yes");
+            err.WriteLine("(bootloader) slot-unbootable:a:no");
+            err.WriteLine("(bootloader) slot-unbootable:b:no");
+            err.WriteLine("(bootloader) slot-retry-count:a:7");
+            err.WriteLine("(bootloader) slot-retry-count:b:7");
             err.WriteLine("(bootloader) slot-count:2");
             err.WriteLine("(bootloader) max-download-size:0x10000000");
             err.WriteLine("(bootloader) snapshot-update-status:none");

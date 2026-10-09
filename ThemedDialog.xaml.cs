@@ -31,7 +31,8 @@ namespace FastbootEnhance
 
         MessageBoxResult result;
 
-        ThemedDialog(string text, string title, MessageBoxButton choice, Kind kind, MessageBoxResult defaultResult)
+        ThemedDialog(string text, string title, MessageBoxButton choice, Kind kind, MessageBoxResult defaultResult,
+            string requiredWord = null)
         {
             InitializeComponent();
             FlowDirection = Languages.Flow;
@@ -82,9 +83,30 @@ namespace FastbootEnhance
                 : choice == MessageBoxButton.YesNo ? MessageBoxResult.No
                 : MessageBoxResult.Cancel;
 
+            if (requiredWord != null)
+                RequireTyped(requiredWord);
+
             header.MouseLeftButtonDown += delegate { DragMove(); };
             PreviewKeyDown += onKey;
             SourceInitialized += delegate { DarkTitleBar.Apply(this); };
+        }
+
+        /// <summary>
+        /// Keeps the main (last) button disabled until <paramref name="word"/> is typed, and makes
+        /// it the only way to say yes: Enter does nothing until then.
+        /// </summary>
+        void RequireTyped(string word)
+        {
+            typed_panel.Visibility = Visibility.Visible;
+            typed_prompt.Text = string.Format(Properties.Resources.confirm_type_name, word);
+            Button main = buttons.Children.OfType<Button>().Last();
+            main.IsEnabled = false;
+            main.IsDefault = false;
+            typed.TextChanged += delegate
+            {
+                main.IsEnabled = string.Equals(typed.Text.Trim(), word, StringComparison.OrdinalIgnoreCase);
+            };
+            Loaded += delegate { typed.Focus(); };
         }
 
         /// <summary>
@@ -193,6 +215,15 @@ namespace FastbootEnhance
             return show(text, title, choice, kindOf(image), defaultResult);
         }
 
+        /// <summary>
+        /// A warning whose Yes only becomes available once <paramref name="word"/> (a partition
+        /// name) has been typed, for actions that can leave a phone unable to start.
+        /// </summary>
+        public static bool ConfirmTyped(string text, string title, string word)
+        {
+            return show(text, title, MessageBoxButton.YesNo, Kind.Error, MessageBoxResult.No, word) == MessageBoxResult.Yes;
+        }
+
         /// <summary>A finished operation: the same box, in green with a tick.</summary>
         public static void Done(string text)
         {
@@ -200,7 +231,7 @@ namespace FastbootEnhance
         }
 
         static MessageBoxResult show(string text, string title, MessageBoxButton choice, Kind kind,
-            MessageBoxResult defaultResult)
+            MessageBoxResult defaultResult, string requiredWord = null)
         {
             Application app = Application.Current;
             if (app == null)
@@ -208,9 +239,9 @@ namespace FastbootEnhance
 
             // Like MessageBox, callable from any thread; the window itself lives on the UI thread.
             if (!app.Dispatcher.CheckAccess())
-                return app.Dispatcher.Invoke(() => show(text, title, choice, kind, defaultResult));
+                return app.Dispatcher.Invoke(() => show(text, title, choice, kind, defaultResult, requiredWord));
 
-            ThemedDialog dialog = new ThemedDialog(text, title, choice, kind, defaultResult);
+            ThemedDialog dialog = new ThemedDialog(text, title, choice, kind, defaultResult, requiredWord);
             Window owner = app.Windows.OfType<Window>()
                 .FirstOrDefault(window => window != dialog && window.IsActive && window.IsVisible)
                 ?? (MainWindow.THIS != null && MainWindow.THIS.IsVisible ? MainWindow.THIS : null);

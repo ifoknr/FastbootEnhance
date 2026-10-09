@@ -3,11 +3,14 @@ name: Release
 # Builds Fastboot Studio on Windows, publishes a GitHub release with the zip and the
 # CHANGELOG section of that version, then posts it to Telegram.
 #
-# Run it from the Actions tab: Release -> Run workflow -> version (e.g. v2.0.0).
+# Run it from the Actions tab (Release -> Run workflow -> version, e.g. v2.0.0), or push a
+# tag such as v2.1.0 and it runs by itself.
 # CHANGELOG.md needs a "## <version>" section first; it becomes the release notes and
 # the Telegram caption. A release made here uses GITHUB_TOKEN, which does not start
 # other workflows, so the Telegram post is sent from this workflow, not telegram.yml.
 on:
+  push:
+    tags: [ "v*" ]
   workflow_dispatch:
     inputs:
       version:
@@ -26,7 +29,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   # Not VERSION: MSBuild reads environment variables as properties, and a $(Version)
   # of "v2.0.0" breaks NuGet restore and the assembly version.
-  RELEASE_VERSION: ${{ inputs.version }}
+  RELEASE_VERSION: ${{ inputs.version || github.ref_name }}
 
 jobs:
   test:
@@ -107,7 +110,7 @@ jobs:
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
-          PRE: ${{ inputs.prerelease }}
+          PRE: ${{ inputs.prerelease || false }}
         run: |
           if gh release view "$RELEASE_VERSION" -R "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
             echo "::error::Release $RELEASE_VERSION already exists."
@@ -141,5 +144,5 @@ jobs:
           LAYER: "أداة ويندوز للفاستبوت والتفليش وصور super والنسخ الاحتياطي"
           REQUIRES: "Windows 10/11 64-bit (بدون تثبيت)"
           AUTO_UPDATE: "false"
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ inputs.version || github.ref_name }}
         run: bash .github/scripts/telegram-release.sh

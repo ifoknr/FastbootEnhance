@@ -322,7 +322,9 @@
     <value>هل تريد المتابعة؟</value>
   </data>
   <data name="fastboot_vbmeta_disable_verify" xml:space="preserve">
-    <value>هل تريد تعطيل التحقق في vbmeta؟</value>
+    <value>تعطيل dm-verity وتحقق AVB في vbmeta هذا (‎--disable-verity --disable-verification)؟
+
+يلزم لنظام معدّل أو مرقّع. يعمل فقط مع بوت لودر مفتوح، وغالباً يحتاج الجوال فورمات (إعادة ضبط المصنع) بعد هذا التغيير.</value>
   </data>
   <data name="fastboot_vbmeta_disable_verify_title" xml:space="preserve">
     <value>تعطيل التحقق</value>
@@ -1428,5 +1430,67 @@
   </data>
   <data name="images_combine_raw_note" xml:space="preserve">
     <value>صورة raw بحجم القسم الكامل؛ للتفليش بالفاست بوت صورة sparse أصغر.</value>
+  </data>
+  <data name="confirm_type_name" xml:space="preserve">
+    <value>اكتب {0} للتأكيد:</value>
+  </data>
+  <data name="critical_title" xml:space="preserve">
+    <value>قسم حساس</value>
+  </data>
+  <data name="confirm_critical_flash" xml:space="preserve">
+    <value>القسم {0} جزء من سلسلة الإقلاع أو يحفظ هوية الجوال (IMEI والمعايرة والمفاتيح). الصورة الخاطئة هنا ممكن تخلي الجوال ما يوصل حتى للبوت لودر، أو تمسح بيانات ما يرجعها أي فيرموير.
+
+لا تفلشه إلا بالصورة المخصصة لجوالك بالضبط، واحتفظ بنسخة من الحالي.</value>
+  </data>
+  <data name="confirm_critical_erase" xml:space="preserve">
+    <value>مسح القسم {0} ممكن يخلي الجوال ما يشتغل، أو يمسح الـ IMEI أو المعايرة أو المفاتيح نهائياً. ما فيه تراجع.</value>
+  </data>
+  <data name="slot_switch_title" xml:space="preserve">
+    <value>تبديل السلوت</value>
+  </data>
+  <data name="slot_switch_blocked" xml:space="preserve">
+    <value>السلوت {0} ما يقدر يقلع بوضعه الحالي، فما تم تفعيله.</value>
+  </data>
+  <data name="slot_switch_danger" xml:space="preserve">
+    <value>السلوت {0} غالباً ما بيقلع. تبديل إليه على أي حال؟</value>
+  </data>
+  <data name="slot_switch_warn" xml:space="preserve">
+    <value>التبديل إلى السلوت {0}؟</value>
+  </data>
+  <data name="slot_reason_never_booted" xml:space="preserve">
+    <value>السلوت {0} ما أكمل إقلاعاً للحين. هذا طبيعي مباشرة بعد تفليشه؛ وإلا فممكن يرجع الجوال للسلوت الثاني أو ما يقلع.</value>
+  </data>
+  <data name="slot_reason_unbootable" xml:space="preserve">
+    <value>البوت لودر معلّم السلوت {0} كغير قابل للإقلاع.</value>
+  </data>
+  <data name="slot_reason_no_retries" xml:space="preserve">
+    <value>السلوت {0} ما بقي له محاولات إقلاع، وما قلع بنجاح من قبل.</value>
+  </data>
+  <data name="slot_reason_empty" xml:space="preserve">
+    <value>هذه الأقسام في السلوت {0} مفقودة أو فاضية: {1}. فلّش السلوت (أو الفيرموير كامل) أولاً.</value>
+  </data>
+  <data name="fastboot_boot_once" xml:space="preserve">
+    <value>تشغيل صورة مؤقتاً…</value>
+  </data>
+  <data name="fastboot_boot_once_title" xml:space="preserve">
+    <value>تشغيل مؤقت</value>
+  </data>
+  <data name="fastboot_boot_once_note" xml:space="preserve">
+    <value>يشغّل صورة boot أو ريكفري مرة وحدة بدون تفليش؛ إعادة تشغيل الجوال ترجّعه للأصلي.</value>
+  </data>
+  <data name="boot_once_no_kernel" xml:space="preserve">
+    <value>هذه الصورة ما فيها كيرنل (صورة init_boot أو ما يشبهها)، فالجوال ما يقدر يشغّلها لوحدها. شغّل boot.img كاملة، أو فلّش init_boot بدلاً من ذلك.</value>
+  </data>
+  <data name="boot_once_vendor_boot" xml:space="preserve">
+    <value>هذه صورة vendor_boot: فيها ramdisk وشجرة الجهاز فقط، ولا شيء يقلع لوحده.</value>
+  </data>
+  <data name="boot_once_not_boot" xml:space="preserve">
+    <value>هذا الملف ليس صورة boot أو ريكفري.</value>
+  </data>
+  <data name="boot_once_fastbootd" xml:space="preserve">
+    <value>الجوال في وضع fastbootd، وهذا الوضع ما يقدر يشغّل صورة. إعادة تشغيله إلى البوت لودر الآن؟ بعدها اختر الصورة مرة ثانية.</value>
+  </data>
+  <data name="boot_once_started" xml:space="preserve">
+    <value>تم إرسال الصورة والجوال يشغّلها الآن. إعادة تشغيل الجوال بشكل عادي ترجّعه للنظام المثبّت.</value>
   </data>
 </root>

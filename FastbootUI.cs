@@ -1,5 +1,6 @@
 ﻿using ChromeosUpdateEngine;
 using FastbootEnhance.Core.Fastboot;
+using FastbootEnhance.Core.Images;
 using FastbootEnhance.Core.Payload;
 using System;
 using System.Collections.Generic;
@@ -462,6 +463,12 @@ namespace FastbootEnhance
             /// <summary>Control commands get a limit; anything that writes is left to finish.</summary>
             public TimeSpan timeout;
 
+            /// <summary>Shown instead of "operation completed" when set.</summary>
+            public string done_message;
+
+            /// <summary>Back to the device list once the command succeeded (the phone left fastboot).</summary>
+            public bool leave_after;
+
             public StepCmdRunnerParam(string cmd, int step_count, bool hint_on_done, bool skip_var_refresh = false)
             {
                 this.timeout = cmd.StartsWith("reboot") || cmd.StartsWith("set_active") || cmd.StartsWith("snapshot-update")
@@ -546,11 +553,103 @@ namespace FastbootEnhance
                     return;
                 }
 
-                if (!param.skip_var_refresh && cur_serial != null && cur_serial == param.serial)
+                if (param.leave_after && cur_serial == param.serial)
+                    leaveDevice();
+                else if (!param.skip_var_refresh && cur_serial != null && cur_serial == param.serial)
                     load_fastboot_vars();
                 if (param.show_dialog_on_done)
-                    ThemedDialog.Done(Properties.Resources.operation_completed);
+                    ThemedDialog.Done(param.done_message ?? Properties.Resources.operation_completed);
             }));
+        }
+
+        /// <summary>
+        /// Checks the target slot's boot state and, in fastbootd, its logical partitions, then
+        /// asks (or refuses) accordingly. True when the switch may go ahead.
+        /// </summary>
+        static bool slotSwitchAllowed(string target)
+        {
+            SlotSwitchCheck check = SlotSwitchCheck.Evaluate(fastbootData, target);
+            appendLog("slot " + target + " check: " + check.Level
+                + (check.Findings.Count > 0 ? " (" + string.Join(", ", check.Findings.Select(f => f.Reason)) + ")" : ""));
+
+            List<string> lines = new List<string>();
+            foreach (SlotCheckFinding finding in check.Findings.Where(f => f.Level != SlotCheckLevel.Ok))
+            {
+                switch (finding.Reason)
+                {
+                    case SlotCheckReason.NeverBooted:
+                        lines.Add(string.Format(Properties.Resources.slot_reason_never_booted, target));
+                        break;
+                    case SlotCheckReason.Unbootable:
+                        lines.Add(string.Format(Properties.Resources.slot_reason_unbootable, target));
+                        break;
+                    case SlotCheckReason.NoRetriesLeft:
+                        lines.Add(string.Format(Properties.Resources.slot_reason_no_retries, target));
+                        break;
+                    case SlotCheckReason.EmptyPartitions:
+                        lines.Add(string.Format(Properties.Resources.slot_reason_empty, target, string.Join(", ", finding.Partitions)));
+                        break;
+                }
+            }
+            string details = string.Join("\n\n", lines.Select(l => "•  " + l));
+
+            switch (check.Level)
+            {
+                case SlotCheckLevel.Block:
+                    ThemedDialog.Show(string.Format(Properties.Resources.slot_switch_blocked, target) + "\n\n" + details,
+                        Properties.Resources.slot_switch_title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return false;
+                case SlotCheckLevel.Danger:
+                    return Helper.confirm(string.Format(Properties.Resources.slot_switch_danger, target) + "\n\n" + details,
+                        Properties.Resources.slot_switch_title, true);
+                case SlotCheckLevel.Warn:
+                    return Helper.confirm(string.Format(Properties.Resources.slot_switch_warn, target) + "\n\n" + details,
+                        Properties.Resources.slot_switch_title);
+                default:
+                    return true;
+            }
+        }
+
+        /// <summary>
+        /// "fastboot boot": starts an image once from memory. Only an image with a kernel can
+        /// start, and only the bootloader (not fastbootd) can do it.
+        /// </summary>
+        static void bootOnce(string path)
+        {
+            BootImageHeader header;
+            try
+            {
+                header = BootImageHeader.Read(path);
+            }
+            catch (Exception e)
+            {
+                ThemedDialog.Show(e.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string refusal = header.Kind == BootImageKind.NoKernel ? Properties.Resources.boot_once_no_kernel
+                : header.Kind == BootImageKind.VendorBoot ? Properties.Resources.boot_once_vendor_boot
+                : header.Kind == BootImageKind.NotBootImage ? Properties.Resources.boot_once_not_boot
+                : null;
+            if (refusal != null)
+            {
+                appendLog("boot once refused for " + path + ": " + header.Kind);
+                ThemedDialog.Show(refusal, Properties.Resources.fastboot_boot_once_title, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (fastbootData.fastbootd)
+            {
+                if (Helper.confirm(Properties.Resources.boot_once_fastbootd, Properties.Resources.fastboot_boot_once_title))
+                    runStep(new StepCmdRunnerParam("reboot bootloader", 2, false));
+                return;
+            }
+
+            runStep(new StepCmdRunnerParam("boot \"" + path + "\"", 0, true, true)
+            {
+                done_message = Properties.Resources.boot_once_started,
+                leave_after = true,
+            });
         }
 
         static bool singlePartitionCheck()
@@ -1121,18 +1220,22 @@ namespace FastbootEnhance
                 if (!checkCurDevExist())
                     return;
 
-                if (fastbootData.current_slot == "a")
-                {
-                    runStep(new StepCmdRunnerParam("set_active b", 2, false));
-                }
-                else if (fastbootData.current_slot == "b")
-                {
-                    runStep(new StepCmdRunnerParam("set_active a", 2, false));
-                }
-                else
+                string target = fastbootData.current_slot == "a" ? "b" : fastbootData.current_slot == "b" ? "a" : null;
+                if (target == null)
                 {
                     ThemedDialog.Show(Properties.Resources.operation_not_supported);
+                    return;
                 }
+                if (!slotSwitchAllowed(target))
+                    return;
+                runStep(new StepCmdRunnerParam("set_active " + target, 2, false));
+            };
+
+            MainWindow.THIS.fastboot_boot_once.Click += delegate
+            {
+                if (!checkCurDevExist())
+                    return;
+                Helper.fileSelect(new Helper.PathSelectCallback(bootOnce), "Boot / recovery images|*.img;*.bin|All files|*.*");
             };
 
             // Cancel a staged Virtual A/B update.
@@ -1156,6 +1259,13 @@ namespace FastbootEnhance
                     return;
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
+
+                if (PartitionSafety.IsBrickRisk(target) && !ThemedDialog.ConfirmTyped(
+                        string.Format(Properties.Resources.confirm_critical_flash, target), Properties.Resources.critical_title, target))
+                {
+                    appendLog("flash of critical partition " + target + " not confirmed");
+                    return;
+                }
 
                 Helper.fileSelect(new Helper.PathSelectCallback(delegate (string path)
                 {
@@ -1184,7 +1294,11 @@ namespace FastbootEnhance
 
                 string target = ((fastboot_partition_row)MainWindow.THIS.fastboot_partition_list.SelectedItem).name;
 
-                if (!Helper.confirm(string.Format(Properties.Resources.confirm_erase, target), Properties.Resources.confirm_title, true))
+                bool confirmed = PartitionSafety.IsBrickRisk(target)
+                    ? ThemedDialog.ConfirmTyped(string.Format(Properties.Resources.confirm_critical_erase, target),
+                        Properties.Resources.critical_title, target)
+                    : Helper.confirm(string.Format(Properties.Resources.confirm_erase, target), Properties.Resources.confirm_title, true);
+                if (!confirmed)
                     return;
 
                 runStep(new StepCmdRunnerParam("erase \"" + target + "\"", 2, false));

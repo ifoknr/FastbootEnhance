@@ -322,7 +322,9 @@
     <value>Would you like to continue?</value>
   </data>
   <data name="fastboot_vbmeta_disable_verify" xml:space="preserve">
-    <value>Would you like to disable the verification in vbmeta?</value>
+    <value>Disable dm-verity and AVB verification in this vbmeta (--disable-verity --disable-verification)?
+
+Needed for a custom or patched system. It works only with an unlocked bootloader, and the phone usually has to be wiped (factory reset) after this change.</value>
   </data>
   <data name="fastboot_vbmeta_disable_verify_title" xml:space="preserve">
     <value>Disable verification</value>
@@ -1428,5 +1430,67 @@ Add them anyway?</value>
   </data>
   <data name="images_combine_raw_note" xml:space="preserve">
     <value>The raw image has the full size of the partition; for fastboot the sparse one is smaller.</value>
+  </data>
+  <data name="confirm_type_name" xml:space="preserve">
+    <value>Type {0} to confirm:</value>
+  </data>
+  <data name="critical_title" xml:space="preserve">
+    <value>Critical partition</value>
+  </data>
+  <data name="confirm_critical_flash" xml:space="preserve">
+    <value>{0} is part of the boot chain or holds the phone's identity (IMEI, calibration, keys). A wrong image here can leave the phone unable to reach even the bootloader, or lose data no firmware can bring back.
+
+Flash it only with the image made for this exact phone, and keep a backup of the current one.</value>
+  </data>
+  <data name="confirm_critical_erase" xml:space="preserve">
+    <value>Erasing {0} can leave the phone unable to start, or wipe its IMEI, calibration or keys for good. There is no undo.</value>
+  </data>
+  <data name="slot_switch_title" xml:space="preserve">
+    <value>Switch slot</value>
+  </data>
+  <data name="slot_switch_blocked" xml:space="preserve">
+    <value>Slot {0} cannot start as it is, so it was not activated.</value>
+  </data>
+  <data name="slot_switch_danger" xml:space="preserve">
+    <value>Slot {0} will most likely not start. Switch to it anyway?</value>
+  </data>
+  <data name="slot_switch_warn" xml:space="preserve">
+    <value>Switch to slot {0}?</value>
+  </data>
+  <data name="slot_reason_never_booted" xml:space="preserve">
+    <value>Slot {0} has not completed a boot yet. That is normal right after flashing it; otherwise the phone may fall back to the other slot or fail to start.</value>
+  </data>
+  <data name="slot_reason_unbootable" xml:space="preserve">
+    <value>The bootloader marks slot {0} as unbootable.</value>
+  </data>
+  <data name="slot_reason_no_retries" xml:space="preserve">
+    <value>Slot {0} has no boot attempts left and has never started successfully.</value>
+  </data>
+  <data name="slot_reason_empty" xml:space="preserve">
+    <value>These partitions of slot {0} are missing or empty: {1}. Flash that slot (or the full firmware) first.</value>
+  </data>
+  <data name="fastboot_boot_once" xml:space="preserve">
+    <value>Boot image once…</value>
+  </data>
+  <data name="fastboot_boot_once_title" xml:space="preserve">
+    <value>Boot once</value>
+  </data>
+  <data name="fastboot_boot_once_note" xml:space="preserve">
+    <value>Starts a boot or recovery image one time without flashing it; restarting the phone returns to what is installed.</value>
+  </data>
+  <data name="boot_once_no_kernel" xml:space="preserve">
+    <value>This image has no kernel (an init_boot image, or a boot image of that kind), so the phone cannot start it on its own. Boot a full boot.img, or flash init_boot instead.</value>
+  </data>
+  <data name="boot_once_vendor_boot" xml:space="preserve">
+    <value>This is a vendor_boot image: it holds ramdisks and the device tree only, nothing that starts on its own.</value>
+  </data>
+  <data name="boot_once_not_boot" xml:space="preserve">
+    <value>This file is not a boot or recovery image.</value>
+  </data>
+  <data name="boot_once_fastbootd" xml:space="preserve">
+    <value>The phone is in fastbootd, which cannot start an image. Restart it into the bootloader now? Then choose the image again.</value>
+  </data>
+  <data name="boot_once_started" xml:space="preserve">
+    <value>The image was sent and the phone is starting it. Restarting the phone normally returns to the installed system.</value>
   </data>
 </root>

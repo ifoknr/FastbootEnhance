@@ -77,7 +77,7 @@
                     <!-- Selected device -->
                     <Grid x:Name="fastboot_actions_page" Visibility="Collapsed">
                         <TabControl>
-                            <TabItem Header="{x:Static props:Resources.fastboot_basic_prop}">
+                            <TabItem x:Name="device_basic_tab" Header="{x:Static props:Resources.fastboot_basic_prop}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -123,6 +123,8 @@
                                                 </UniformGrid>
                                                 <Button x:Name="fastboot_cancel_update" Style="{StaticResource WarnButton}" Visibility="Collapsed"
                                                         Content="{x:Static props:Resources.fastboot_cancel_update}"/>
+                                                <Button x:Name="fastboot_boot_once" Margin="0,0,0,4" Content="{x:Static props:Resources.fastboot_boot_once}"/>
+                                                <TextBlock Style="{StaticResource Note}" FontSize="11.5" Text="{x:Static props:Resources.fastboot_boot_once_note}"/>
                                             </StackPanel>
                                         </Border>
 
@@ -149,7 +151,7 @@
                                 </Grid>
                             </TabItem>
 
-                            <TabItem Header="{x:Static props:Resources.fastboot_partition_table}">
+                            <TabItem x:Name="device_partitions_tab" Header="{x:Static props:Resources.fastboot_partition_table}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
