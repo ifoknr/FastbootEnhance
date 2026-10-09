@@ -318,14 +318,16 @@ $initBoot = Join-Path (Split-Path $Payload) 'init_boot-sample.img'
 Remove-Item $fastbootMode -ErrorAction SilentlyContinue
 $deviceTab = Go 'device_tab'
 Start-Sleep -Seconds 1
-if ($null -eq (Shown $root 'fastboot_info_list')) {
-    $row = Wait-For { (By-Id $root 'fastboot_devices_list').FindFirst($Scope::Descendants, $rowCond) } 20 "a device to appear"
+# The device stays open after flashing, on whichever of its tabs was last shown.
+if ($null -eq (Shown $root 'device_basic_tab')) {
+    $row = Wait-For { $list = Shown $root 'fastboot_devices_list'; if ($null -ne $list) { $list.FindFirst($Scope::Descendants, $rowCond) } } 20 "a device to appear"
     Select-Item $row
     $row.SetFocus()
     Send '{ENTER}'
+    Start-Sleep -Seconds 3   # getvar all
 }
-Wait-For { Shown $root 'fastboot_info_list' } 20 "the device page" | Out-Null
-Start-Sleep -Seconds 3   # getvar all
+Select-Item (Wait-For { Shown $root 'device_basic_tab' } 20 "the device page")
+Wait-For { Shown $root 'fastboot_info_list' } 20 "the basic properties" | Out-Null
 
 function Filter-Partitions([string] $name) {
     Select-Item (Wait-For { By-Id $root 'device_partitions_tab' } 10 "the partition table tab")
@@ -344,6 +346,10 @@ function Dialog-Button($dialog, [string] $label) {
 }
 
 # The stand-in sits in fastbootd with system_b, vendor_b... at size 0, as after a factory super.
+# Counts start here: flashing the OTA above may have sent some of these commands already.
+$activesBefore = Fastboot-Log 'set_active'
+$bootsBefore = Fastboot-Log '-s \S+ boot '
+$rebootsBefore = Fastboot-Log 'reboot bootloader'
 Select-Item (Wait-For { By-Id $root 'device_basic_tab' } 10 "the basic tab")
 Press 'fastboot_ab_switch'
 $blocked = Wait-For { Find-Dialog } 20 "the slot switch refusal"
@@ -351,7 +357,7 @@ Start-Sleep -Milliseconds 600
 Save-Window ('{0:D2}-slot-switch-blocked' -f $i); $i++
 if ($null -ne (Dialog-Button $blocked 'Yes')) { Fail "switching to a slot with empty partitions was offered, not refused" }
 Close-Dialog $blocked
-if ((Fastboot-Log 'set_active') -gt 0) { Fail "set_active was sent to a slot with empty partitions" }
+if ((Fastboot-Log 'set_active') -gt $activesBefore) { Fail "set_active was sent to a slot with empty partitions" }
 Write-Host "slot switch: refused, b has empty logical partitions"
 
 # abl is part of the boot chain: Yes stays disabled until the name is typed.
@@ -395,7 +401,7 @@ $refused = Wait-For { Find-Dialog } 20 "the init_boot refusal"
 Start-Sleep -Milliseconds 600
 Save-Window ('{0:D2}-boot-once-init-boot' -f $i); $i++
 Close-Dialog $refused
-if ((Fastboot-Log '-s \S+ (boot|reboot) ') -gt 0) { Fail "an init_boot image was sent to boot" }
+if ((Fastboot-Log '-s \S+ boot ') -gt $bootsBefore -or (Fastboot-Log 'reboot bootloader') -gt $rebootsBefore) { Fail "an init_boot image was sent to boot" }
 
 # In fastbootd it offers the bootloader first, then boots the image from there.
 $getvars = Fastboot-Log 'getvar all'
@@ -403,10 +409,10 @@ Press 'fastboot_boot_once'
 Choose-File $twrp "the boot image dialog"
 $toBootloader = Wait-For { Find-Dialog } 20 "the fastbootd question"
 Answer-Dialog $toBootloader 'Yes'
-Wait-For { (Fastboot-Log 'reboot bootloader') -gt 0 } 20 "fastboot reboot bootloader" | Out-Null
+Wait-For { (Fastboot-Log 'reboot bootloader') -gt $rebootsBefore } 20 "fastboot reboot bootloader" | Out-Null
 Wait-For { (Fastboot-Log 'getvar all') -gt $getvars } 30 "the device to be read again" | Out-Null
 Start-Sleep -Seconds 2
-if ((Fastboot-Log '-s \S+ boot ') -gt 0) { Fail "the image was sent to fastbootd, which cannot boot it" }
+if ((Fastboot-Log '-s \S+ boot ') -gt $bootsBefore) { Fail "the image was sent to fastbootd, which cannot boot it" }
 
 Press 'fastboot_boot_once'
 Choose-File $twrp "the boot image dialog"
@@ -414,7 +420,7 @@ $started = Wait-For { Find-Dialog } 30 "the image to boot"
 Start-Sleep -Milliseconds 600
 Save-Window ('{0:D2}-boot-once-started' -f $i); $i++
 Close-Dialog $started
-if ((Fastboot-Log '-s \S+ boot .*twrp-sample\.img') -ne 1) { Fail "fastboot boot of the image was not issued once" }
+if ((Fastboot-Log '-s \S+ boot ') -ne $bootsBefore + 1) { Fail "fastboot boot of the image was not issued once" }
 Wait-For { Shown $root 'fastboot_devices_list' } 20 "the device list after booting" | Out-Null
 Write-Host "boot once: init_boot refused, bootloader first, then booted"
 
