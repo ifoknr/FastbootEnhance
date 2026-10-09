@@ -4,13 +4,14 @@
 
 <p align="center">
   <b>Fastboot, OTA flashing, payload dumper, super images and backups — in one Windows app.</b><br>
-  <a href="README.ar.md">العربية</a> · <a href="#download">Download</a> · <a href="#pages">Pages</a> · <a href="CHANGELOG.md">What's new</a>
+  <a href="README.ar.md">العربية</a> · <a href="#download">Download</a> · <a href="#pages">Pages</a> · <a href="CHANGELOG.md">What's new</a> · <a href="#contributing">Contributing</a>
 </p>
 
 <p align="center">
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%7C%2011-0E1116?style=flat-square&labelColor=1D222B">
   <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8-0E1116?style=flat-square&labelColor=1D222B">
   <img alt="Languages" src="https://img.shields.io/badge/UI-English%20%7C%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%7C%20%E4%B8%AD%E6%96%87%20%7C%20%E6%97%A5%E6%9C%AC%E8%AA%9E%20%7C%20%ED%95%9C%EA%B5%AD%EC%96%B4-0E1116?style=flat-square&labelColor=1D222B">
+  <a href="https://github.com/ifoknr/FastbootStudio/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ifoknr/FastbootStudio?style=flat-square&labelColor=1D222B&color=2DD4BF&label=release"></a>
   <img alt="License MIT" src="https://img.shields.io/badge/license-MIT-0E1116?style=flat-square&labelColor=1D222B">
 </p>
 
@@ -20,6 +21,19 @@ reach for every day: a safe OTA flasher, image tools that replace `simg2img` / `
 / `lpmake`, a super image builder, and backups of partitions and files over adb.
 Everything runs inside the app, in managed code, with no Python, no Linux tools and
 nothing to install.
+
+> 🆕 **A new version.** Fastboot Studio is the new generation of Fastboot Enhance: a new
+> interface from top to bottom, new pages, and more protection for the phone.
+>
+> **New in 2.1:**
+> - Slot switch protection: warns about, or refuses, a slot that is empty or will not boot.
+> - Critical partitions (xbl, abl, modem, persist, preloader…) are written only after you type their name.
+> - A **Boot once** button that refuses init_boot and vendor_boot.
+>
+> Everything is in the [changelog](CHANGELOG.md).
+>
+> 🤝 **Want to help? You are welcome.** The project is open to everyone: testing on your
+> phone, bug reports, ideas, translations or code. See [Contributing](#contributing).
 
 ---
 
@@ -261,7 +275,7 @@ decompression libraries:
 | --- | --- |
 | `./` | the WPF app (`net8.0-windows`) |
 | `src/FastbootEnhance.Core` | payload, sparse, super and adb logic, no UI (`netstandard2.0` + `net8.0`) |
-| `tests/FastbootEnhance.Core.Tests` | xunit suite (137 tests), including byte-for-byte checks against AOSP liblp |
+| `tests/FastbootEnhance.Core.Tests` | xunit suite (154 tests), including byte-for-byte checks against AOSP liblp |
 | `tools/FastbootEnhance.PayloadTool` | command line front end for the core |
 | `tools/FastbootEnhance.SampleGen` | builds the sample OTA, super and Qualcomm pieces used by CI |
 | `tools/FastbootEnhance.FakeFastboot`, `FakeAdb` | stand-ins for a phone, so CI can drive every page |
@@ -290,6 +304,25 @@ fbe-payload lpunpack <super.img> <dir> [-p name ...] [--slot N]
 fbe-payload combine  <super_1.img> <output.img> [--sparse]
 fbe-payload mksuper  <output.img> --size N [--mode vab|ab|single] [--sparse] [--from super.img] [--folder dir] [images...]
 ```
+
+---
+
+<a id="contributing"></a>
+## 🤝 Contributing
+
+Fastboot Studio is free and open source, and it grows with the people who use it. If you
+would like to help, you are welcome. Every contribution counts, however small:
+
+- **Try it on your phone** and tell us what works and what does not, especially on the many
+  MediaTek, Qualcomm and Unisoc devices out there.
+- **Report a bug** in [Issues](https://github.com/ifoknr/FastbootStudio/issues/new/choose), with the
+  phone model, the mode (bootloader or fastbootd) and a copy of the Logs page.
+- **Suggest an idea** for a feature or an improvement.
+- **Improve a translation**, or add a language.
+- **Send code**: fork the repository and open a pull request; see [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Share the app** with people who need it, and ⭐ the repository.
+
+Direct contact: Telegram [@IFOKNR1](https://t.me/IFOKNR1).
 
 ---
 
