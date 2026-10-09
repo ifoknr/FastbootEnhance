@@ -1,0 +1,49 @@
+name: مشكلة · Bug report
+description: شي ما اشتغل زي المتوقع · Something did not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        شكراً للبلاغ! كل ما كانت التفاصيل أكثر، كان الحل أسرع.
+        Thanks for reporting! The more detail, the faster the fix.
+  - type: input
+    id: version
+    attributes:
+      label: نسخة البرنامج · App version
+      description: من صفحة «حول» · From the About page
+      placeholder: v2.1.0
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: الجوال والمعالج · Phone and chipset
+      placeholder: Infinix X6878 (MediaTek Dimensity 6300)
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: وضع الجوال · Phone mode
+      options:
+        - bootloader
+        - fastbootd
+        - Android (adb)
+        - Recovery (adb)
+        - غير متصل · Not connected
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: وش صار؟ · What happened?
+      description: الخطوات، ووش صار، ووش كنت تتوقع · Steps, what happened, what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: السجل · Log
+      description: من صفحة «السجل» اضغط «نسخ» والصق هنا · Logs page → Copy, paste here
+      render: text
