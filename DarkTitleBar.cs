@@ -6,7 +6,7 @@ using System.Windows.Interop;
 namespace FastbootEnhance
 {
     /// <summary>
-    /// Tells Windows the window is dark. The app draws its own title bar (ThemedWindow), so this
+    /// Tells Windows the window's colours (dark or light, see Theme). The app draws its own title bar (ThemedWindow), so this
     /// only touches what Windows still draws: the system menu, the thin outline and, on
     /// Windows 11, the rounded corners. Older systems ignore the calls.
     /// </summary>
@@ -19,10 +19,12 @@ namespace FastbootEnhance
         const int DWMWA_CAPTION_COLOR = 35;
         const int DWMWA_TEXT_COLOR = 36;
 
-        // COLORREF is 0x00BBGGRR: the theme's Bg, Line and Text colours.
-        const int CaptionColor = 0x0016110E;
-        const int BorderColor = 0x003C312A;
-        const int TextColor = 0x00F2ECE8;
+        /// <summary>COLORREF (0x00BBGGRR) of one of the theme's brushes: Bg, Line or Text.</summary>
+        static int ColorRef(string key)
+        {
+            System.Windows.Media.Color color = ((System.Windows.Media.SolidColorBrush)Palette.Get(key)).Color;
+            return color.R | (color.G << 8) | (color.B << 16);
+        }
 
         [DllImport("dwmapi.dll")]
         static extern int DwmSetWindowAttribute(IntPtr hwnd, int attribute, ref int value, int size);
@@ -36,14 +38,14 @@ namespace FastbootEnhance
                 if (hwnd == IntPtr.Zero)
                     return;
 
-                int on = 1;
-                if (DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ref on, sizeof(int)) != 0)
-                    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref on, sizeof(int));
+                int dark = Theme.IsLight ? 0 : 1;
+                if (DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, ref dark, sizeof(int)) != 0)
+                    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref dark, sizeof(int));
 
                 int round = 2; // DWMWCP_ROUND
                 DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, ref round, sizeof(int));
 
-                int caption = CaptionColor, border = BorderColor, text = TextColor;
+                int caption = ColorRef("Bg"), border = ColorRef("Line"), text = ColorRef("Text");
                 DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, ref caption, sizeof(int));
                 DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, ref border, sizeof(int));
                 DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, ref text, sizeof(int));

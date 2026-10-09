@@ -25,6 +25,10 @@ nothing to install.
 > 🆕 **A new version.** Fastboot Studio is the new generation of Fastboot Enhance: a new
 > interface from top to bottom, new pages, and more protection for the phone.
 >
+> **New in 2.3:**
+> - Light and dark appearance (or as Windows).
+> - A **Terminal** page for your own adb and fastboot commands, with the same safety questions.
+>
 > **New in 2.2:**
 > - A Super space card, and a check that images fit in super before flashing.
 > - Partitions an update needs but the phone lacks are created for you.
@@ -204,10 +208,21 @@ persist) before you unlock, root or flash.
 
 <br clear="right">
 
+### 🖥️ Terminal
+
+Type adb and fastboot commands and run them with the tools that come with the app.
+
+- Quick commands to start from, history with Up/Down, and Stop for anything that keeps
+  running (logcat).
+- A working folder for files named without a path: `cd FOLDER`, the Folder button, or drop a
+  file on the line to add its full path.
+- The same protection as the rest of the app: flashing or erasing a critical partition,
+  `flashing lock` and `dd` to a partition need a typed word; commands that wipe data ask first.
+
 ### 📝 Logs and ℹ️ About
 
 - **Logs**: everything the app runs and every fastboot / adb answer, to copy or clear.
-- **About**: version, credits, license, and the **language switch**
+- **About**: version, credits, license, the **language switch** and the **appearance** (dark, light, or as Windows)
   (English, العربية with a full right-to-left layout, 中文, 日本語, 한국어).
 
 ---
@@ -289,7 +304,7 @@ decompression libraries:
 | --- | --- |
 | `./` | the WPF app (`net8.0-windows`) |
 | `src/FastbootEnhance.Core` | payload, sparse, super and adb logic, no UI (`netstandard2.0` + `net8.0`) |
-| `tests/FastbootEnhance.Core.Tests` | xunit suite (172 tests), including byte-for-byte checks against AOSP liblp |
+| `tests/FastbootEnhance.Core.Tests` | xunit suite (194 tests), including byte-for-byte checks against AOSP liblp |
 | `tools/FastbootEnhance.PayloadTool` | command line front end for the core |
 | `tools/FastbootEnhance.SampleGen` | builds the sample OTA, super and Qualcomm pieces used by CI |
 | `tools/FastbootEnhance.FakeFastboot`, `FakeAdb` | stand-ins for a phone, so CI can drive every page |

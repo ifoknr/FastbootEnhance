@@ -4,6 +4,11 @@
 
 <!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
 
+## v2.3.0
+- وضع فاتح وداكن، أو مثل ويندوز (من صفحة «حول»)
+- صفحة «الطرفية»: نفّذ أوامر adb و fastboot بنفسك، مع حماية الأوامر الخطرة
+- مؤشر الكف صار على الأزرار بس، مو على الصفحة كلها
+
 ## v2.2.0
 - بطاقة مساحة super: كم ماخذ كل سلوت وكم الفاضي
 - تحذير قبل التفليش إذا الصور ما تدخل في super، مع طرق توفير المساحة
@@ -114,6 +119,13 @@
 ---
 
 <a id="english"></a>
+## Version 2.3 in short
+- **Light and dark** appearance, or **as Windows**, chosen on the About page.
+- **Terminal** page: type adb and fastboot commands and run them with the bundled tools.
+  - Quick commands, history (Up/Down), a working folder (`cd`, or drop a file on the line to add its path), Stop.
+  - Commands that could brick the phone ask for a typed word first: critical partitions, `flashing lock`, `dd` to a partition. Commands that wipe data ask too.
+- The hand cursor shows only on what can be clicked, not across whole pages.
+
 ## Version 2.2 in short
 - **Super space** card on the Device page (fastbootd): what slot a, slot b and update copies
   (COW) take in super, and about how much is free.

@@ -1596,4 +1596,90 @@ fastbootd يحط الأقسام الجديدة في مجموعة "default"، م�
   <data name="usb_reboot_bootloader_ask" xml:space="preserve">
     <value>إعادة تشغيله للبوت لودر الحين عشان يظهر هنا؟</value>
   </data>
+  <data name="theme" xml:space="preserve">
+    <value>المظهر</value>
+  </data>
+  <data name="theme_dark" xml:space="preserve">
+    <value>داكن</value>
+  </data>
+  <data name="theme_light" xml:space="preserve">
+    <value>فاتح</value>
+  </data>
+  <data name="theme_system" xml:space="preserve">
+    <value>مثل ويندوز</value>
+  </data>
+  <data name="theme_restart" xml:space="preserve">
+    <value>المظهر الجديد يتطبق بعد إعادة التشغيل. إعادة تشغيل Fastboot Studio الحين؟</value>
+  </data>
+  <data name="theme_busy" xml:space="preserve">
+    <value>انتظر حتى ينتهي التفليش أو الاستخراج الجاري قبل تغيير المظهر.</value>
+  </data>
+  <data name="nav_terminal" xml:space="preserve">
+    <value>الطرفية</value>
+  </data>
+  <data name="terminal_subtitle" xml:space="preserve">
+    <value>نفّذ أوامر adb و fastboot بنفسك، بالأدوات المدمجة في البرنامج</value>
+  </data>
+  <data name="terminal_folder" xml:space="preserve">
+    <value>المجلد…</value>
+  </data>
+  <data name="terminal_folder_now" xml:space="preserve">
+    <value>المجلد: {0}   ·   الملفات المكتوبة بدون مسار تُقرأ من هنا، واسحب أي ملف على السطر عشان يضيف مساره</value>
+  </data>
+  <data name="terminal_run" xml:space="preserve">
+    <value>تنفيذ</value>
+  </data>
+  <data name="terminal_stop" xml:space="preserve">
+    <value>إيقاف</value>
+  </data>
+  <data name="terminal_welcome" xml:space="preserve">
+    <value>اكتب أمر adb أو fastboot واضغط Enter، مثلاً: fastboot getvar all
+السهم فوق وتحت يرجّع الأوامر السابقة. اكتب help للمزيد.</value>
+  </data>
+  <data name="terminal_help" xml:space="preserve">
+    <value>الأوامر تبدأ بـ adb أو fastboot وتشتغل بالأدوات المدمجة في البرنامج.
+  cd FOLDER    يغيّر المجلد اللي تُقرأ منه الملفات
+  clear        يمسح هذي النافذة
+الأوامر اللي ممكن تطفي الجوال (الأقسام الحساسة، قفل البوت لودر، dd على قسم) تطلب منك تكتب كلمة قبل التنفيذ، والأوامر اللي تمسح البيانات تسألك كمان.
+adb shell يحتاج أمر بعده، مثل adb shell getprop. وزر إيقاف يوقف أي أمر شغّال مثل logcat.</value>
+  </data>
+  <data name="terminal_not_tool" xml:space="preserve">
+    <value>هنا تشتغل أوامر adb و fastboot بس. ابدأ السطر بـ adb أو fastboot.</value>
+  </data>
+  <data name="terminal_interactive" xml:space="preserve">
+    <value>adb shell يحتاج أمر بعده هنا، مثلاً: adb shell getprop ro.product.model</value>
+  </data>
+  <data name="terminal_quote" xml:space="preserve">
+    <value>فيه علامة تنصيص ما انقفلت.</value>
+  </data>
+  <data name="terminal_busy" xml:space="preserve">
+    <value>فيه تفليش شغّال؛ انتظر حتى يخلص عشان ما يكلّمون الجوال الاثنين بنفس الوقت.</value>
+  </data>
+  <data name="terminal_cancelled" xml:space="preserve">
+    <value>ما تم التنفيذ.</value>
+  </data>
+  <data name="terminal_exit" xml:space="preserve">
+    <value>[رمز الخروج {0}]</value>
+  </data>
+  <data name="terminal_stopped" xml:space="preserve">
+    <value>[تم الإيقاف]</value>
+  </data>
+  <data name="terminal_no_folder" xml:space="preserve">
+    <value>المجلد غير موجود: {0}</value>
+  </data>
+  <data name="terminal_start_failed" xml:space="preserve">
+    <value>تعذّر تشغيل الأمر: {0}</value>
+  </data>
+  <data name="terminal_critical" xml:space="preserve">
+    <value>هذا الأمر يكتب أو يمسح {0}، وهو جزء من سلسلة الإقلاع أو من هوية الجوال (IMEI والمعايرة والمفاتيح). الصورة الخاطئة هنا ممكن تخلي الجوال ما يوصل حتى للبوت لودر، أو تضيّع بيانات ما يرجعها أي فيرموير.</value>
+  </data>
+  <data name="terminal_lock" xml:space="preserve">
+    <value>هذا الأمر يقفل البوت لودر. إذا الجوال عليه أي شي غير نظامه الرسمي (روم معدّل، روت، boot معدّل، GSI)، البوت لودر المقفول يرفض يشغّله، وممكن الجوال ما يقلع لين ينفتح البوت لودر من جديد، والفتح يمسح البيانات.</value>
+  </data>
+  <data name="terminal_dd" xml:space="preserve">
+    <value>هذا الأمر يكتب مباشرة على قسم في الجوال بـ dd. ما في أي تحقق من الصورة أو القسم، والغلط ممكن يخلي الجوال ما يقلع.</value>
+  </data>
+  <data name="terminal_wipe" xml:space="preserve">
+    <value>هذا الأمر يمسح بيانات المستخدم في الجوال (التطبيقات والصور والملفات). تنفيذه؟</value>
+  </data>
 </root>

@@ -1596,4 +1596,90 @@ Create them and continue?</value>
   <data name="usb_reboot_bootloader_ask" xml:space="preserve">
     <value>Reboot it to the bootloader now, so it shows up here?</value>
   </data>
+  <data name="theme" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="theme_dark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="theme_light" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="theme_system" xml:space="preserve">
+    <value>As Windows</value>
+  </data>
+  <data name="theme_restart" xml:space="preserve">
+    <value>The new appearance applies after a restart. Restart Fastboot Studio now?</value>
+  </data>
+  <data name="theme_busy" xml:space="preserve">
+    <value>Wait for the current flash or extraction to finish before changing the appearance.</value>
+  </data>
+  <data name="nav_terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="terminal_subtitle" xml:space="preserve">
+    <value>Run adb and fastboot commands yourself, with the tools that come with the app</value>
+  </data>
+  <data name="terminal_folder" xml:space="preserve">
+    <value>Folder…</value>
+  </data>
+  <data name="terminal_folder_now" xml:space="preserve">
+    <value>Folder: {0}   ·   files named without a path are looked up here; drop a file on the line to add its path</value>
+  </data>
+  <data name="terminal_run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="terminal_stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="terminal_welcome" xml:space="preserve">
+    <value>Type an adb or fastboot command and press Enter, for example: fastboot getvar all
+Up and Down bring back earlier commands. Type help for more.</value>
+  </data>
+  <data name="terminal_help" xml:space="preserve">
+    <value>Commands start with adb or fastboot and run with the tools that come with the app.
+  cd FOLDER    change the folder files are read from
+  clear        empty this window
+Commands that could brick the phone (critical partitions, locking the bootloader, dd to a partition) ask you to type a word first; commands that wipe data ask too.
+adb shell needs a command after it, e.g. adb shell getprop; Stop ends anything still running, such as logcat.</value>
+  </data>
+  <data name="terminal_not_tool" xml:space="preserve">
+    <value>Only adb and fastboot commands run here. Start the line with adb or fastboot.</value>
+  </data>
+  <data name="terminal_interactive" xml:space="preserve">
+    <value>adb shell needs a command after it here, for example: adb shell getprop ro.product.model</value>
+  </data>
+  <data name="terminal_quote" xml:space="preserve">
+    <value>A quote is not closed.</value>
+  </data>
+  <data name="terminal_busy" xml:space="preserve">
+    <value>A flash is running; wait for it to finish so the two do not talk to the phone at once.</value>
+  </data>
+  <data name="terminal_cancelled" xml:space="preserve">
+    <value>Not run.</value>
+  </data>
+  <data name="terminal_exit" xml:space="preserve">
+    <value>[exit code {0}]</value>
+  </data>
+  <data name="terminal_stopped" xml:space="preserve">
+    <value>[stopped]</value>
+  </data>
+  <data name="terminal_no_folder" xml:space="preserve">
+    <value>No such folder: {0}</value>
+  </data>
+  <data name="terminal_start_failed" xml:space="preserve">
+    <value>Could not start the command: {0}</value>
+  </data>
+  <data name="terminal_critical" xml:space="preserve">
+    <value>This command writes or erases {0}, part of the boot chain or of the phone's identity (IMEI, calibration, keys). A wrong image there can leave the phone unable to reach even the bootloader, or lose data no firmware brings back.</value>
+  </data>
+  <data name="terminal_lock" xml:space="preserve">
+    <value>This locks the bootloader. On a phone running anything but its own stock software (custom ROM, root, patched boot, a GSI), a locked bootloader refuses to start it: the phone may not boot again until it is unlocked, which wipes it.</value>
+  </data>
+  <data name="terminal_dd" xml:space="preserve">
+    <value>This writes straight to a partition of the phone with dd. Nothing checks the image or the partition; a mistake can leave the phone unable to start.</value>
+  </data>
+  <data name="terminal_wipe" xml:space="preserve">
+    <value>This command erases the user data on the phone (apps, photos, files). Run it?</value>
+  </data>
 </root>
