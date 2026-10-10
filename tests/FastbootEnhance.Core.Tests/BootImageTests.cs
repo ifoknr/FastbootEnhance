@@ -392,5 +392,72 @@ namespace FastbootEnhance.Core.Tests
             Assert.Null(DeviceFacts.Recall(stored, "EMPTY"));
             Assert.Null(DeviceFacts.Recall("garbage\twithout\tfields", "garbage"));
         }
+
+        // ---------- the Companion module's report ----------
+
+        const string CompanionReport =
+            "kernel=5.15.148-android13-8-00017-gabc123\npatch=2026-08-05\nvendor_patch=\nmodel=Infinix X6878\nandroid=14\n" +
+            "companion=2.3.0 beta\nroot=KernelSU\navb=orange\ndevice_state=unlocked\nspoofed=true\nselinux=Enforcing\n" +
+            "kmi=5.15-android13\nconflicts=4\n";
+
+        [Fact]
+        public void The_companion_report_adds_root_avb_and_conflicts()
+        {
+            DeviceFacts f = DeviceFacts.Parse("X6878", CompanionReport, DateTime.UtcNow);
+            Assert.Equal("5.15.148-android13-8-00017-gabc123", f.Kernel);
+            Assert.Equal("2.3.0 beta", f.Companion);
+            Assert.Equal("KernelSU", f.Root);
+            Assert.Equal("orange", f.Avb);
+            Assert.Equal("unlocked", f.DeviceState);
+            Assert.True(f.Spoofed);
+            Assert.Equal(4, f.Conflicts);
+
+            DeviceFacts plain = DeviceFacts.Parse("X6878", "kernel=5.15.1-android13-8\nroot=unknown\nconflicts=many\n", DateTime.UtcNow);
+            Assert.Null(plain.Companion);
+            Assert.Null(plain.Root);
+            Assert.Null(plain.Conflicts);
+            Assert.False(plain.Spoofed);
+        }
+
+        [Fact]
+        public void Companion_fields_are_remembered_and_old_lines_still_load()
+        {
+            DateTime seen = new DateTime(2026, 10, 10, 8, 0, 0, DateTimeKind.Utc);
+            string stored = DeviceFacts.Remember(null, DeviceFacts.Parse("X6878", CompanionReport, seen));
+            DeviceFacts back = DeviceFacts.Recall(stored, "X6878");
+            Assert.Equal("2.3.0 beta", back.Companion);
+            Assert.Equal("KernelSU", back.Root);
+            Assert.Equal("orange", back.Avb);
+            Assert.True(back.Spoofed);
+            Assert.Equal(4, back.Conflicts);
+            Assert.Equal(seen, back.Seen.ToUniversalTime());
+
+            // Written by v2.3.0, before the Companion: seven fields.
+            string old = "R5CT\t5.10.198-android12-9-g1\t2024-09-05\t\tSM-S911B\t14\t2026-10-01T00:00:00.0000000Z\n";
+            DeviceFacts legacy = DeviceFacts.Recall(old, "R5CT");
+            Assert.Equal("SM-S911B", legacy.Model);
+            Assert.Null(legacy.Companion);
+            Assert.Null(legacy.Conflicts);
+        }
+
+        [Fact]
+        public void An_image_rooted_with_another_manager_than_the_phone_is_asked_about()
+        {
+            BootImageAnalysis kernelsuLkm = Analyze(BootImage(4, new byte[0], Gzip(Cpio("init", "init.real", "kernelsu.ko"))));
+            DeviceFacts magiskPhone = Phone();
+            magiskPhone.Root = "Magisk";
+            List<Finding> f = BootFlashCheck.Check(kernelsuLkm, "init_boot_a", magiskPhone, true);
+            Finding change = Assert.Single(f, x => x.Code == FindingCode.RootManagerChange);
+            Assert.Equal(FindingLevel.Warn, change.Level);
+            Assert.Equal(new[] { "KernelSU", "Magisk" }, change.Values);
+
+            DeviceFacts kernelsuPhone = Phone();
+            kernelsuPhone.Root = "KernelSU";
+            Assert.DoesNotContain(BootFlashCheck.Check(kernelsuLkm, "init_boot_a", kernelsuPhone, true), x => x.Code == FindingCode.RootManagerChange);
+            // Without the Companion the phone's root manager is not known, so nothing is said.
+            Assert.DoesNotContain(BootFlashCheck.Check(kernelsuLkm, "init_boot_a", Phone(), true), x => x.Code == FindingCode.RootManagerChange);
+            Assert.Equal(RootKind.APatch, BootFlashCheck.RootFromName(" apatch "));
+            Assert.Equal(RootKind.None, BootFlashCheck.RootFromName(null));
+        }
     }
 }
