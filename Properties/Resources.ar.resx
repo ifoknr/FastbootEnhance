@@ -1682,4 +1682,106 @@ adb shell يحتاج أمر بعده، مثل adb shell getprop. وزر إيقا
   <data name="terminal_wipe" xml:space="preserve">
     <value>هذا الأمر يمسح بيانات المستخدم في الجوال (التطبيقات والصور والملفات). تنفيذه؟</value>
   </data>
+  <data name="boot_check_title" xml:space="preserve">
+    <value>فحص قبل فلاش {0}</value>
+  </data>
+  <data name="boot_check_failed" xml:space="preserve">
+    <value>ما قدرت أقرأ الصورة: {0}</value>
+  </data>
+  <data name="boot_find_not_boot" xml:space="preserve">
+    <value>هذا الملف مو صورة إقلاع، والقسم {0} مكانه صورة إقلاع. لو فلّشته هنا غالباً الجوال ما يشتغل.</value>
+  </data>
+  <data name="boot_find_no_kernel" xml:space="preserve">
+    <value>هذه الصورة ما فيها كيرنل (صورة init_boot أو مثلها)، والقسم {0} لازم يكون فيه الكيرنل. الجوال ما راح يشتغل.</value>
+  </data>
+  <data name="boot_find_no_kernel_hint" xml:space="preserve">
+    <value>جوالك فيه القسم {0}، وهذا مكان هذه الصورة.</value>
+  </data>
+  <data name="boot_find_kernel_in_init_boot" xml:space="preserve">
+    <value>هذه الصورة فيها كيرنل، والقسم {0} ما يحمل إلا الـ ramdisk. الصورة اللي فيها كيرنل مكانها boot.</value>
+  </data>
+  <data name="boot_find_vendor_mismatch" xml:space="preserve">
+    <value>هذه الصورة ما تنفع للقسم {0}: صور vendor_boot مكانها vendor_boot بس، وصور boot ما تروح له أبداً.</value>
+  </data>
+  <data name="boot_find_kmi" xml:space="preserve">
+    <value>الكيرنل مبني لـ {0}، وجوالك شغّال على {1}. الكيرنل المبني لـ KMI ثاني ما يقلع، والجوال بيعلق على شاشة الإقلاع.</value>
+  </data>
+  <data name="boot_find_kernel_version" xml:space="preserve">
+    <value>إصدار الكيرنل {0}، وجوالك شغّال على {1}. ممكن ما يقلع.</value>
+  </data>
+  <data name="boot_find_older_patch" xml:space="preserve">
+    <value>مستوى الحماية في الصورة ({0}) أقدم من اللي في جوالك ({1}). بعض الأجهزة ترفض تقلع فيها، أو تضيع المفاتيح المحفوظة (البصمة وتسجيل الدخول في بعض التطبيقات).</value>
+  </data>
+  <data name="boot_find_kernel" xml:space="preserve">
+    <value>الكيرنل: {0}</value>
+  </data>
+  <data name="boot_find_root" xml:space="preserve">
+    <value>الروت: {0}</value>
+  </data>
+  <data name="boot_find_stock" xml:space="preserve">
+    <value>بدون روت (صورة أصلية).</value>
+  </data>
+  <data name="boot_check_phone_unknown" xml:space="preserve">
+    <value>نصيحة: افتح جوالك مرة في صفحة النسخ الاحتياطي وهو شغّال على أندرويد، وبعدها أقدر أقارن الكيرنل ومستوى الحماية هنا.</value>
+  </data>
+  <data name="boot_check_phone_known" xml:space="preserve">
+    <value>قارنت مع اللي قاله جوال {0} عبر adb بتاريخ {1}.</value>
+  </data>
+  <data name="boot_check_question" xml:space="preserve">
+    <value>تفلّشها في {0} برضو؟</value>
+  </data>
+  <data name="images_row_header" xml:space="preserve">
+    <value>الهيدر</value>
+  </data>
+  <data name="images_header_detail" xml:space="preserve">
+    <value>إصدار {0}، صفحة {1}</value>
+  </data>
+  <data name="images_row_android" xml:space="preserve">
+    <value>أندرويد</value>
+  </data>
+  <data name="images_row_patch" xml:space="preserve">
+    <value>مستوى الحماية</value>
+  </data>
+  <data name="images_row_kernel" xml:space="preserve">
+    <value>الكيرنل</value>
+  </data>
+  <data name="images_row_kmi" xml:space="preserve">
+    <value>KMI</value>
+  </data>
+  <data name="images_kmi_none" xml:space="preserve">
+    <value>ليس GKI</value>
+  </data>
+  <data name="images_row_kernel_compression" xml:space="preserve">
+    <value>ضغط الكيرنل</value>
+  </data>
+  <data name="images_kernel_unreadable" xml:space="preserve">
+    <value>{0} (ما ينقرأ)</value>
+  </data>
+  <data name="images_kernel_no_banner" xml:space="preserve">
+    <value>ما لقيت الإصدار</value>
+  </data>
+  <data name="images_no_kernel" xml:space="preserve">
+    <value>بدون (init_boot)</value>
+  </data>
+  <data name="images_row_ramdisk" xml:space="preserve">
+    <value>الـ Ramdisk</value>
+  </data>
+  <data name="images_ramdisk_detail" xml:space="preserve">
+    <value>{0}، {1} ملف</value>
+  </data>
+  <data name="images_row_root" xml:space="preserve">
+    <value>الروت</value>
+  </data>
+  <data name="images_root_none" xml:space="preserve">
+    <value>بدون (أصلية)</value>
+  </data>
+  <data name="images_row_cmdline" xml:space="preserve">
+    <value>سطر الأوامر</value>
+  </data>
+  <data name="fastboot_row_adb_kernel" xml:space="preserve">
+    <value>الكيرنل (آخر مرة عبر adb)</value>
+  </data>
+  <data name="fastboot_row_adb_patch" xml:space="preserve">
+    <value>مستوى الحماية (عبر adb)</value>
+  </data>
 </root>

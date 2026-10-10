@@ -478,6 +478,30 @@ Save-Window ('{0:D2}-super-full' -f $i); $i++
 Answer-Dialog $full 'No'
 if ((Fastboot-Log 'flash product_a .*big-sparse') -gt 0) { Fail "an image too big for super was flashed" }
 Write-Host "super: a 12 GiB image was stopped before flashing"
+
+# Boot images are read before they are written: a kernel image into init_boot is asked about,
+# a boot image into vendor_boot needs the partition name typed. Both answered No.
+# (Saved as NNa/NNb so the numbers of the screens after these stay the same.)
+$gki = Join-Path (Split-Path $Payload) 'boot-gki-sample.img'
+$bootFlashesBefore = Fastboot-Log 'flash (init_boot_a|vendor_boot_a) '
+Filter-Partitions 'init_boot_a'
+Press 'fastboot_flash'
+Choose-File $gki "the boot image dialog"
+$kernelAsk = Wait-For { Find-Dialog } 30 "the kernel-in-init_boot question"
+Start-Sleep -Milliseconds 600
+Save-Window ('{0:D2}a-boot-check-init-boot' -f ($i - 1))
+Answer-Dialog $kernelAsk 'No'
+Filter-Partitions 'vendor_boot_a'
+Press 'fastboot_flash'
+Choose-File $gki "the vendor_boot image dialog"
+$vendorAsk = Wait-For { Find-Dialog } 30 "the vendor_boot refusal"
+Start-Sleep -Milliseconds 600
+$vendorYes = Dialog-Button $vendorAsk 'Yes'
+if ($null -eq $vendorYes -or $vendorYes.Current.IsEnabled) { Fail "a boot image could go to vendor_boot without typing the partition name" }
+Save-Window ('{0:D2}b-boot-check-vendor-boot' -f ($i - 1))
+Answer-Dialog $vendorAsk 'No'
+if ((Fastboot-Log 'flash (init_boot_a|vendor_boot_a) ') -gt $bootFlashesBefore) { Fail "a boot image was flashed after the check was answered No" }
+Write-Host "boot image check: init_boot asked, vendor_boot blocked, nothing flashed"
 (By-Id $root 'fastboot_partition_name_textbox').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('')
 
 # Boot once: init_boot has no kernel and is refused before anything is sent.
@@ -686,6 +710,22 @@ if (Test-Path $superPart) {
         if ($combinedHash -ne $expected['super.raw.img']) { Fail "the combined pieces are not the original super" }
         Write-Host "super: Qualcomm pieces combined into the original image byte for byte"
     }
+
+    # A boot image: kernel version and KMI, patch level from the AVB footer, Magisk in the ramdisk.
+    $gkiImage = Join-Path $sampleDir 'boot-gki-sample.img'
+    Press 'images_close'
+    Open-Image $gkiImage
+    $details = Wait-For { By-Id $root 'images_details' } 30 "the boot image details"
+    function Details-Text { (@($details.FindAll($Scope::Descendants, [System.Windows.Automation.Condition]::TrueCondition)) | ForEach-Object { $_.Current.Name }) -join ' | ' }
+    # The list still shows the previous image until the new one is read.
+    Wait-For { (Details-Text) -match 'android13-5\.15' } 30 "the boot image rows" | Out-Null
+    Start-Sleep -Milliseconds 600
+    $text = Details-Text
+    foreach ($want in @('5.15.123-android13-8', 'android13-5.15', '2024-05', 'Magisk')) {
+        if ($text -notmatch [regex]::Escape($want)) { Fail "the boot image details do not show $want" }
+    }
+    Save-Window ('{0:D2}a-images-boot' -f ($i - 1))
+    Write-Host "image tools: boot image read (kernel, KMI, patch level, Magisk)"
 }
 
 # ---------------------------------------------------------------- build super

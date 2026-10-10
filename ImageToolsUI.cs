@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using FastbootEnhance.Core;
+using FastbootEnhance.Core.Fastboot;
 using FastbootEnhance.Core.Images;
 
 namespace FastbootEnhance
@@ -157,6 +158,7 @@ namespace FastbootEnhance
                 IList<string> chosen;
                 ImageInfo opened = null;
                 SuperImage table = null;
+                BootImageAnalysis boot = null;
                 List<SparseImage> sparse = new List<SparseImage>();
                 RawProgramImage pieced = null;
                 Exception failure = null;
@@ -193,6 +195,11 @@ namespace FastbootEnhance
                                 table = SuperImage.Read(stream);
                         }
                     }
+                    if (opened.Kind == ImageKind.BootImage)
+                    {
+                        using (Stream stream = openImage(chosen, pieced))
+                            boot = BootImageAnalysis.Analyze(stream);
+                    }
                     parts = chosen;
                     pieces = pieced;
                 }
@@ -212,7 +219,7 @@ namespace FastbootEnhance
                         ThemedDialog.Show(failure.Message, Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
-                    show(chosen, opened, sparse, table);
+                    show(chosen, opened, sparse, table, boot);
                 });
             }, delegate { });
         }
@@ -244,7 +251,48 @@ namespace FastbootEnhance
             }
         }
 
-        static void show(IList<string> chosen, ImageInfo opened, List<SparseImage> sparse, SuperImage table)
+        /// <summary>Header, Android version, patch level, kernel and KMI, ramdisk and root of a boot image.</summary>
+        static IEnumerable<InfoRow> bootRows(BootImageAnalysis boot)
+        {
+            yield return new InfoRow(Properties.Resources.images_row_header,
+                string.Format(Properties.Resources.images_header_detail, boot.HeaderVersion, boot.PageSize));
+            if (boot.OsVersion != null)
+                yield return new InfoRow(Properties.Resources.images_row_android, boot.OsVersion);
+            if (boot.PatchLevel != null)
+                yield return new InfoRow(Properties.Resources.images_row_patch, boot.PatchLevel);
+
+            KernelInfo kernel = boot.Kernel;
+            if (kernel == null)
+            {
+                yield return new InfoRow(Properties.Resources.images_row_kernel, Properties.Resources.images_no_kernel);
+            }
+            else
+            {
+                string compression = Compression.Name(kernel.Compression);
+                yield return new InfoRow(Properties.Resources.images_row_kernel, kernel.Release
+                    ?? (kernel.Readable ? Properties.Resources.images_kernel_no_banner : Properties.Resources.unknown));
+                if (kernel.Release != null)
+                    yield return new InfoRow(Properties.Resources.images_row_kmi, kernel.Kmi ?? Properties.Resources.images_kmi_none);
+                yield return new InfoRow(Properties.Resources.images_row_kernel_compression, kernel.Readable
+                    ? compression : string.Format(Properties.Resources.images_kernel_unreadable, compression));
+            }
+
+            if (boot.Ramdisk != null)
+                yield return new InfoRow(Properties.Resources.images_row_ramdisk, boot.Ramdisk.Readable
+                    ? string.Format(Properties.Resources.images_ramdisk_detail, Compression.Name(boot.Ramdisk.Compression), boot.Ramdisk.FileCount)
+                    : string.Format(Properties.Resources.images_kernel_unreadable, Compression.Name(boot.Ramdisk.Compression)));
+
+            bool susfs = kernel?.SuSFS ?? false;
+            if (boot.Root != RootKind.None || susfs)
+                yield return new InfoRow(Properties.Resources.images_row_root, BootFlashCheck.RootName(boot.Root, susfs));
+            else if ((kernel?.Readable ?? false) || (boot.Ramdisk?.Readable ?? false))
+                yield return new InfoRow(Properties.Resources.images_row_root, Properties.Resources.images_root_none);
+
+            if (!string.IsNullOrEmpty(boot.Cmdline))
+                yield return new InfoRow(Properties.Resources.images_row_cmdline, boot.Cmdline);
+        }
+
+        static void show(IList<string> chosen, ImageInfo opened, List<SparseImage> sparse, SuperImage table, BootImageAnalysis boot)
         {
             info = opened;
             super = table;
@@ -300,6 +348,8 @@ namespace FastbootEnhance
                 if (table.BlockDevices.Count > 0)
                     rows.Add(new InfoRow(Properties.Resources.images_row_super_size, Helper.byte2AUnit((long)table.BlockDevices[0].Size)));
             }
+            if (boot != null)
+                rows.AddRange(bootRows(boot));
             W.images_details.ItemsSource = rows;
 
             // Partitions of a super image

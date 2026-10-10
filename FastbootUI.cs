@@ -1,4 +1,5 @@
 ﻿using ChromeosUpdateEngine;
+using FastbootEnhance.Core.Adb;
 using FastbootEnhance.Core.Fastboot;
 using FastbootEnhance.Core.Images;
 using FastbootEnhance.Core.Payload;
@@ -368,6 +369,15 @@ namespace FastbootEnhance
             if (vab_status_str != null)
                 MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_update_status,
                     vab_status_str));
+
+            // fastboot cannot ask the kernel or the patch level; show what adb last said, if anything.
+            DeviceFacts seen = DeviceFacts.Recall(Settings.Get(DeviceFactsKey), cur_serial);
+            if (seen?.Kernel != null)
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_adb_kernel,
+                    Helper.ltr(seen.Kernel)));
+            if (seen?.Patch != null)
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_adb_patch,
+                    Helper.ltr(seen.Patch)));
 
             //buttons init
 
@@ -857,6 +867,115 @@ namespace FastbootEnhance
                 done_message = Properties.Resources.boot_once_started,
                 leave_after = true,
             });
+        }
+
+        /// <summary>
+        /// Before a boot, init_boot, recovery or vendor_boot partition is written: reads the
+        /// image (kernel version and KMI, patch level, root) and checks it fits the partition and
+        /// the phone, as it reported itself over adb. Calls flash when nothing is wrong, or
+        /// when the user goes ahead anyway.
+        /// </summary>
+        static void checkBootImage(string target, string path, Action flash)
+        {
+            if (!BootFlashCheck.Applies(target))
+            {
+                flash();
+                return;
+            }
+
+            BootImageAnalysis image = null;
+            Exception failure = null;
+            MainWindow.THIS.fastboot_flash.IsEnabled = false;
+            Helper.offloadAndRun(delegate
+            {
+                try
+                {
+                    image = BootImageAnalysis.Analyze(path);
+                }
+                catch (Exception e)
+                {
+                    failure = e;
+                }
+            }, delegate
+            {
+                MainWindow.THIS.fastboot_flash.IsEnabled = true;
+                if (failure != null)
+                {
+                    appendLog("boot image check: cannot read " + path + ": " + failure.Message);
+                    ThemedDialog.Show(string.Format(Properties.Resources.boot_check_failed, failure.Message),
+                        Properties.Resources.error, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                DeviceFacts phone = DeviceFacts.Recall(Settings.Get(DeviceFactsKey), cur_serial);
+                bool hasInitBoot = fastbootData.partition_size.Keys.Any(k => BootFlashCheck.BaseName(k) == "init_boot");
+                List<Finding> findings = BootFlashCheck.Check(image, target, phone, hasInitBoot);
+                foreach (Finding f in findings)
+                    appendLog("boot image check (" + target + "): " + f.Level + " " + f.Code + " " + string.Join(" / ", f.Values));
+
+                FindingLevel worst = BootFlashCheck.Worst(findings);
+                if (worst == FindingLevel.Info)
+                {
+                    flash();
+                    return;
+                }
+
+                List<string> paragraphs = new List<string>();
+                foreach (Finding f in findings.Where(f => f.Level != FindingLevel.Info))
+                    paragraphs.Add("• " + describe(f));
+                List<string> facts = findings.Where(f => f.Level == FindingLevel.Info).Select(describe).ToList();
+                if (facts.Count > 0)
+                    paragraphs.Add(string.Join("\n", facts));
+                paragraphs.Add(phone != null
+                    ? string.Format(Properties.Resources.boot_check_phone_known, phone.Model ?? phone.Serial,
+                        phone.Seen.ToLocalTime().ToString("yyyy-MM-dd"))
+                    : Properties.Resources.boot_check_phone_unknown);
+                paragraphs.Add(string.Format(Properties.Resources.boot_check_question, target));
+                string text = string.Join("\n\n", paragraphs);
+                string title = string.Format(Properties.Resources.boot_check_title, target);
+
+                bool go = worst == FindingLevel.Block
+                    ? ThemedDialog.ConfirmTyped(text, title, target)
+                    : Helper.confirm(text, title, true);
+                if (go)
+                    flash();
+                else
+                    appendLog("flash of " + target + " stopped after the boot image check");
+            });
+        }
+
+        /// <summary>Where the phones' kernel and patch level, as seen over adb, are kept.</summary>
+        public const string DeviceFactsKey = "device_facts";
+
+        static string describe(Finding f)
+        {
+            IReadOnlyList<string> v = f.Values;
+            switch (f.Code)
+            {
+                case FindingCode.NotBootImage:
+                    return string.Format(Properties.Resources.boot_find_not_boot, v[0]);
+                case FindingCode.NoKernelForBoot:
+                    return string.Format(Properties.Resources.boot_find_no_kernel, v[0])
+                        + (v[1].Length > 0 ? " " + string.Format(Properties.Resources.boot_find_no_kernel_hint, v[1]) : "");
+                case FindingCode.KernelInInitBoot:
+                    return string.Format(Properties.Resources.boot_find_kernel_in_init_boot, v[0]);
+                case FindingCode.VendorBootMismatch:
+                    return string.Format(Properties.Resources.boot_find_vendor_mismatch, v[0]);
+                case FindingCode.KmiMismatch:
+                    return string.Format(Properties.Resources.boot_find_kmi, Helper.ltr(v[0]), Helper.ltr(v[1]));
+                case FindingCode.KernelVersionMismatch:
+                    return string.Format(Properties.Resources.boot_find_kernel_version, v[0], v[1]);
+                case FindingCode.OlderPatchLevel:
+                    return string.Format(Properties.Resources.boot_find_older_patch, Helper.ltr(v[0]), Helper.ltr(v[1]));
+                case FindingCode.KernelSummary:
+                    return string.Format(Properties.Resources.boot_find_kernel, Helper.ltr(v[0] + (v[1].Length > 0 ? "  ·  KMI " + v[1] : "")));
+                case FindingCode.RootSummary:
+                    return string.Format(Properties.Resources.boot_find_root, v[0]);
+                case FindingCode.Stock:
+                    return Properties.Resources.boot_find_stock;
+                default:
+                    return f.Code.ToString();
+            }
         }
 
         static bool singlePartitionCheck()
@@ -1564,7 +1683,8 @@ namespace FastbootEnhance
                             ext_arg += "--disable-verity --disable-verification";
                         }
                     }
-                    runStep(new StepCmdRunnerParam("flash " + ext_arg + " \"" + target + "\" \"" + path + "\"", -1, true));
+                    string command = "flash " + ext_arg + " \"" + target + "\" \"" + path + "\"";
+                    checkBootImage(target, path, delegate { runStep(new StepCmdRunnerParam(command, -1, true)); });
                 }), "Image File|*.img;*.image");
             };
 

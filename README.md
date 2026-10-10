@@ -87,6 +87,12 @@ Everything fastboot can tell and do, on the phone that is connected.
   fits; when it does not, it says by how much and what could make room.
 - Partition actions: **flash** an image, **erase**, and for logical partitions
   **create**, **resize** and **delete**. Destructive actions ask first, in red.
+- **Boot image check** before flashing boot, init_boot, recovery or vendor_boot: the app
+  unpacks the image (gzip, lz4, zstd, xz) and reads its kernel version, KMI, security patch
+  and root (Magisk, KernelSU, APatch, SuSFS). It stops the usual bricks: an init_boot image
+  in boot (no kernel), a boot image in vendor_boot, a not-a-boot-image file. Once the phone
+  has been opened on the Backup page, its kernel and patch level are known too, and a kernel
+  for another KMI (it would boot-loop) or an older patch level is flagged before flashing.
 - **Critical partitions** (xbl, abl, tz, modem, persist, frp, preloader, nvdata…) are flashed
   or erased only after you type the partition name: a mistake there can hard-brick the phone
   or lose its IMEI. Flashing **vbmeta** offers to disable verification and says what that needs.
@@ -149,7 +155,9 @@ KernelSU) out of an OTA in seconds.
 A native port of AOSP's libsparse and liblp: the Linux image tools, inside the app.
 
 - **Inspect** any image: sparse or raw, super, ext4, EROFS, F2FS, boot, vendor_boot,
-  vbmeta, DTBO — with size, block counts and checksums.
+  vbmeta, DTBO — with size, block counts and checksums. For a boot or init_boot image:
+  kernel version and KMI, Android version, security patch, compression, and whether it is
+  patched with Magisk, KernelSU or APatch.
 - **Sparse → raw** (`simg2img`), including split `*_sparsechunk.N` parts, with CRC-32 checks.
 - **Raw → sparse** (`img2simg`) and **split into parts** (`simg2simg`),
   byte-identical to the AOSP tools.

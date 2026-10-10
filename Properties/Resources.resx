@@ -1682,4 +1682,106 @@ adb shell needs a command after it, e.g. adb shell getprop; Stop ends anything s
   <data name="terminal_wipe" xml:space="preserve">
     <value>This command erases the user data on the phone (apps, photos, files). Run it?</value>
   </data>
+  <data name="boot_check_title" xml:space="preserve">
+    <value>Check before flashing {0}</value>
+  </data>
+  <data name="boot_check_failed" xml:space="preserve">
+    <value>The image could not be read: {0}</value>
+  </data>
+  <data name="boot_find_not_boot" xml:space="preserve">
+    <value>This file is not a boot image, but {0} holds one. Flashing it here will most likely stop the phone from starting.</value>
+  </data>
+  <data name="boot_find_no_kernel" xml:space="preserve">
+    <value>This image has no kernel (it is an init_boot image, or made like one), but {0} must hold the kernel. The phone will not start.</value>
+  </data>
+  <data name="boot_find_no_kernel_hint" xml:space="preserve">
+    <value>This phone has {0}: that is where this image goes.</value>
+  </data>
+  <data name="boot_find_kernel_in_init_boot" xml:space="preserve">
+    <value>This image carries a kernel, but {0} holds only the ramdisk. An image with a kernel is meant for boot.</value>
+  </data>
+  <data name="boot_find_vendor_mismatch" xml:space="preserve">
+    <value>This image does not belong in {0}: vendor_boot images go to vendor_boot, and boot images never do.</value>
+  </data>
+  <data name="boot_find_kmi" xml:space="preserve">
+    <value>The kernel is built for {0}, but the phone runs {1}. A kernel made for another KMI does not start: the phone will boot-loop.</value>
+  </data>
+  <data name="boot_find_kernel_version" xml:space="preserve">
+    <value>The kernel is version {0}, but the phone runs {1}. It may not start.</value>
+  </data>
+  <data name="boot_find_older_patch" xml:space="preserve">
+    <value>The image's security patch ({0}) is older than the phone's ({1}). Some phones refuse to start it, or lose keys kept in the keystore (fingerprints, some app logins).</value>
+  </data>
+  <data name="boot_find_kernel" xml:space="preserve">
+    <value>Kernel: {0}</value>
+  </data>
+  <data name="boot_find_root" xml:space="preserve">
+    <value>Root: {0}</value>
+  </data>
+  <data name="boot_find_stock" xml:space="preserve">
+    <value>Not rooted (stock image).</value>
+  </data>
+  <data name="boot_check_phone_unknown" xml:space="preserve">
+    <value>Tip: open this phone once on the Backup page while Android is running, and its kernel and security patch are checked here too.</value>
+  </data>
+  <data name="boot_check_phone_known" xml:space="preserve">
+    <value>Compared with what {0} reported over adb on {1}.</value>
+  </data>
+  <data name="boot_check_question" xml:space="preserve">
+    <value>Flash it to {0} anyway?</value>
+  </data>
+  <data name="images_row_header" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="images_header_detail" xml:space="preserve">
+    <value>version {0}, page {1}</value>
+  </data>
+  <data name="images_row_android" xml:space="preserve">
+    <value>Android</value>
+  </data>
+  <data name="images_row_patch" xml:space="preserve">
+    <value>Security patch</value>
+  </data>
+  <data name="images_row_kernel" xml:space="preserve">
+    <value>Kernel</value>
+  </data>
+  <data name="images_row_kmi" xml:space="preserve">
+    <value>KMI</value>
+  </data>
+  <data name="images_kmi_none" xml:space="preserve">
+    <value>not GKI</value>
+  </data>
+  <data name="images_row_kernel_compression" xml:space="preserve">
+    <value>Kernel compression</value>
+  </data>
+  <data name="images_kernel_unreadable" xml:space="preserve">
+    <value>{0} (not readable)</value>
+  </data>
+  <data name="images_kernel_no_banner" xml:space="preserve">
+    <value>no version found</value>
+  </data>
+  <data name="images_no_kernel" xml:space="preserve">
+    <value>none (init_boot)</value>
+  </data>
+  <data name="images_row_ramdisk" xml:space="preserve">
+    <value>Ramdisk</value>
+  </data>
+  <data name="images_ramdisk_detail" xml:space="preserve">
+    <value>{0}, {1} files</value>
+  </data>
+  <data name="images_row_root" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="images_root_none" xml:space="preserve">
+    <value>none (stock)</value>
+  </data>
+  <data name="images_row_cmdline" xml:space="preserve">
+    <value>Command line</value>
+  </data>
+  <data name="fastboot_row_adb_kernel" xml:space="preserve">
+    <value>Kernel (last seen over adb)</value>
+  </data>
+  <data name="fastboot_row_adb_patch" xml:space="preserve">
+    <value>Security patch (over adb)</value>
+  </data>
 </root>

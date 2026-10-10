@@ -489,8 +489,37 @@ namespace FastbootEnhance
             if (device != null && device.Usable)
             {
                 log("ADB device " + device.Serial + " (" + device.State + (device.Model != null ? ", " + device.Model : "") + ")");
+                if (device.State == "device")
+                    rememberFacts(device.Serial);
                 openFolder("/sdcard");
             }
+        }
+
+        /// <summary>
+        /// Notes the phone's kernel and security patch, which fastboot cannot read, so the
+        /// device page can check a boot image against them later. Runs in the background and
+        /// never gets in the way: a phone that does not answer is simply not remembered.
+        /// </summary>
+        static void rememberFacts(string serial)
+        {
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    Adb.Result result = Adb.Run(AdbCommand.Shell(serial, DeviceFacts.Command), Adb.ShortCommand);
+                    if (!result.Succeeded)
+                        return;
+                    DeviceFacts facts = DeviceFacts.Parse(serial, result.Output, DateTime.UtcNow);
+                    if (facts.Empty)
+                        return;
+                    Settings.Set(FastbootUI.DeviceFactsKey, DeviceFacts.Remember(Settings.Get(FastbootUI.DeviceFactsKey), facts));
+                    log("ADB device " + serial + ": kernel " + (facts.Kernel ?? "?") + ", security patch " + (facts.Patch ?? "?"));
+                }
+                catch (Exception e)
+                {
+                    log("ADB device " + serial + ": kernel not read: " + e.Message);
+                }
+            });
         }
 
         static void showDevice()
