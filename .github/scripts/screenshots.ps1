@@ -777,6 +777,48 @@ if (Test-Path $superPart) {
     Write-Host "build super: layout imported, 5 unpacked images found, rebuilt super matches the original byte for byte"
 }
 
+# ---------------------------------------------------------------- root
+# The four steps with a phone running Android: the stock boot image is read, sent to
+# Download, "patched" by the stand-in root app (it hands back the Magisk sample), pulled and
+# checked, then written to boot from the bootloader after the partition name is typed.
+$stockBoot = Join-Path (Split-Path $Payload) 'boot-gki-stock-sample.img'
+if (Test-Path $stockBoot) {
+    $adbPatched = Join-Path $appDir 'fake-adb.patched'
+    Set-Content $adbMode 'android'
+    Set-Content $adbPatched (Join-Path (Split-Path $Payload) 'boot-gki-sample.img')
+    function Text-Of([string] $id) { return (By-Id $root $id).Current.Name }
+
+    Go 'root_tab' | Out-Null
+    Press 'root_pick'
+    Choose-File $stockBoot "the stock image dialog"
+    Wait-For { (Text-Of 'root_image_text') -match 'android13-5\.15' } 30 "the stock image to be read" | Out-Null
+    Press 'root_push'
+    Wait-For { (Text-Of 'root_push_text') -match 'fbstudio_boot\.img' } 30 "the image to reach the phone" | Out-Null
+    Press 'root_pull'
+    Wait-For { (Text-Of 'root_pull_text') -match 'magisk_patched' } 30 "the patched image to come back" | Out-Null
+    if ((Text-Of 'root_pull_text') -notmatch 'Magisk') { Fail "the patched image was not recognised as Magisk" }
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-root-patched' -f $i); $i++
+
+    $rootFlashesBefore = Fastboot-Log 'flash boot .*magisk_patched'
+    Press 'root_flash'
+    $rootAsk = Wait-For { Find-Dialog } 20 "the root flash confirmation"
+    Start-Sleep -Milliseconds 600
+    $rootYes = Dialog-Button $rootAsk 'Yes'
+    if ($null -eq $rootYes -or $rootYes.Current.IsEnabled) { Fail "the root flash went ahead without the partition name" }
+    $rootBox = Wait-For { $rootAsk.FindFirst($Scope::Descendants, (New-Object System.Windows.Automation.PropertyCondition($UIA::ControlTypeProperty, $Type::Edit))) } 10 "the name box"
+    $rootBox.GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('boot')
+    Wait-For { $rootYes.Current.IsEnabled } 5 "Yes once boot is typed" | Out-Null
+    Answer-Dialog $rootAsk 'Yes'
+    $rootDone = Wait-For { Find-Dialog } 120 "the root flash to finish"
+    Start-Sleep -Milliseconds 600
+    Save-Window ('{0:D2}-root-flashed' -f $i); $i++
+    Answer-Dialog $rootDone 'No'
+    if ((Fastboot-Log 'flash boot .*magisk_patched') -ne $rootFlashesBefore + 1) { Fail "the patched image was not flashed to boot exactly once" }
+    Remove-Item $adbMode, $adbPatched -ErrorAction SilentlyContinue
+    Write-Host "root: stock boot sent, Magisk image pulled and checked, flashed to boot"
+}
+
 # ---------------------------------------------------------------- terminal
 # A command typed in the Terminal runs with the bundled fastboot and shows its output; one
 # that erases a boot-chain partition asks for the name first, and answering No runs nothing.

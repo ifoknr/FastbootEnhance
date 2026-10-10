@@ -109,6 +109,18 @@ namespace FastbootEnhance.Core.Adb
             return "-s " + WindowsArgument(serial) + " exec-out " + WindowsArgument(deviceCommand);
         }
 
+        /// <summary>Arguments for "adb -s SERIAL push LOCAL REMOTE".</summary>
+        public static string Push(string serial, string local, string remote)
+        {
+            return "-s " + WindowsArgument(serial) + " push " + WindowsArgument(local) + " " + WindowsArgument(remote);
+        }
+
+        /// <summary>Arguments for "adb -s SERIAL reboot TARGET" (bootloader, recovery, or "" for the system).</summary>
+        public static string Reboot(string serial, string target)
+        {
+            return "-s " + WindowsArgument(serial) + " reboot" + (string.IsNullOrEmpty(target) ? "" : " " + target);
+        }
+
         /// <summary>Arguments for "adb -s SERIAL pull -a REMOTE LOCAL".</summary>
         public static string Pull(string serial, string remote, string local)
         {

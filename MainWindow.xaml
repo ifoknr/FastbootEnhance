@@ -1062,6 +1062,97 @@
 
         <!-- ============================== Logs ============================== -->
         <!-- ============================== Terminal ============================== -->
+        <TabItem x:Name="root_tab" Header="{x:Static props:Resources.nav_root}" Tag="{StaticResource IconRoot}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Border Style="{StaticResource PageHeader}">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="root_open_folder" Style="{StaticResource GhostButton}" IsEnabled="False"
+                                    Content="{x:Static props:Resources.root_open_folder}"/>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="{x:Static props:Resources.nav_root}"/>
+                            <TextBlock Style="{StaticResource PageSubtitle}" Text="{x:Static props:Resources.root_subtitle}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="28,16,28,20">
+
+                        <!-- 1: the app and the stock image -->
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.root_step1}"/>
+                                <TextBlock Style="{StaticResource Note}" Margin="0,4,0,10" Text="{x:Static props:Resources.root_step1_note}"/>
+                                <WrapPanel x:Name="root_tools" FlowDirection="LeftToRight" Margin="0,0,0,6">
+                                    <RadioButton x:Name="root_tool_magisk" Style="{StaticResource Segment}" GroupName="root_tool" Content="Magisk" IsChecked="True"/>
+                                    <RadioButton x:Name="root_tool_kernelsu" Style="{StaticResource Segment}" GroupName="root_tool" Content="KernelSU"/>
+                                    <RadioButton x:Name="root_tool_apatch" Style="{StaticResource Segment}" GroupName="root_tool" Content="APatch"/>
+                                </WrapPanel>
+                                <DockPanel>
+                                    <Button x:Name="root_pick" DockPanel.Dock="Left" Style="{StaticResource AccentButton}" MinWidth="190"
+                                            Content="{x:Static props:Resources.root_pick}"/>
+                                    <TextBlock x:Name="root_image_text" Style="{StaticResource Note}" Margin="14,0,0,0" VerticalAlignment="Center"
+                                               TextWrapping="Wrap"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 2: send it to the phone -->
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.root_step2}"/>
+                                <TextBlock x:Name="root_step2_note" Style="{StaticResource Note}" Margin="0,4,0,10"/>
+                                <DockPanel>
+                                    <Button x:Name="root_push" DockPanel.Dock="Left" MinWidth="190" IsEnabled="False"
+                                            Content="{x:Static props:Resources.root_push}"/>
+                                    <TextBlock x:Name="root_push_text" Style="{StaticResource Note}" Margin="14,0,0,0" VerticalAlignment="Center"
+                                               TextWrapping="Wrap"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 3: patch it in the root app, then bring it back -->
+                        <Border Style="{StaticResource Card}" Padding="20,16" Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.root_step3}"/>
+                                <TextBlock x:Name="root_how" Style="{StaticResource Note}" Margin="0,4,0,10"/>
+                                <DockPanel>
+                                    <Button x:Name="root_pull" DockPanel.Dock="Left" MinWidth="190" IsEnabled="False"
+                                            Content="{x:Static props:Resources.root_pull}"/>
+                                    <TextBlock x:Name="root_pull_text" Style="{StaticResource Note}" Margin="14,0,0,0" VerticalAlignment="Center"
+                                               TextWrapping="Wrap"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 4: flash -->
+                        <Border Style="{StaticResource Card}" Padding="20,16">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource CardTitle}" Text="{x:Static props:Resources.root_step4}"/>
+                                <TextBlock x:Name="root_step4_note" Style="{StaticResource Note}" Margin="0,4,0,10"/>
+                                <WrapPanel>
+                                    <Button x:Name="root_flash" Style="{StaticResource AccentButton}" MinWidth="190" Margin="0,0,10,0" IsEnabled="False"
+                                            Content="{x:Static props:Resources.root_flash}"/>
+                                    <Button x:Name="root_boot_once" MinWidth="150" IsEnabled="False" Visibility="Collapsed"
+                                            Content="{x:Static props:Resources.root_boot_once}"
+                                            ToolTip="{x:Static props:Resources.root_boot_once_note}"/>
+                                </WrapPanel>
+                                <TextBlock x:Name="root_flash_text" Style="{StaticResource Note}" Margin="0,10,0,0" TextWrapping="Wrap"
+                                           Foreground="{StaticResource Accent}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </TabItem>
+
         <TabItem x:Name="terminal_tab" Header="{x:Static props:Resources.nav_terminal}" Tag="{StaticResource IconTerminal}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -1155,7 +1246,7 @@
                         </Border>
                         <StackPanel Grid.Column="1" Margin="26,4,0,0">
                             <TextBlock Text="Fastboot Studio" FontSize="22" FontWeight="SemiBold"/>
-                            <TextBlock Text="v2.3.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
+                            <TextBlock Text="v2.4.0" FontFamily="{StaticResource Mono}" Foreground="{StaticResource Dim}" Margin="0,2,0,10"/>
                             <TextBlock Style="{StaticResource Note}" Margin="0,0,0,20" Text="{x:Static props:Resources.about_engine}"/>
 
                             <TextBlock Style="{StaticResource SectionLabel}" Text="{x:Static props:Resources.about_developer}"/>

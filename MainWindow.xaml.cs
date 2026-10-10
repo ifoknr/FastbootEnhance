@@ -11,7 +11,7 @@ namespace FastbootEnhance
     public partial class MainWindow : Window
     {
         public static MainWindow THIS;
-        const string version = "2.3.0";
+        const string version = "2.4.0";
 
         public MainWindow()
         {
@@ -53,6 +53,7 @@ namespace FastbootEnhance
             wireLogs();
             wireLanguages();
             wireThemes();
+            RootUI.init();
             TerminalUI.init();
 
             // Closing mid-flash kills the worker between partitions and can leave the phone

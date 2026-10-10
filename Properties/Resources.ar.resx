@@ -1814,4 +1814,150 @@ adb shell يحتاج أمر بعده، مثل adb shell getprop. وزر إيقا
   <data name="boot_find_root_change" xml:space="preserve">
     <value>الصورة مروّتة بـ {0}، بس الجوال يستخدم {1}. مودات وإعدادات {1} ما بتشتغل بعد التفليش.</value>
   </data>
+  <data name="nav_root" xml:space="preserve">
+    <value>روت</value>
+  </data>
+  <data name="root_subtitle" xml:space="preserve">
+    <value>روّت جوالك بـ Magisk أو KernelSU أو APatch خطوة بخطوة</value>
+  </data>
+  <data name="root_step1" xml:space="preserve">
+    <value>١ · تطبيق الروت والصورة الأصلية</value>
+  </data>
+  <data name="root_step1_note" xml:space="preserve">
+    <value>اختار تطبيق الروت، وبعدها الصورة الأصلية للروم اللي على جوالك الحين: boot.img أو init_boot.img، أو التحديث كامل (payload.bin أو ملف zip) وأطلّع منه الصورة الصحيحة.</value>
+  </data>
+  <data name="root_pick" xml:space="preserve">
+    <value>اختيار الصورة أو التحديث…</value>
+  </data>
+  <data name="root_picking" xml:space="preserve">
+    <value>أقرأ…</value>
+  </data>
+  <data name="root_image_summary" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="root_image_stock" xml:space="preserve">
+    <value>أصلية، بدون روت</value>
+  </data>
+  <data name="root_image_rooted" xml:space="preserve">
+    <value>مروّتة من قبل: {0}</value>
+  </data>
+  <data name="root_needs_init_boot" xml:space="preserve">
+    <value>{0} يعدّل init_boot في الأجهزة اللي فيها هذا القسم (أندرويد 13 وما بعد). التحديث فيه init_boot، فاستخدمت هذه الصورة.</value>
+  </data>
+  <data name="root_not_boot" xml:space="preserve">
+    <value>هذا الملف مو صورة boot ولا init_boot.</value>
+  </data>
+  <data name="root_no_image_in_ota" xml:space="preserve">
+    <value>هذا التحديث ما فيه صورة boot ولا init_boot.</value>
+  </data>
+  <data name="root_already_rooted" xml:space="preserve">
+    <value>هذه الصورة معدّلة من قبل ({0}). عدّل الصورة الأصلية بدلها، من نفس الروم اللي على جوالك.</value>
+  </data>
+  <data name="root_apatch_kernel" xml:space="preserve">
+    <value>APatch يعدّل الكيرنل، وهو في boot: اختار boot.img (أو التحديث).</value>
+  </data>
+  <data name="root_step2" xml:space="preserve">
+    <value>٢ · أرسلها للجوال</value>
+  </data>
+  <data name="root_step2_note" xml:space="preserve">
+    <value>لازم الجوال يكون شغّال على أندرويد وتصحيح USB مفعّل. الصورة تنحفظ في مجلد Download باسم {0}.</value>
+  </data>
+  <data name="root_push" xml:space="preserve">
+    <value>إرسال للجوال</value>
+  </data>
+  <data name="root_no_adb" xml:space="preserve">
+    <value>ما لقيت جوال عبر adb. وصّله وهو شغّال على أندرويد وتصحيح USB مسموح.</value>
+  </data>
+  <data name="root_pushed" xml:space="preserve">
+    <value>انرسلت إلى {0} في {1}.</value>
+  </data>
+  <data name="root_push_failed" xml:space="preserve">
+    <value>ما قدرت أرسل الصورة: {0}</value>
+  </data>
+  <data name="root_step3" xml:space="preserve">
+    <value>٣ · عدّلها في الجوال</value>
+  </data>
+  <data name="root_how_magisk" xml:space="preserve">
+    <value>افتح Magisk ← Install ← Select and Patch a File ← Download ← {0} ← Let's go. لما يقول All done اضغط الزر تحت.</value>
+  </data>
+  <data name="root_how_kernelsu" xml:space="preserve">
+    <value>افتح KernelSU ← Install ← Select a file ← Download ← {0} ← Next. لما يخلص اضغط الزر تحت.</value>
+  </data>
+  <data name="root_how_apatch" xml:space="preserve">
+    <value>افتح APatch ← Patch ← Select a boot image ← Download ← {0}، حط super key ← Start. لما يخلص اضغط الزر تحت.</value>
+  </data>
+  <data name="root_pull" xml:space="preserve">
+    <value>جلب الصورة المعدّلة</value>
+  </data>
+  <data name="root_no_patched" xml:space="preserve">
+    <value>ما لقيت صورة معدّلة في Download من بعد ما أرسلت الأصلية. عدّلها في تطبيق الروت أول.</value>
+  </data>
+  <data name="root_pulled" xml:space="preserve">
+    <value>جبت {0}: {1}.</value>
+  </data>
+  <data name="root_patch_not_rooted" xml:space="preserve">
+    <value>ما لقيت روت في الصورة المعدّلة.</value>
+  </data>
+  <data name="root_patch_kind" xml:space="preserve">
+    <value>الصورة المعدّلة مو من نفس نوع الأصلية (وحدة فيها كيرنل والثانية لا).</value>
+  </data>
+  <data name="root_patch_kernel" xml:space="preserve">
+    <value>الصورة المعدّلة فيها كيرنل غير الأصلي: يمكن انعدّلت صورة ثانية.</value>
+  </data>
+  <data name="root_patch_problems" xml:space="preserve">
+    <value>الصورة المعدّلة شكلها مو سليم:</value>
+  </data>
+  <data name="root_step4" xml:space="preserve">
+    <value>٤ · فلّشها</value>
+  </data>
+  <data name="root_step4_note" xml:space="preserve">
+    <value>الجوال يعيد التشغيل للبوت لودر، والصورة المعدّلة تنكتب في {0} للخانة الشغّالة. لازم البوت لودر مفتوح. الصورة الأصلية تبقى في المجلد عشان ترجع لها بعدين.</value>
+  </data>
+  <data name="root_flash" xml:space="preserve">
+    <value>إعادة للبوت لودر وتفليش</value>
+  </data>
+  <data name="root_boot_once" xml:space="preserve">
+    <value>جرّبها مرة أول</value>
+  </data>
+  <data name="root_boot_once_note" xml:space="preserve">
+    <value>يشغّل الجوال مرة بالصورة المعدّلة بدون ما يكتبها. إذا اشتغل عادي فلّشها، أو خلّ تطبيق الروت يثبّت نفسه (Direct install).</value>
+  </data>
+  <data name="root_open_folder" xml:space="preserve">
+    <value>فتح المجلد</value>
+  </data>
+  <data name="root_confirm_flash" xml:space="preserve">
+    <value>تعيد تشغيل {0} للبوت لودر وتكتب {1} في {2}؟
+
+لازم البوت لودر مفتوح. إذا الجوال ما اشتغل بعدها، فلّش الصورة الأصلية من المجلد في {2} بنفس الطريقة.</value>
+  </data>
+  <data name="root_waiting_fastboot" xml:space="preserve">
+    <value>أنتظر الجوال في البوت لودر…</value>
+  </data>
+  <data name="root_no_fastboot" xml:space="preserve">
+    <value>الجوال ما ظهر في الفاست بوت خلال دقيقتين. تأكد من التعريف (صفحة الجهاز ← فحص USB)، وبعدها فلّش {0} من صفحة الجهاز.</value>
+  </data>
+  <data name="root_flashing" xml:space="preserve">
+    <value>أفلّش {0}…</value>
+  </data>
+  <data name="root_flash_failed" xml:space="preserve">
+    <value>التفليش فشل: {0}</value>
+  </data>
+  <data name="root_flashed" xml:space="preserve">
+    <value>{0} انفلّش بالصورة المعدّلة. تعيد تشغيل الجوال الحين؟</value>
+  </data>
+  <data name="root_done" xml:space="preserve">
+    <value>تم. لما يشتغل الجوال افتح تطبيق الروت، ممكن يطلب يكمّل الإعداد ويعيد التشغيل مرة ثانية.</value>
+  </data>
+  <data name="root_booting" xml:space="preserve">
+    <value>أشغّل الجوال مرة بالصورة المعدّلة…</value>
+  </data>
+  <data name="root_boot_failed" xml:space="preserve">
+    <value>ما قدرت أشغّل الصورة: {0}</value>
+  </data>
+  <data name="root_booted" xml:space="preserve">
+    <value>الجوال يشتغل بالصورة المعدّلة. إذا الروت شغّال فلّشها، أو استخدم Direct install في تطبيق الروت.</value>
+  </data>
+  <data name="root_image_patched" xml:space="preserve">
+    <value>معدّلة بـ {0}</value>
+  </data>
 </root>

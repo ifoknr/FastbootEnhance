@@ -4962,5 +4962,437 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("boot_find_root_change", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root.
+        /// </summary>
+        public static string nav_root {
+            get {
+                return ResourceManager.GetString("nav_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root the phone with Magisk, KernelSU or APatch, step by step.
+        /// </summary>
+        public static string root_subtitle {
+            get {
+                return ResourceManager.GetString("root_subtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 · The root app and the stock image.
+        /// </summary>
+        public static string root_step1 {
+            get {
+                return ResourceManager.GetString("root_step1", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pick the app you will root with, then the stock image of the firmware the phone runs now: boot.img or init_boot.img, or the whole OTA (payload.bin or the zip) and the right image is taken out of it..
+        /// </summary>
+        public static string root_step1_note {
+            get {
+                return ResourceManager.GetString("root_step1_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose image or OTA….
+        /// </summary>
+        public static string root_pick {
+            get {
+                return ResourceManager.GetString("root_pick", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reading….
+        /// </summary>
+        public static string root_picking {
+            get {
+                return ResourceManager.GetString("root_picking", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} · {1}.
+        /// </summary>
+        public static string root_image_summary {
+            get {
+                return ResourceManager.GetString("root_image_summary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to stock, not rooted.
+        /// </summary>
+        public static string root_image_stock {
+            get {
+                return ResourceManager.GetString("root_image_stock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to already rooted: {0}.
+        /// </summary>
+        public static string root_image_rooted {
+            get {
+                return ResourceManager.GetString("root_image_rooted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} patches init_boot on phones that have it (Android 13 and later). This OTA has init_boot, so that image is used..
+        /// </summary>
+        public static string root_needs_init_boot {
+            get {
+                return ResourceManager.GetString("root_needs_init_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a boot or init_boot image..
+        /// </summary>
+        public static string root_not_boot {
+            get {
+                return ResourceManager.GetString("root_not_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This OTA has no boot or init_boot image..
+        /// </summary>
+        public static string root_no_image_in_ota {
+            get {
+                return ResourceManager.GetString("root_no_image_in_ota", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This image is already patched ({0}). Patch the stock image instead, from the same firmware the phone runs..
+        /// </summary>
+        public static string root_already_rooted {
+            get {
+                return ResourceManager.GetString("root_already_rooted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to APatch patches the kernel, which is in boot: pick boot.img (or the OTA)..
+        /// </summary>
+        public static string root_apatch_kernel {
+            get {
+                return ResourceManager.GetString("root_apatch_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 2 · Send it to the phone.
+        /// </summary>
+        public static string root_step2 {
+            get {
+                return ResourceManager.GetString("root_step2", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone must be running Android with USB debugging on. The image goes to the Download folder as {0}..
+        /// </summary>
+        public static string root_step2_note {
+            get {
+                return ResourceManager.GetString("root_step2_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Send to phone.
+        /// </summary>
+        public static string root_push {
+            get {
+                return ResourceManager.GetString("root_push", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No phone found over adb. Connect it with Android running and USB debugging allowed..
+        /// </summary>
+        public static string root_no_adb {
+            get {
+                return ResourceManager.GetString("root_no_adb", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sent to {0} on {1}..
+        /// </summary>
+        public static string root_pushed {
+            get {
+                return ResourceManager.GetString("root_pushed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not send the image: {0}.
+        /// </summary>
+        public static string root_push_failed {
+            get {
+                return ResourceManager.GetString("root_push_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 3 · Patch it on the phone.
+        /// </summary>
+        public static string root_step3 {
+            get {
+                return ResourceManager.GetString("root_step3", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open Magisk → Install → Select and Patch a File → Download → {0} → Let's go. When it says All done, press the button below..
+        /// </summary>
+        public static string root_how_magisk {
+            get {
+                return ResourceManager.GetString("root_how_magisk", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open KernelSU → Install → Select a file → Download → {0} → Next. When it finishes, press the button below..
+        /// </summary>
+        public static string root_how_kernelsu {
+            get {
+                return ResourceManager.GetString("root_how_kernelsu", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open APatch → Patch (the install button) → Select a boot image → Download → {0}, set a super key → Start. When it finishes, press the button below..
+        /// </summary>
+        public static string root_how_apatch {
+            get {
+                return ResourceManager.GetString("root_how_apatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Get the patched image.
+        /// </summary>
+        public static string root_pull {
+            get {
+                return ResourceManager.GetString("root_pull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No patched image found in Download since the stock one was sent. Patch it in the root app first..
+        /// </summary>
+        public static string root_no_patched {
+            get {
+                return ResourceManager.GetString("root_no_patched", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Got {0}: {1}..
+        /// </summary>
+        public static string root_pulled {
+            get {
+                return ResourceManager.GetString("root_pulled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No root was found in the patched image..
+        /// </summary>
+        public static string root_patch_not_rooted {
+            get {
+                return ResourceManager.GetString("root_patch_not_rooted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The patched image is not the same kind as the stock one (one has a kernel, the other not)..
+        /// </summary>
+        public static string root_patch_kind {
+            get {
+                return ResourceManager.GetString("root_patch_kind", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The patched image has another kernel than the stock one: a different image may have been patched..
+        /// </summary>
+        public static string root_patch_kernel {
+            get {
+                return ResourceManager.GetString("root_patch_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This patched image does not look right:.
+        /// </summary>
+        public static string root_patch_problems {
+            get {
+                return ResourceManager.GetString("root_patch_problems", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 4 · Flash it.
+        /// </summary>
+        public static string root_step4 {
+            get {
+                return ResourceManager.GetString("root_step4", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone restarts to the bootloader and the patched image is written to {0} of the active slot. The bootloader must be unlocked. The stock image stays in the folder, to undo it later..
+        /// </summary>
+        public static string root_step4_note {
+            get {
+                return ResourceManager.GetString("root_step4_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restart to bootloader and flash.
+        /// </summary>
+        public static string root_flash {
+            get {
+                return ResourceManager.GetString("root_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Try it once first.
+        /// </summary>
+        public static string root_boot_once {
+            get {
+                return ResourceManager.GetString("root_boot_once", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Starts the phone once with the patched boot image without writing it. If it starts fine, flash it, or let the root app install itself (Direct install)..
+        /// </summary>
+        public static string root_boot_once_note {
+            get {
+                return ResourceManager.GetString("root_boot_once_note", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open folder.
+        /// </summary>
+        public static string root_open_folder {
+            get {
+                return ResourceManager.GetString("root_open_folder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Restart {0} to the bootloader and write {1} to {2}?  The bootloader must be unlocked. If the phone does not start afterwards, flash the stock image from the folder to {2} the same way..
+        /// </summary>
+        public static string root_confirm_flash {
+            get {
+                return ResourceManager.GetString("root_confirm_flash", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for the phone in the bootloader….
+        /// </summary>
+        public static string root_waiting_fastboot {
+            get {
+                return ResourceManager.GetString("root_waiting_fastboot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone did not show up in fastboot within two minutes. Check the driver (Device page → USB check), then flash {0} from the Device page..
+        /// </summary>
+        public static string root_no_fastboot {
+            get {
+                return ResourceManager.GetString("root_no_fastboot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing {0}….
+        /// </summary>
+        public static string root_flashing {
+            get {
+                return ResourceManager.GetString("root_flashing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flashing failed: {0}.
+        /// </summary>
+        public static string root_flash_failed {
+            get {
+                return ResourceManager.GetString("root_flash_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is flashed with the patched image. Restart the phone now?.
+        /// </summary>
+        public static string root_flashed {
+            get {
+                return ResourceManager.GetString("root_flashed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Done. When the phone starts, open the root app: it may ask to finish the setup and restart once more..
+        /// </summary>
+        public static string root_done {
+            get {
+                return ResourceManager.GetString("root_done", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Starting the phone once with the patched image….
+        /// </summary>
+        public static string root_booting {
+            get {
+                return ResourceManager.GetString("root_booting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not start the image: {0}.
+        /// </summary>
+        public static string root_boot_failed {
+            get {
+                return ResourceManager.GetString("root_boot_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The phone is starting with the patched image. If root works, flash it, or use Direct install in the root app..
+        /// </summary>
+        public static string root_booted {
+            get {
+                return ResourceManager.GetString("root_booted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to patched with {0}.
+        /// </summary>
+        public static string root_image_patched {
+            get {
+                return ResourceManager.GetString("root_image_patched", resourceCulture);
+            }
+        }
     }
 }

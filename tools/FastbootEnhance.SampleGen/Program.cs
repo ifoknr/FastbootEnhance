@@ -100,16 +100,18 @@ namespace FastbootEnhance.SampleGen
 
             WriteSuper(outDir);
             WriteRecoveryImage(outDir);
-            WriteGkiBootImage(outDir);
+            WriteGkiBootImage(outDir, "boot-gki-sample.img", true);
+            WriteGkiBootImage(outDir, "boot-gki-stock-sample.img", false);
             return 0;
         }
 
         /// <summary>
         /// A GKI-style boot image (header v4) the way the Image Tools page and the flash check
         /// read it: an uncompressed arm64 kernel with its version banner (android13-5.15), a
-        /// gzip ramdisk patched by Magisk, and an AVB footer carrying the security patch.
+        /// gzip ramdisk (stock, or as Magisk patches it), and an AVB footer carrying the
+        /// security patch. The stock and patched pair is what the Root page sends and gets back.
         /// </summary>
-        static void WriteGkiBootImage(string outDir)
+        static void WriteGkiBootImage(string outDir, string fileName, bool magisk)
         {
             System.Text.Encoding ascii = System.Text.Encoding.ASCII;
             MemoryStream kernel = new MemoryStream();
@@ -132,8 +134,12 @@ namespace FastbootEnhance.SampleGen
                 while (cpio.Length % 4 != 0)
                     cpio.WriteByte(0);
             }
-            foreach (string name in new[] { "init", ".backup/.magisk", ".backup/init", "overlay.d/sbin/magisk64.xz", "TRAILER!!!" })
+            string[] files = magisk
+                ? new[] { "init", ".backup/.magisk", ".backup/init", "overlay.d/sbin/magisk64.xz" }
+                : new[] { "init", "system/bin/init", "first_stage_ramdisk/fstab.qcom" };
+            foreach (string name in files)
                 Entry(name);
+            Entry("TRAILER!!!");
             MemoryStream ramdisk = new MemoryStream();
             using (System.IO.Compression.GZipStream gz = new System.IO.Compression.GZipStream(ramdisk, System.IO.Compression.CompressionLevel.Optimal, true))
                 cpio.WriteTo(gz);
@@ -177,7 +183,7 @@ namespace FastbootEnhance.SampleGen
             }
             image.Write(footer, 0, footer.Length);
 
-            string path = Path.Combine(outDir, "boot-gki-sample.img");
+            string path = Path.Combine(outDir, fileName);
             File.WriteAllBytes(path, image.ToArray());
             Console.WriteLine("wrote " + path);
         }

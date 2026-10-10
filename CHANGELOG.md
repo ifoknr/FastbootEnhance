@@ -5,6 +5,7 @@
 <!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
 
 ## v2.4.0
+- صفحة «روت» جديدة: Magisk و KernelSU و APatch في أربع خطوات
 - فحص صورة الإقلاع قبل التفليش: يمنع init_boot في boot وصورة boot في vendor_boot
 - يقرأ إصدار الكيرنل والـ KMI ومستوى الحماية ويحذّر لو ما تناسب جوالك
 - يكشف الروت في الصورة: Magisk و KernelSU و APatch و SuSFS
