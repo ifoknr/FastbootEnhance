@@ -205,7 +205,7 @@ namespace FastbootEnhance
         }
 
         /// <summary>"init_boot.img · Android 14 · 2024-09 · android14-6.1 · stock".</summary>
-        static string describe(string name, BootImageAnalysis image)
+        static string describe(string name, BootImageAnalysis image, bool patched = false)
         {
             List<string> parts = new List<string> { name + ".img" };
             if (image.OsVersion != null)
@@ -217,7 +217,8 @@ namespace FastbootEnhance
             else if (image.Kernel?.Release != null)
                 parts.Add(image.Kernel.Release);
             parts.Add(image.Root == RootKind.None ? Properties.Resources.root_image_stock
-                : string.Format(Properties.Resources.root_image_rooted, BootFlashCheck.RootName(image.Root, image.Kernel?.SuSFS ?? false)));
+                : string.Format(patched ? Properties.Resources.root_image_patched : Properties.Resources.root_image_rooted,
+                    BootFlashCheck.RootName(image.Root, image.Kernel?.SuSFS ?? false)));
             return Helper.ltr(string.Join("  ·  ", parts));
         }
 
@@ -318,7 +319,7 @@ namespace FastbootEnhance
                     return;
                 }
                 patchedPath = local;
-                W.root_pull_text.Text = string.Format(Properties.Resources.root_pulled, Helper.ltr(found.Name), describe(partition, patched));
+                W.root_pull_text.Text = string.Format(Properties.Resources.root_pulled, Helper.ltr(found.Name), describe(partition, patched, true));
             });
         }
 

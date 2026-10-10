@@ -1927,4 +1927,7 @@ The bootloader must be unlocked. If the phone does not start afterwards, flash t
   <data name="root_booted" xml:space="preserve">
     <value>The phone is starting with the patched image. If root works, flash it, or use Direct install in the root app.</value>
   </data>
+  <data name="root_image_patched" xml:space="preserve">
+    <value>patched with {0}</value>
+  </data>
 </root>

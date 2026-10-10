@@ -5295,5 +5295,14 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("root_booted", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to patched with {0}.
+        /// </summary>
+        public static string root_image_patched {
+            get {
+                return ResourceManager.GetString("root_image_patched", resourceCulture);
+            }
+        }
     }
 }

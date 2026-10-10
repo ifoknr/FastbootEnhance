@@ -1927,4 +1927,7 @@ adb shell يحتاج أمر بعده، مثل adb shell getprop. وزر إيقا
   <data name="root_booted" xml:space="preserve">
     <value>الجوال يشتغل بالصورة المعدّلة. إذا الروت شغّال فلّشها، أو استخدم Direct install في تطبيق الروت.</value>
   </data>
+  <data name="root_image_patched" xml:space="preserve">
+    <value>معدّلة بـ {0}</value>
+  </data>
 </root>
