@@ -25,6 +25,10 @@ nothing to install.
 > 🆕 **A new version.** Fastboot Studio is the new generation of Fastboot Enhance: a new
 > interface from top to bottom, new pages, and more protection for the phone.
 >
+> **New in 2.4:**
+> - A **Root** page: Magisk, KernelSU or APatch in four steps, with the right image (boot or init_boot) picked for you.
+> - Boot images are read before flashing: kernel, KMI, security patch and root, with a stop on the usual bricks.
+>
 > **New in 2.3:**
 > - Light and dark appearance (or as Windows).
 > - A **Terminal** page for your own adb and fastboot commands, with the same safety questions.
@@ -215,6 +219,26 @@ Backs up the phone over adb, from Android (USB debugging) or a custom recovery.
 persist) before you unlock, root or flash.
 
 <br clear="right">
+
+### 🔓 Root
+
+Root the phone with **Magisk**, **KernelSU** (LKM) or **APatch**, in four steps:
+
+1. **The stock image:** pick `boot.img`, `init_boot.img` or the whole OTA. From an OTA the
+   right image is taken out: init_boot for Magisk and KernelSU on phones that have it
+   (Android 13+), boot otherwise and always for APatch. Kernel, KMI and patch level are shown;
+   an image that is already patched is refused.
+2. **Send it to the phone** (Download folder, over adb).
+3. **Patch it** in the root app, following the steps shown, then **get the patched image**:
+   the newest `*patched*.img` in Download is pulled and checked (root found, same kind of
+   image, same kernel).
+4. **Flash it:** the phone restarts to the bootloader and the image is written to the active
+   slot after you type the partition name. For boot, **Try it once first** starts the phone
+   with it without writing anything.
+
+The stock image stays in `Documents\Fastboot Studio\Root`, to undo it.
+
+**Why it helps:** no wrong image, no wrong partition, no hunting for the patched file.
 
 ### 🖥️ Terminal
 

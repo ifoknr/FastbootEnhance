@@ -1784,4 +1784,147 @@ adb shell needs a command after it, e.g. adb shell getprop; Stop ends anything s
   <data name="fastboot_row_adb_patch" xml:space="preserve">
     <value>Security patch (over adb)</value>
   </data>
+  <data name="nav_root" xml:space="preserve">
+    <value>Root</value>
+  </data>
+  <data name="root_subtitle" xml:space="preserve">
+    <value>Root the phone with Magisk, KernelSU or APatch, step by step</value>
+  </data>
+  <data name="root_step1" xml:space="preserve">
+    <value>1 · The root app and the stock image</value>
+  </data>
+  <data name="root_step1_note" xml:space="preserve">
+    <value>Pick the app you will root with, then the stock image of the firmware the phone runs now: boot.img or init_boot.img, or the whole OTA (payload.bin or the zip) and the right image is taken out of it.</value>
+  </data>
+  <data name="root_pick" xml:space="preserve">
+    <value>Choose image or OTA…</value>
+  </data>
+  <data name="root_picking" xml:space="preserve">
+    <value>Reading…</value>
+  </data>
+  <data name="root_image_summary" xml:space="preserve">
+    <value>{0} · {1}</value>
+  </data>
+  <data name="root_image_stock" xml:space="preserve">
+    <value>stock, not rooted</value>
+  </data>
+  <data name="root_image_rooted" xml:space="preserve">
+    <value>already rooted: {0}</value>
+  </data>
+  <data name="root_needs_init_boot" xml:space="preserve">
+    <value>{0} patches init_boot on phones that have it (Android 13 and later). This OTA has init_boot, so that image is used.</value>
+  </data>
+  <data name="root_not_boot" xml:space="preserve">
+    <value>This file is not a boot or init_boot image.</value>
+  </data>
+  <data name="root_no_image_in_ota" xml:space="preserve">
+    <value>This OTA has no boot or init_boot image.</value>
+  </data>
+  <data name="root_already_rooted" xml:space="preserve">
+    <value>This image is already patched ({0}). Patch the stock image instead, from the same firmware the phone runs.</value>
+  </data>
+  <data name="root_apatch_kernel" xml:space="preserve">
+    <value>APatch patches the kernel, which is in boot: pick boot.img (or the OTA).</value>
+  </data>
+  <data name="root_step2" xml:space="preserve">
+    <value>2 · Send it to the phone</value>
+  </data>
+  <data name="root_step2_note" xml:space="preserve">
+    <value>The phone must be running Android with USB debugging on. The image goes to the Download folder as {0}.</value>
+  </data>
+  <data name="root_push" xml:space="preserve">
+    <value>Send to phone</value>
+  </data>
+  <data name="root_no_adb" xml:space="preserve">
+    <value>No phone found over adb. Connect it with Android running and USB debugging allowed.</value>
+  </data>
+  <data name="root_pushed" xml:space="preserve">
+    <value>Sent to {0} on {1}.</value>
+  </data>
+  <data name="root_push_failed" xml:space="preserve">
+    <value>Could not send the image: {0}</value>
+  </data>
+  <data name="root_step3" xml:space="preserve">
+    <value>3 · Patch it on the phone</value>
+  </data>
+  <data name="root_how_magisk" xml:space="preserve">
+    <value>Open Magisk → Install → Select and Patch a File → Download → {0} → Let's go. When it says All done, press the button below.</value>
+  </data>
+  <data name="root_how_kernelsu" xml:space="preserve">
+    <value>Open KernelSU → Install → Select a file → Download → {0} → Next. When it finishes, press the button below.</value>
+  </data>
+  <data name="root_how_apatch" xml:space="preserve">
+    <value>Open APatch → Patch (the install button) → Select a boot image → Download → {0}, set a super key → Start. When it finishes, press the button below.</value>
+  </data>
+  <data name="root_pull" xml:space="preserve">
+    <value>Get the patched image</value>
+  </data>
+  <data name="root_no_patched" xml:space="preserve">
+    <value>No patched image found in Download since the stock one was sent. Patch it in the root app first.</value>
+  </data>
+  <data name="root_pulled" xml:space="preserve">
+    <value>Got {0}: {1}.</value>
+  </data>
+  <data name="root_patch_not_rooted" xml:space="preserve">
+    <value>No root was found in the patched image.</value>
+  </data>
+  <data name="root_patch_kind" xml:space="preserve">
+    <value>The patched image is not the same kind as the stock one (one has a kernel, the other not).</value>
+  </data>
+  <data name="root_patch_kernel" xml:space="preserve">
+    <value>The patched image has another kernel than the stock one: a different image may have been patched.</value>
+  </data>
+  <data name="root_patch_problems" xml:space="preserve">
+    <value>This patched image does not look right:</value>
+  </data>
+  <data name="root_step4" xml:space="preserve">
+    <value>4 · Flash it</value>
+  </data>
+  <data name="root_step4_note" xml:space="preserve">
+    <value>The phone restarts to the bootloader and the patched image is written to {0} of the active slot. The bootloader must be unlocked. The stock image stays in the folder, to undo it later.</value>
+  </data>
+  <data name="root_flash" xml:space="preserve">
+    <value>Restart to bootloader and flash</value>
+  </data>
+  <data name="root_boot_once" xml:space="preserve">
+    <value>Try it once first</value>
+  </data>
+  <data name="root_boot_once_note" xml:space="preserve">
+    <value>Starts the phone once with the patched boot image without writing it. If it starts fine, flash it, or let the root app install itself (Direct install).</value>
+  </data>
+  <data name="root_open_folder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="root_confirm_flash" xml:space="preserve">
+    <value>Restart {0} to the bootloader and write {1} to {2}?
+
+The bootloader must be unlocked. If the phone does not start afterwards, flash the stock image from the folder to {2} the same way.</value>
+  </data>
+  <data name="root_waiting_fastboot" xml:space="preserve">
+    <value>Waiting for the phone in the bootloader…</value>
+  </data>
+  <data name="root_no_fastboot" xml:space="preserve">
+    <value>The phone did not show up in fastboot within two minutes. Check the driver (Device page → USB check), then flash {0} from the Device page.</value>
+  </data>
+  <data name="root_flashing" xml:space="preserve">
+    <value>Flashing {0}…</value>
+  </data>
+  <data name="root_flash_failed" xml:space="preserve">
+    <value>Flashing failed: {0}</value>
+  </data>
+  <data name="root_flashed" xml:space="preserve">
+    <value>{0} is flashed with the patched image. Restart the phone now?</value>
+  </data>
+  <data name="root_done" xml:space="preserve">
+    <value>Done. When the phone starts, open the root app: it may ask to finish the setup and restart once more.</value>
+  </data>
+  <data name="root_booting" xml:space="preserve">
+    <value>Starting the phone once with the patched image…</value>
+  </data>
+  <data name="root_boot_failed" xml:space="preserve">
+    <value>Could not start the image: {0}</value>
+  </data>
+  <data name="root_booted" xml:space="preserve">
+    <value>The phone is starting with the patched image. If root works, flash it, or use Direct install in the root app.</value>
+  </data>
 </root>

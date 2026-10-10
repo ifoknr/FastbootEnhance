@@ -109,6 +109,10 @@ namespace FastbootEnhance.FakeAdb
                     return ExecOut(tail);
                 case "pull":
                     return Pull(rest.Skip(1).Where(a => a != "-a").ToList());
+                case "push":
+                    return Push(rest.Skip(1).ToList());
+                case "reboot":
+                    return 0;
                 default:
                     Console.Error.WriteLine("fake adb: unsupported command " + command);
                     return 1;
@@ -117,6 +121,14 @@ namespace FastbootEnhance.FakeAdb
 
         static int Shell(string command)
         {
+            if (command == "date +%s")
+            {
+                Console.Out.Write(DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\n");
+                return 0;
+            }
+            if (command.StartsWith("stat -c %Y", StringComparison.Ordinal))
+                return ListPatched();
+
             // In Android, adb runs as the shell user (uid 2000) and root comes from su.
             if (command == "id -u")
             {
@@ -224,8 +236,54 @@ namespace FastbootEnhance.FakeAdb
             return 0;
         }
 
+        // The root app's side of the Root page: an image pushed to Download is "patched" at
+        // once, and the patched image is whatever fake-adb.patched (next to the executable)
+        // names, so the page finds, pulls and checks a real Magisk-patched sample.
+        static readonly string PhoneDir = Path.Combine(AppContext.BaseDirectory, "fake-phone");
+        const string PatchedRemote = "/sdcard/Download/magisk_patched-28100_FAKE.img";
+
+        static string PatchedSample()
+        {
+            string pointer = Path.Combine(AppContext.BaseDirectory, "fake-adb.patched");
+            return File.Exists(pointer) ? File.ReadAllText(pointer).Trim() : null;
+        }
+
+        static int Push(List<string> paths)
+        {
+            if (paths.Count != 2 || !File.Exists(paths[0]))
+            {
+                Console.Error.WriteLine("adb: error: cannot stat '" + (paths.Count > 0 ? paths[0] : "") + "': No such file or directory");
+                return 1;
+            }
+            Directory.CreateDirectory(PhoneDir);
+            File.Copy(paths[0], Path.Combine(PhoneDir, paths[1].Substring(paths[1].LastIndexOf('/') + 1)), true);
+            Console.Out.WriteLine(paths[0] + ": 1 file pushed, 0 skipped. 40.0 MB/s (" + new FileInfo(paths[0]).Length + " bytes in 0.100s)");
+            return 0;
+        }
+
+        static int ListPatched()
+        {
+            string sample = PatchedSample();
+            if (!Directory.Exists(PhoneDir) || sample == null || !File.Exists(sample))
+                return 1; // no match for the glob
+            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            StringBuilder listing = new StringBuilder();
+            foreach (string pushed in Directory.GetFiles(PhoneDir))
+                listing.Append(now).Append('|').Append(new FileInfo(pushed).Length).Append("|/sdcard/Download/").Append(Path.GetFileName(pushed)).Append('\n');
+            listing.Append(now).Append('|').Append(new FileInfo(sample).Length).Append('|').Append(PatchedRemote).Append('\n');
+            Console.Out.Write(listing.ToString());
+            return 0;
+        }
+
         static int Pull(List<string> paths)
         {
+            if (paths.Count == 2 && paths[0] == PatchedRemote && PatchedSample() != null)
+            {
+                string target = Directory.Exists(paths[1]) ? Path.Combine(paths[1], "magisk_patched-28100_FAKE.img") : paths[1];
+                File.Copy(PatchedSample(), target, true);
+                Console.Out.WriteLine(PatchedRemote + ": 1 file pulled, 0 skipped. 40.0 MB/s");
+                return 0;
+            }
             if (paths.Count != 2)
             {
                 Console.Error.WriteLine("adb: usage: pull [-a] REMOTE LOCAL");
