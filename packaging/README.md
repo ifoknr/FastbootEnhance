@@ -16,6 +16,12 @@ pull request; agree to the Microsoft CLA when the bot asks. Or, on Windows:
 **Later releases**: add a classic GitHub token with the `public_repo` scope as the
 `WINGET_TOKEN` secret; the Release workflow then submits each new version by itself.
 
+## Code signing
+
+Release builds can be signed through SignPath (free for open source); the workflow is ready and
+switches on once the SignPath secret and variable exist. Steps: [`signing/README.md`](signing/README.md).
+Policy: [`CODE_SIGNING.md`](../CODE_SIGNING.md).
+
 ## XDA
 
 `xda/thread.bbcode` is the thread for XDA Developers (BBCode, paste it in the editor's BBCode
