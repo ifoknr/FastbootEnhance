@@ -141,6 +141,29 @@ namespace FastbootEnhance.FakeAdb
                 return 0;
             }
 
+            // DeviceFacts.Command: what any app can ask without root.
+            if (command.Contains("echo kernel=$(uname -r)"))
+            {
+                Console.Out.Write("kernel=5.10.198-android12-9-00001-gabcdef\npatch=2024-09-05\nvendor_patch=2024-09-05\n"
+                    + "model=Sample_A64\nandroid=14\n");
+                return 0;
+            }
+            if (command == "command -v su")
+            {
+                Console.Out.Write("/system/bin/su\n");
+                return 0;
+            }
+            // The Fastboot Studio Companion module's report (DeviceFacts.CompanionCommand through su).
+            if (command == "su -c 'sh /data/adb/modules/fastboot_studio_companion/bin/fbs facts'")
+            {
+                if (!Android)
+                    return 127;
+                Console.Out.Write("kernel=5.10.198-android12-9-00001-gabcdef\npatch=2024-09-05\nvendor_patch=2024-09-05\n"
+                    + "model=Sample_A64\nandroid=14\ncompanion=2.3.0 beta\nroot=KernelSU\navb=orange\ndevice_state=unlocked\n"
+                    + "spoofed=false\nselinux=Enforcing\nkmi=5.10-android12\nconflicts=1\n");
+                return 0;
+            }
+
             if (command.Contains("/dev/block/by-name") && command.Contains("blockdev"))
             {
                 if (Android && !command.StartsWith("su -c '", StringComparison.Ordinal))

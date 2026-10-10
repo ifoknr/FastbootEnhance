@@ -97,6 +97,9 @@ namespace FastbootEnhance
                 if (cur_status == FastbootStatus.show_actions)
                     continue;
 
+                if (adbPolling && ++adbTick % 3 == 0)
+                    pollAdbPhones();
+
                 List<fastboot_devices_row> tmp;
                 try
                 {
@@ -140,6 +143,67 @@ namespace FastbootEnhance
                     }
                 }
             }
+        }
+
+        static int adbTick;
+        static bool adbPolling = true;
+        static string adbNoteShown;
+
+        /// <summary>
+        /// Phones booted into Android: each is read once per run (kernel, and the Companion's
+        /// report when root allows), and the device list says they are there, since fastboot
+        /// cannot see them. Runs on the poller thread.
+        /// </summary>
+        static void pollAdbPhones()
+        {
+            List<AdbDevice> phones;
+            try
+            {
+                Adb.Result list = Adb.Run("devices -l", Adb.ShortCommand);
+                phones = list.Succeeded
+                    ? AdbDevice.ParseList(list.Output).Where(d => d.State == "device").ToList()
+                    : new List<AdbDevice>();
+            }
+            catch (FileNotFoundException)
+            {
+                adbPolling = false;   // no adb.exe: nothing to look for
+                return;
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            foreach (AdbDevice phone in phones)
+                AdbFacts.ReadOnce(phone.Serial);
+
+            string note = adbPhonesNote(phones);
+            if (note == adbNoteShown)
+                return;
+            adbNoteShown = note;
+            MainWindow.THIS.Dispatcher.BeginInvoke(new Action(delegate
+            {
+                MainWindow.THIS.fastboot_adb_note.Text = note ?? "";
+                MainWindow.THIS.fastboot_adb_note.Visibility = note == null ? Visibility.Collapsed : Visibility.Visible;
+            }));
+        }
+
+        static string adbPhonesNote(List<AdbDevice> phones)
+        {
+            if (phones.Count == 0)
+                return null;
+            List<string> lines = new List<string>();
+            foreach (AdbDevice phone in phones)
+            {
+                DeviceFacts facts = AdbFacts.Recall(phone.Serial);
+                string name = facts?.Model ?? phone.Model ?? phone.Serial;
+                string kernel = facts?.Kernel != null ? Helper.ltr(facts.Kernel) : "…";
+                lines.Add(facts?.Companion != null
+                    ? string.Format(Properties.Resources.adb_phone_companion, name, kernel, Helper.ltr("v" + facts.Companion), facts.Root ?? "?")
+                    : string.Format(Properties.Resources.adb_phone_seen, name, kernel));
+            }
+            lines.Add(Properties.Resources.adb_phone_hint);
+            return string.Join("\n", lines);
         }
 
         static List<fastboot_devices_row> listDevices()
@@ -378,6 +442,19 @@ namespace FastbootEnhance
             if (seen?.Patch != null)
                 MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_adb_patch,
                     Helper.ltr(seen.Patch)));
+            if (seen?.Companion != null)
+            {
+                MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_companion,
+                    Helper.ltr("v" + seen.Companion) + (seen.Root != null ? "  ·  " + seen.Root : "")));
+                if (seen.Avb != null)
+                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_avb,
+                        seen.Avb + (seen.DeviceState != null ? "  ·  " + seen.DeviceState : "")
+                        + (seen.Spoofed ? "  ·  " + Properties.Resources.fastboot_avb_spoofed : "")));
+                if (seen.Conflicts != null)
+                    MainWindow.THIS.fastboot_info_list.Items.Add(new fastboot_info_row(Properties.Resources.fastboot_row_conflicts,
+                        seen.Conflicts == 0 ? Properties.Resources.fastboot_conflicts_none
+                            : seen.Conflicts.Value.ToString(System.Globalization.CultureInfo.CurrentCulture)));
+            }
 
             //buttons init
 
@@ -436,6 +513,11 @@ namespace FastbootEnhance
             if (fastbootData.current_slot != null)
                 checks.Add(new CheckRow(CheckRow.Level.Ok,
                     string.Format(Properties.Resources.check_slot, fastbootData.current_slot)));
+
+            DeviceFacts seen = AdbFacts.Recall(cur_serial);
+            if (seen?.Conflicts > 0)
+                checks.Add(new CheckRow(CheckRow.Level.Warn,
+                    string.Format(Properties.Resources.check_module_conflicts, seen.Conflicts.Value)));
 
             return checks;
         }
@@ -625,6 +707,8 @@ namespace FastbootEnhance
                 {
                     try
                     {
+                        // Last chance to note the kernel before the phone leaves Android.
+                        AdbFacts.ReadConnected();
                         Adb.Result result = Adb.Run("reboot bootloader", Adb.ShortCommand);
                         if (!result.Succeeded)
                             problem = result.Problem;
@@ -973,6 +1057,8 @@ namespace FastbootEnhance
                     return string.Format(Properties.Resources.boot_find_root, v[0]);
                 case FindingCode.Stock:
                     return Properties.Resources.boot_find_stock;
+                case FindingCode.RootManagerChange:
+                    return string.Format(Properties.Resources.boot_find_root_change, v[0], v[1]);
                 default:
                     return f.Code.ToString();
             }

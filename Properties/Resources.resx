@@ -1784,6 +1784,36 @@ adb shell needs a command after it, e.g. adb shell getprop; Stop ends anything s
   <data name="fastboot_row_adb_patch" xml:space="preserve">
     <value>Security patch (over adb)</value>
   </data>
+  <data name="adb_phone_seen" xml:space="preserve">
+    <value>{0} is in Android: kernel {1}.</value>
+  </data>
+  <data name="adb_phone_companion" xml:space="preserve">
+    <value>{0} is in Android: kernel {1}, Fastboot Studio Companion {2} ({3}).</value>
+  </data>
+  <data name="adb_phone_hint" xml:space="preserve">
+    <value>Its kernel is noted, so boot images are checked against it before flashing. Use USB check to restart it to the bootloader.</value>
+  </data>
+  <data name="fastboot_row_companion" xml:space="preserve">
+    <value>Companion (over adb)</value>
+  </data>
+  <data name="fastboot_row_avb" xml:space="preserve">
+    <value>AVB (over adb)</value>
+  </data>
+  <data name="fastboot_row_conflicts" xml:space="preserve">
+    <value>Module conflicts (over adb)</value>
+  </data>
+  <data name="fastboot_avb_spoofed" xml:space="preserve">
+    <value>a hiding module changes the property</value>
+  </data>
+  <data name="fastboot_conflicts_none" xml:space="preserve">
+    <value>none</value>
+  </data>
+  <data name="check_module_conflicts" xml:space="preserve">
+    <value>Fastboot Studio Companion found {0} conflicts between root modules the last time the phone was in Android.</value>
+  </data>
+  <data name="boot_find_root_change" xml:space="preserve">
+    <value>The image is rooted with {0}, but the phone uses {1}. Modules and settings of {1} will not work after flashing it.</value>
+  </data>
   <data name="nav_root" xml:space="preserve">
     <value>Root</value>
   </data>

@@ -111,6 +111,11 @@ Everything fastboot can tell and do, on the phone that is connected.
 - **Boot once** starts a boot or recovery image from memory (`fastboot boot`) without flashing
   it. The image header is checked first: init_boot and vendor_boot cannot start on their own
   and are refused, and from fastbootd it offers the bootloader first.
+- **Phones in Android** are noticed too: the device list says so, and their kernel and patch
+  level are noted (fastboot cannot read them) to check boot images against before flashing.
+  With the [Fastboot Studio Companion](https://github.com/ifoknr/FastbootStudio-Companion) root
+  module, the phone also reports its root manager, its real AVB state and conflicts between its
+  modules; flashing an image rooted with another root manager asks first.
 
 **Why it helps:** no command line, no typos in partition names, and you see what the
 phone reports before you touch anything.

@@ -1784,6 +1784,36 @@ adb shell يحتاج أمر بعده، مثل adb shell getprop. وزر إيقا
   <data name="fastboot_row_adb_patch" xml:space="preserve">
     <value>مستوى الحماية (عبر adb)</value>
   </data>
+  <data name="adb_phone_seen" xml:space="preserve">
+    <value>{0} شغّال على أندرويد: الكيرنل {1}.</value>
+  </data>
+  <data name="adb_phone_companion" xml:space="preserve">
+    <value>{0} شغّال على أندرويد: الكيرنل {1}، و Fastboot Studio Companion {2} ({3}).</value>
+  </data>
+  <data name="adb_phone_hint" xml:space="preserve">
+    <value>انحفظ الكيرنل حقه، فأي صورة boot تنفحص عليه قبل التفليش. استخدم «فحص USB» عشان تعيد تشغيله للبوت لودر.</value>
+  </data>
+  <data name="fastboot_row_companion" xml:space="preserve">
+    <value>Companion (عبر adb)</value>
+  </data>
+  <data name="fastboot_row_avb" xml:space="preserve">
+    <value>AVB (عبر adb)</value>
+  </data>
+  <data name="fastboot_row_conflicts" xml:space="preserve">
+    <value>تعارض المودات (عبر adb)</value>
+  </data>
+  <data name="fastboot_avb_spoofed" xml:space="preserve">
+    <value>فيه مود إخفاء يغيّر الخاصية</value>
+  </data>
+  <data name="fastboot_conflicts_none" xml:space="preserve">
+    <value>ما فيه</value>
+  </data>
+  <data name="check_module_conflicts" xml:space="preserve">
+    <value>Fastboot Studio Companion لقى {0} تعارض بين مودات الروت آخر مرة كان الجوال على أندرويد.</value>
+  </data>
+  <data name="boot_find_root_change" xml:space="preserve">
+    <value>الصورة مروّتة بـ {0}، بس الجوال يستخدم {1}. مودات وإعدادات {1} ما بتشتغل بعد التفليش.</value>
+  </data>
   <data name="nav_root" xml:space="preserve">
     <value>روت</value>
   </data>
