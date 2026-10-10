@@ -4872,5 +4872,95 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("fastboot_row_adb_patch", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is in Android: kernel {1}..
+        /// </summary>
+        public static string adb_phone_seen {
+            get {
+                return ResourceManager.GetString("adb_phone_seen", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is in Android: kernel {1}, Fastboot Studio Companion {2} ({3})..
+        /// </summary>
+        public static string adb_phone_companion {
+            get {
+                return ResourceManager.GetString("adb_phone_companion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Its kernel is noted, so boot images are checked against it before flashing. Use USB check to restart it to the bootloader..
+        /// </summary>
+        public static string adb_phone_hint {
+            get {
+                return ResourceManager.GetString("adb_phone_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Companion (over adb).
+        /// </summary>
+        public static string fastboot_row_companion {
+            get {
+                return ResourceManager.GetString("fastboot_row_companion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AVB (over adb).
+        /// </summary>
+        public static string fastboot_row_avb {
+            get {
+                return ResourceManager.GetString("fastboot_row_avb", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module conflicts (over adb).
+        /// </summary>
+        public static string fastboot_row_conflicts {
+            get {
+                return ResourceManager.GetString("fastboot_row_conflicts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to a hiding module changes the property.
+        /// </summary>
+        public static string fastboot_avb_spoofed {
+            get {
+                return ResourceManager.GetString("fastboot_avb_spoofed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to none.
+        /// </summary>
+        public static string fastboot_conflicts_none {
+            get {
+                return ResourceManager.GetString("fastboot_conflicts_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fastboot Studio Companion found {0} conflicts between root modules the last time the phone was in Android..
+        /// </summary>
+        public static string check_module_conflicts {
+            get {
+                return ResourceManager.GetString("check_module_conflicts", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The image is rooted with {0}, but the phone uses {1}. Modules and settings of {1} will not work after flashing it..
+        /// </summary>
+        public static string boot_find_root_change {
+            get {
+                return ResourceManager.GetString("boot_find_root_change", resourceCulture);
+            }
+        }
     }
 }

@@ -29,6 +29,9 @@ namespace FastbootEnhance.Core.Fastboot
         KernelSummary,
         RootSummary,
         Stock,
+
+        /// <summary>The image is rooted with another root manager than the phone runs (from the Companion).</summary>
+        RootManagerChange,
     }
 
     public sealed class Finding
@@ -117,11 +120,27 @@ namespace FastbootEnhance.Core.Fastboot
             if (kernel?.Release != null)
                 findings.Add(new Finding(FindingLevel.Info, FindingCode.KernelSummary, kernel.Release, kernel.Kmi ?? ""));
             RootKind root = image.Root;
+            RootKind phoneRoot = RootFromName(phone?.Root);
+            if (root != RootKind.None && phoneRoot != RootKind.None && (root & phoneRoot) == 0)
+                findings.Add(new Finding(FindingLevel.Warn, FindingCode.RootManagerChange,
+                    RootName(root, false), RootName(phoneRoot, false)));
             if (root != RootKind.None || (kernel?.SuSFS ?? false))
                 findings.Add(new Finding(FindingLevel.Info, FindingCode.RootSummary, RootName(root, kernel?.SuSFS ?? false)));
             else if ((kernel?.Readable ?? false) || (image.Ramdisk?.Readable ?? false))
                 findings.Add(new Finding(FindingLevel.Info, FindingCode.Stock));
             return findings;
+        }
+
+        /// <summary>The root manager the Companion named ("KernelSU"), as a RootKind.</summary>
+        public static RootKind RootFromName(string name)
+        {
+            switch ((name ?? "").Trim().ToLowerInvariant())
+            {
+                case "magisk": return RootKind.Magisk;
+                case "kernelsu": return RootKind.KernelSU;
+                case "apatch": return RootKind.APatch;
+                default: return RootKind.None;
+            }
         }
 
         /// <summary>"2024-09-05" → "2024-09".</summary>
