@@ -84,6 +84,54 @@ jobs:
           dotnet publish FastbootEnhance.csproj -c Release -r win-x64
           --self-contained true -p:PublishSingleFile=true -o publish
 
+      # Code signing through SignPath (packaging/signing/README.md). Off until the
+      # SIGNPATH_API_TOKEN secret and the SIGNPATH_ORGANIZATION_ID variable are set; until
+      # then the release is built unsigned, as before.
+      - name: Check for SignPath
+        id: signpath
+        shell: bash
+        env:
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          SIGNPATH_ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+        run: |
+          if [ -n "$SIGNPATH_API_TOKEN" ] && [ -n "$SIGNPATH_ORGANIZATION_ID" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SignPath is not set up, so FastbootStudio.exe is not signed."
+          fi
+
+      - name: Upload FastbootStudio.exe for signing
+        id: unsigned
+        if: steps.signpath.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-exe
+          path: publish/FastbootStudio.exe
+          if-no-files-found: error
+
+      - name: Sign FastbootStudio.exe
+        if: steps.signpath.outputs.enabled == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG || 'FastbootStudio' }}
+          signing-policy-slug: ${{ vars.SIGNPATH_POLICY_SLUG || 'release-signing' }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_ARTIFACT_CONFIGURATION_SLUG || 'initial' }}
+          github-artifact-id: ${{ steps.unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed
+
+      - name: Use the signed FastbootStudio.exe
+        if: steps.signpath.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          $signature = Get-AuthenticodeSignature signed/FastbootStudio.exe
+          if ($signature.Status -ne 'Valid') { throw "The signed FastbootStudio.exe does not verify: $($signature.Status) $($signature.StatusMessage)" }
+          "Signed by: $($signature.SignerCertificate.Subject)"
+          Copy-Item signed/FastbootStudio.exe publish/FastbootStudio.exe -Force
+
       - name: Package
         shell: pwsh
         run: |
