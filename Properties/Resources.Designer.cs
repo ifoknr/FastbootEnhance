@@ -4566,5 +4566,311 @@ namespace FastbootEnhance.Properties {
                 return ResourceManager.GetString("terminal_wipe", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check before flashing {0}.
+        /// </summary>
+        public static string boot_check_title {
+            get {
+                return ResourceManager.GetString("boot_check_title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The image could not be read: {0}.
+        /// </summary>
+        public static string boot_check_failed {
+            get {
+                return ResourceManager.GetString("boot_check_failed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file is not a boot image, but {0} holds one. Flashing it here will most likely stop the phone from starting..
+        /// </summary>
+        public static string boot_find_not_boot {
+            get {
+                return ResourceManager.GetString("boot_find_not_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This image has no kernel (it is an init_boot image, or made like one), but {0} must hold the kernel. The phone will not start..
+        /// </summary>
+        public static string boot_find_no_kernel {
+            get {
+                return ResourceManager.GetString("boot_find_no_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This phone has {0}: that is where this image goes..
+        /// </summary>
+        public static string boot_find_no_kernel_hint {
+            get {
+                return ResourceManager.GetString("boot_find_no_kernel_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This image carries a kernel, but {0} holds only the ramdisk. An image with a kernel is meant for boot..
+        /// </summary>
+        public static string boot_find_kernel_in_init_boot {
+            get {
+                return ResourceManager.GetString("boot_find_kernel_in_init_boot", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This image does not belong in {0}: vendor_boot images go to vendor_boot, and boot images never do..
+        /// </summary>
+        public static string boot_find_vendor_mismatch {
+            get {
+                return ResourceManager.GetString("boot_find_vendor_mismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The kernel is built for {0}, but the phone runs {1}. A kernel made for another KMI does not start: the phone will boot-loop..
+        /// </summary>
+        public static string boot_find_kmi {
+            get {
+                return ResourceManager.GetString("boot_find_kmi", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The kernel is version {0}, but the phone runs {1}. It may not start..
+        /// </summary>
+        public static string boot_find_kernel_version {
+            get {
+                return ResourceManager.GetString("boot_find_kernel_version", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The image's security patch ({0}) is older than the phone's ({1}). Some phones refuse to start it, or lose keys kept in the keystore (fingerprints, some app logins)..
+        /// </summary>
+        public static string boot_find_older_patch {
+            get {
+                return ResourceManager.GetString("boot_find_older_patch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kernel: {0}.
+        /// </summary>
+        public static string boot_find_kernel {
+            get {
+                return ResourceManager.GetString("boot_find_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root: {0}.
+        /// </summary>
+        public static string boot_find_root {
+            get {
+                return ResourceManager.GetString("boot_find_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not rooted (stock image)..
+        /// </summary>
+        public static string boot_find_stock {
+            get {
+                return ResourceManager.GetString("boot_find_stock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tip: open this phone once on the Backup page while Android is running, and its kernel and security patch are checked here too..
+        /// </summary>
+        public static string boot_check_phone_unknown {
+            get {
+                return ResourceManager.GetString("boot_check_phone_unknown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Compared with what {0} reported over adb on {1}..
+        /// </summary>
+        public static string boot_check_phone_known {
+            get {
+                return ResourceManager.GetString("boot_check_phone_known", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Flash it to {0} anyway?.
+        /// </summary>
+        public static string boot_check_question {
+            get {
+                return ResourceManager.GetString("boot_check_question", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Header.
+        /// </summary>
+        public static string images_row_header {
+            get {
+                return ResourceManager.GetString("images_row_header", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to version {0}, page {1}.
+        /// </summary>
+        public static string images_header_detail {
+            get {
+                return ResourceManager.GetString("images_header_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Android.
+        /// </summary>
+        public static string images_row_android {
+            get {
+                return ResourceManager.GetString("images_row_android", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Security patch.
+        /// </summary>
+        public static string images_row_patch {
+            get {
+                return ResourceManager.GetString("images_row_patch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kernel.
+        /// </summary>
+        public static string images_row_kernel {
+            get {
+                return ResourceManager.GetString("images_row_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to KMI.
+        /// </summary>
+        public static string images_row_kmi {
+            get {
+                return ResourceManager.GetString("images_row_kmi", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to not GKI.
+        /// </summary>
+        public static string images_kmi_none {
+            get {
+                return ResourceManager.GetString("images_kmi_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kernel compression.
+        /// </summary>
+        public static string images_row_kernel_compression {
+            get {
+                return ResourceManager.GetString("images_row_kernel_compression", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} (not readable).
+        /// </summary>
+        public static string images_kernel_unreadable {
+            get {
+                return ResourceManager.GetString("images_kernel_unreadable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to no version found.
+        /// </summary>
+        public static string images_kernel_no_banner {
+            get {
+                return ResourceManager.GetString("images_kernel_no_banner", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to none (init_boot).
+        /// </summary>
+        public static string images_no_kernel {
+            get {
+                return ResourceManager.GetString("images_no_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Ramdisk.
+        /// </summary>
+        public static string images_row_ramdisk {
+            get {
+                return ResourceManager.GetString("images_row_ramdisk", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, {1} files.
+        /// </summary>
+        public static string images_ramdisk_detail {
+            get {
+                return ResourceManager.GetString("images_ramdisk_detail", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Root.
+        /// </summary>
+        public static string images_row_root {
+            get {
+                return ResourceManager.GetString("images_row_root", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to none (stock).
+        /// </summary>
+        public static string images_root_none {
+            get {
+                return ResourceManager.GetString("images_root_none", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Command line.
+        /// </summary>
+        public static string images_row_cmdline {
+            get {
+                return ResourceManager.GetString("images_row_cmdline", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Kernel (last seen over adb).
+        /// </summary>
+        public static string fastboot_row_adb_kernel {
+            get {
+                return ResourceManager.GetString("fastboot_row_adb_kernel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Security patch (over adb).
+        /// </summary>
+        public static string fastboot_row_adb_patch {
+            get {
+                return ResourceManager.GetString("fastboot_row_adb_patch", resourceCulture);
+            }
+        }
     }
 }

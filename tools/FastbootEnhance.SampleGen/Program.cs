@@ -100,7 +100,86 @@ namespace FastbootEnhance.SampleGen
 
             WriteSuper(outDir);
             WriteRecoveryImage(outDir);
+            WriteGkiBootImage(outDir);
             return 0;
+        }
+
+        /// <summary>
+        /// A GKI-style boot image (header v4) the way the Image Tools page and the flash check
+        /// read it: an uncompressed arm64 kernel with its version banner (android13-5.15), a
+        /// gzip ramdisk patched by Magisk, and an AVB footer carrying the security patch.
+        /// </summary>
+        static void WriteGkiBootImage(string outDir)
+        {
+            System.Text.Encoding ascii = System.Text.Encoding.ASCII;
+            MemoryStream kernel = new MemoryStream();
+            byte[] imageHeader = new byte[64];
+            ascii.GetBytes("ARMd").CopyTo(imageHeader, 56);
+            kernel.Write(imageHeader, 0, imageHeader.Length);
+            byte[] banner = ascii.GetBytes("Linux version 5.15.123-android13-8-00001-gfeed01 (builder@sample) #1 SMP PREEMPT\n\0");
+            kernel.Write(banner, 0, banner.Length);
+            kernel.Write(new byte[64 << 10], 0, 64 << 10);
+
+            MemoryStream cpio = new MemoryStream();
+            void Entry(string name)
+            {
+                byte[] n = ascii.GetBytes(name + "\0");
+                string head = "070701" + "00000001" + (name == "TRAILER!!!" ? "00000000" : "000081A4") + "00000000" + "00000000"
+                    + "00000001" + "00000000" + "00000000" + "00000000" + "00000000" + "00000000" + "00000000"
+                    + n.Length.ToString("X8") + "00000000";
+                cpio.Write(ascii.GetBytes(head), 0, 110);
+                cpio.Write(n, 0, n.Length);
+                while (cpio.Length % 4 != 0)
+                    cpio.WriteByte(0);
+            }
+            foreach (string name in new[] { "init", ".backup/.magisk", ".backup/init", "overlay.d/sbin/magisk64.xz", "TRAILER!!!" })
+                Entry(name);
+            MemoryStream ramdisk = new MemoryStream();
+            using (System.IO.Compression.GZipStream gz = new System.IO.Compression.GZipStream(ramdisk, System.IO.Compression.CompressionLevel.Optimal, true))
+                cpio.WriteTo(gz);
+
+            MemoryStream image = new MemoryStream();
+            byte[] header = new byte[4096];
+            ascii.GetBytes("ANDROID!").CopyTo(header, 0);
+            BitConverter.GetBytes((uint)kernel.Length).CopyTo(header, 8);
+            BitConverter.GetBytes((uint)ramdisk.Length).CopyTo(header, 12);
+            BitConverter.GetBytes(4096u).CopyTo(header, 20);  // header_size
+            BitConverter.GetBytes(4u).CopyTo(header, 40);     // header_version
+            image.Write(header, 0, header.Length);
+            void Padded(MemoryStream part)
+            {
+                part.WriteTo(image);
+                while (image.Length % 4096 != 0)
+                    image.WriteByte(0);
+            }
+            Padded(kernel);
+            Padded(ramdisk);
+
+            long vbmetaOffset = image.Length;
+            MemoryStream vbmeta = new MemoryStream();
+            vbmeta.Write(ascii.GetBytes("AVB0"), 0, 4);
+            vbmeta.Write(new byte[252], 0, 252);
+            foreach (string property in new[] { "com.android.build.boot.os_version\013", "com.android.build.boot.security_patch\02024-05-05" })
+            {
+                vbmeta.Write(new byte[32], 0, 32);
+                byte[] kv = ascii.GetBytes(property + "\0");
+                vbmeta.Write(kv, 0, kv.Length);
+            }
+            vbmeta.WriteTo(image);
+            while (image.Length % 4096 != 0)
+                image.WriteByte(0);
+            byte[] footer = new byte[64];
+            ascii.GetBytes("AVBf").CopyTo(footer, 0);
+            for (int i = 0; i < 8; i++)
+            {
+                footer[20 + i] = (byte)(vbmetaOffset >> (56 - 8 * i));
+                footer[28 + i] = (byte)(vbmeta.Length >> (56 - 8 * i));
+            }
+            image.Write(footer, 0, footer.Length);
+
+            string path = Path.Combine(outDir, "boot-gki-sample.img");
+            File.WriteAllBytes(path, image.ToArray());
+            Console.WriteLine("wrote " + path);
         }
 
         /// <summary>

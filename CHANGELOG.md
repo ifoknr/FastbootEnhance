@@ -4,6 +4,12 @@
 
 <!-- The "## vX.Y.Z" section is posted to Telegram with the release (.github/scripts/telegram-release.sh): keep it short. -->
 
+## v2.4.0
+- فحص صورة الإقلاع قبل التفليش: يمنع init_boot في boot وصورة boot في vendor_boot
+- يقرأ إصدار الكيرنل والـ KMI ومستوى الحماية ويحذّر لو ما تناسب جوالك
+- يكشف الروت في الصورة: Magisk و KernelSU و APatch و SuSFS
+- أدوات الصور تعرض تفاصيل الكيرنل والروت لصور boot
+
 ## v2.3.0
 - وضع فاتح وداكن، أو مثل ويندوز (من صفحة «حول»)
 - صفحة «الطرفية»: نفّذ أوامر adb و fastboot بنفسك، مع حماية الأوامر الخطرة
